@@ -272,7 +272,7 @@ export default function Component() {
           </div>
           <div className="relative order-1 lg:order-2">
             <Image
-              src="/images/main-hero.png"
+              src="/images/main-hero-new.png"
               alt="Professional woman with laptop showing lead generation analytics"
               width={600}
               height={500}
@@ -314,8 +314,8 @@ export default function Component() {
             <div className="text-center">
               <div className="mb-6">
                 <Image
-                  src="/images/how-it-work-1.png"
-                  alt="Data Analysis and Reporting"
+                  src="/images/how-it-work-1-new.png"
+                  alt="Professional woman presenting analytics and data visualization"
                   width={300}
                   height={300}
                   className="mx-auto rounded-lg object-cover w-full max-w-[300px]"
@@ -329,8 +329,8 @@ export default function Component() {
             <div className="text-center">
               <div className="mb-6">
                 <Image
-                  src="/images/how-it-work-2.png"
-                  alt="AI Research & Personalization"
+                  src="/images/how-it-work-2-new.png"
+                  alt="AI-powered research and automation with chatbot assistance"
                   width={300}
                   height={300}
                   className="mx-auto rounded-lg object-cover w-full max-w-[300px]"
@@ -344,8 +344,8 @@ export default function Component() {
             <div className="text-center sm:col-span-2 lg:col-span-1">
               <div className="mb-6">
                 <Image
-                  src="/images/mobile-solution.png"
-                  alt="Mobile Solution & Integration"
+                  src="/images/how-it-work-3.svg"
+                  alt="Mobile integration and workflow optimization"
                   width={300}
                   height={300}
                   className="mx-auto rounded-lg object-cover w-full max-w-[300px]"
