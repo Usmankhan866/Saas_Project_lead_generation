@@ -2,141 +2,15 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Menu, Instagram, Linkedin, Facebook, X, Phone, Mail, MapPin } from "lucide-react"
+import { Instagram, Linkedin, Facebook, X, Phone, Mail, MapPin } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
+import AuthHeader from "@/components/AuthHeader"
 
 export default function ContactPage() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a
-              href="/services"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Services
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/blog"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Blog
-            </a>
-            <a href="/contact" className="text-[#3c3679] underline font-medium transition-all duration-200">
-              Contact
-            </a>
-          </nav>
-
-          {/* Desktop User Profile */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <div className="flex items-center space-x-3">
-              <Image
-                src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40&q=80"
-                alt="Alexa Rawles"
-                width={40}
-                height={40}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <div className="text-sm">
-                <div className="font-medium text-gray-900">Alexa Rawles</div>
-                <div className="text-gray-500">alexarawles@gmail.com</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-            <nav className="flex flex-col space-y-4 pt-4">
-              <a
-                href="/"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Home
-              </a>
-              <a
-                href="/services"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Services
-              </a>
-              <a
-                href="/pricing"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Pricing
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                About
-              </a>
-              <a
-                href="/help"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Help
-              </a>
-              <a
-                href="/blog"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Blog
-              </a>
-              <a href="/contact" className="text-[#3c3679] underline font-medium transition-all duration-200">
-                Contact
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
+      <AuthHeader currentPage="contact" />
 
       {/* Contact Hero Section */}
       <section className="bg-[#3c3679] text-white py-16 px-4 sm:px-6">
@@ -294,6 +168,11 @@ export default function ContactPage() {
                 <li>
                   <a href="/blog" className="hover:text-gray-300 transition-colors">
                     Blogs
+                  </a>
+                </li>
+                <li>
+                  <a href="/contact" className="hover:text-gray-300 transition-colors">
+                    Contact
                   </a>
                 </li>
               </ul>

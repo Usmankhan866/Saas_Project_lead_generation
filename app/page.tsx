@@ -11,7 +11,6 @@ import {
   Instagram,
   Linkedin,
   Facebook,
-  Menu,
   Quote,
   CheckCircle,
   Users,
@@ -22,10 +21,10 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useState, useRef } from "react"
+import AuthHeader from "@/components/AuthHeader"
 
 export default function Component() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const testimonialScrollRef = useRef<HTMLDivElement>(null)
 
   const testimonials = [
@@ -121,146 +120,7 @@ export default function Component() {
       </div>
 
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="#"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a
-              href="/services"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Service
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/blog"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Blog
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-          </nav>
-
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <Button asChild className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              <a href="/signup">Sign Up</a>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
-            >
-              <a href="/login">Log In</a>
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-            <nav className="flex flex-col space-y-4 pt-4">
-              <a
-                href="#"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Home
-              </a>
-              <a
-                href="/services"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Service
-              </a>
-              <a
-                href="/pricing"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Pricing
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                About
-              </a>
-              <a
-                href="/help"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Help
-              </a>
-              <a
-                href="/blog"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Blog
-              </a>
-              <a
-                href="/contact"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Contact
-              </a>
-              <div className="flex flex-col sm:hidden space-y-2 pt-4">
-                <Button asChild className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-6 py-2 text-sm">
-                  <a href="/signup">Sign Up</a>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm"
-                >
-                  <a href="/login">Log In</a>
-                </Button>
-              </div>
-            </nav>
-          </div>
-        )}
-      </header>
+      <AuthHeader currentPage="home" />
 
       {/* Hero Section */}
       <section className="bg-white px-4 sm:px-6 py-8 sm:py-16">
@@ -662,7 +522,7 @@ export default function Component() {
               <h4 className="font-bold mb-4">Quick Links</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <a href="#" className="hover:text-gray-300 transition-colors">
+                  <a href="/" className="hover:text-gray-300 transition-colors">
                     Home
                   </a>
                 </li>
@@ -689,6 +549,11 @@ export default function Component() {
                 <li>
                   <a href="/blog" className="hover:text-gray-300 transition-colors">
                     Blogs
+                  </a>
+                </li>
+                <li>
+                  <a href="/contact" className="hover:text-gray-300 transition-colors">
+                    Contact
                   </a>
                 </li>
               </ul>

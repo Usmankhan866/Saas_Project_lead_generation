@@ -21,6 +21,10 @@ export default function SignUpPage() {
       localStorage.setItem("isAuthenticated", "true")
       localStorage.setItem("userEmail", email)
       localStorage.setItem("userName", fullName)
+
+      // Trigger storage event for other components to update
+      window.dispatchEvent(new Event("storage"))
+
       router.push("/dashboard")
     }
   }

@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, X, Menu, Instagram, Linkedin, Facebook, ChevronLeft, ChevronRight, Quote } from "lucide-react"
+import { Star, Instagram, Linkedin, Facebook, X, ChevronLeft, ChevronRight, Quote } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
+import AuthHeader from "@/components/AuthHeader"
 
 export default function ServicesPage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const testimonials = [
     {
@@ -47,127 +47,7 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a href="/services" className="text-[#3c3679] underline font-medium transition-all duration-200">
-              Service
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/blog"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Blog
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-          </nav>
-
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              Sign Up
-            </Button>
-            <Button
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
-            >
-              Log In
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-            <nav className="flex flex-col space-y-4 pt-4">
-              <a
-                href="/"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Home
-              </a>
-              <a href="#" className="text-[#3c3679] underline font-medium transition-all duration-200">
-                Service
-              </a>
-              <a
-                href="/pricing"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Pricing
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                About
-              </a>
-              <a
-                href="/help"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Help
-              </a>
-              <a
-                href="/blog"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Blog
-              </a>
-              <a
-                href="/contact"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Contact
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
+      <AuthHeader currentPage="services" />
 
       {/* Services Hero Section */}
       <section className="bg-[#3c3679] text-white py-8 px-4 sm:px-6">
@@ -631,6 +511,11 @@ export default function ServicesPage() {
                 <li>
                   <a href="/blog" className="hover:text-gray-300 transition-colors">
                     Blogs
+                  </a>
+                </li>
+                <li>
+                  <a href="/contact" className="hover:text-gray-300 transition-colors">
+                    Contact
                   </a>
                 </li>
               </ul>

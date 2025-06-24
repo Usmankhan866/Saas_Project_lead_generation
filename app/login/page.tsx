@@ -19,6 +19,11 @@ export default function LoginPage() {
       // Store auth state (in real app, use proper auth)
       localStorage.setItem("isAuthenticated", "true")
       localStorage.setItem("userEmail", email)
+      localStorage.setItem("userName", email.split("@")[0] || "User")
+
+      // Trigger storage event for other components to update
+      window.dispatchEvent(new Event("storage"))
+
       router.push("/dashboard")
     }
   }
