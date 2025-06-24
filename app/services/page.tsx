@@ -94,6 +94,12 @@ export default function ServicesPage() {
             >
               Blog
             </a>
+            <a
+              href="/contact"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Contact
+            </a>
           </nav>
 
           {/* Desktop Buttons */}
@@ -151,6 +157,12 @@ export default function ServicesPage() {
                 className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
               >
                 Blog
+              </a>
+              <a
+                href="/contact"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Contact
               </a>
             </nav>
           </div>

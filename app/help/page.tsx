@@ -144,6 +144,12 @@ export default function HelpPage() {
               Blog
             </a>
             <a
+              href="/contact"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Contact
+            </a>
+            <a
               href="#"
               className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
             >
@@ -206,6 +212,12 @@ export default function HelpPage() {
                 className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
               >
                 Blog
+              </a>
+              <a
+                href="/contact"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Contact
               </a>
               <a
                 href="#"

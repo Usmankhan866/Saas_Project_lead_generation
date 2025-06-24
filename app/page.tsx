@@ -171,18 +171,25 @@ export default function Component() {
             >
               Blog
             </a>
+            <a
+              href="/contact"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Contact
+            </a>
           </nav>
 
           {/* Desktop Buttons */}
           <div className="hidden sm:flex items-center space-x-3">
-            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              Sign Up
+            <Button asChild className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
+              <a href="/signup">Sign Up</a>
             </Button>
             <Button
+              asChild
               variant="outline"
               className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
             >
-              Log In
+              <a href="/login">Log In</a>
             </Button>
           </div>
 
@@ -232,10 +239,22 @@ export default function Component() {
               >
                 Blog
               </a>
+              <a
+                href="/contact"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Contact
+              </a>
               <div className="flex flex-col sm:hidden space-y-2 pt-4">
-                <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-6 py-2 text-sm">Sign Up</Button>
-                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm">
-                  Log In
+                <Button asChild className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-6 py-2 text-sm">
+                  <a href="/signup">Sign Up</a>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm"
+                >
+                  <a href="/login">Log In</a>
                 </Button>
               </div>
             </nav>
