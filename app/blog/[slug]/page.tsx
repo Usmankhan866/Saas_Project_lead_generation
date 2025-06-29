@@ -2,10 +2,12 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Menu, Instagram, Linkedin, Facebook, X, Calendar, Clock } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { Calendar, Clock, User, Share2, BookOpen, ArrowLeft, ThumbsUp, MessageCircle } from "lucide-react"
+import AuthHeader from "@/components/AuthHeader"
 import Image from "next/image"
-import { useState } from "react"
-import { useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 // Comprehensive blog data for all posts
 const blogPosts = {
@@ -424,460 +426,244 @@ The continuous learning capability of NLP systems means that customer service qu
   },
 }
 
-export default function BlogPostPage() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const params = useParams()
-  const slug = params.slug as string
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  const router = useRouter()
 
-  // Get the blog post data
-  const post = blogPosts[slug as keyof typeof blogPosts]
+  // Mock blog post data - in a real app, this would be fetched based on the slug
+  const post = {
+    title: "The Ultimate Guide to B2B Lead Generation in 2024",
+    excerpt:
+      "Discover the latest strategies, tools, and techniques that top-performing sales teams use to generate high-quality leads and drive revenue growth.",
+    author: "Sarah Johnson",
+    authorImage:
+      "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&h=100&q=80",
+    date: "January 15, 2024",
+    readTime: "12 min read",
+    category: "Lead Generation",
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600&q=80",
+    content: `
+      <p>Lead generation has evolved significantly over the past few years, and 2024 brings new challenges and opportunities for B2B companies. In this comprehensive guide, we'll explore the most effective strategies that top-performing sales teams are using to generate high-quality leads and drive revenue growth.</p>
 
-  // If post doesn't exist, show 404
-  if (!post) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">404 - Post Not Found</h1>
-          <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist.</p>
-          <Button asChild className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
-            <a href="/blog">Back to Blog</a>
-          </Button>
-        </div>
-      </div>
-    )
+      <h2>The Current State of B2B Lead Generation</h2>
+      <p>The B2B landscape has become increasingly competitive, with buyers becoming more sophisticated and selective about the vendors they engage with. Traditional cold calling and mass email campaigns are losing their effectiveness, while personalized, value-driven approaches are gaining traction.</p>
+
+      <h2>Key Strategies for 2024</h2>
+      
+      <h3>1. Account-Based Marketing (ABM)</h3>
+      <p>Account-based marketing continues to be one of the most effective strategies for B2B lead generation. By focusing on specific high-value accounts and creating personalized campaigns, companies can achieve higher conversion rates and better ROI.</p>
+
+      <h3>2. Content Marketing and Thought Leadership</h3>
+      <p>Creating valuable, educational content that addresses your prospects' pain points is crucial for attracting and nurturing leads. This includes blog posts, whitepapers, webinars, and case studies that demonstrate your expertise.</p>
+
+      <h3>3. Social Selling</h3>
+      <p>LinkedIn and other professional networks have become essential tools for B2B lead generation. Sales professionals who actively engage on social media and build relationships online see significantly better results than those who don't.</p>
+
+      <h3>4. Marketing Automation and AI</h3>
+      <p>Leveraging marketing automation tools and AI-powered insights can help you identify the best prospects, personalize your outreach, and optimize your campaigns for better performance.</p>
+
+      <h2>Best Practices for Implementation</h2>
+      <p>Successfully implementing these strategies requires a systematic approach:</p>
+      
+      <ul>
+        <li>Define your ideal customer profile (ICP) clearly</li>
+        <li>Align your sales and marketing teams</li>
+        <li>Invest in the right tools and technology</li>
+        <li>Measure and optimize your campaigns continuously</li>
+        <li>Focus on providing value at every touchpoint</li>
+      </ul>
+
+      <h2>Measuring Success</h2>
+      <p>To ensure your lead generation efforts are effective, track these key metrics:</p>
+      
+      <ul>
+        <li>Lead quality score</li>
+        <li>Conversion rates at each stage</li>
+        <li>Cost per lead (CPL)</li>
+        <li>Customer acquisition cost (CAC)</li>
+        <li>Return on investment (ROI)</li>
+      </ul>
+
+      <h2>Conclusion</h2>
+      <p>B2B lead generation in 2024 requires a strategic, multi-channel approach that focuses on building relationships and providing value. By implementing the strategies outlined in this guide and continuously optimizing your efforts, you can generate more high-quality leads and drive sustainable business growth.</p>
+    `,
+    tags: ["Lead Generation", "B2B Marketing", "Sales Strategy", "Digital Marketing"],
+    likes: 127,
+    comments: 23,
   }
 
   const relatedPosts = [
     {
-      title: "Advanced AI Techniques for Content Personalization",
+      title: "How AI is Revolutionizing Sales Prospecting",
+      slug: "ai-revolutionizing-sales-prospecting",
       image:
-        "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
-      category: "Artificial Intelligence",
-      date: "Oct 20",
-      readTime: "8 min read",
-      slug: "ai-content-personalization",
+        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200&q=80",
     },
     {
-      title: "Machine Learning Models for Customer Behavior Prediction",
+      title: "5 Common Lead Generation Mistakes to Avoid",
+      slug: "common-lead-generation-mistakes",
       image:
-        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
-      category: "Machine Learning",
-      date: "Oct 17",
-      readTime: "12 min read",
-      slug: "ml-customer-behavior",
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200&q=80",
     },
     {
-      title: "Implementing Ethical AI in Business Operations",
+      title: "Building a High-Converting Landing Page",
+      slug: "building-high-converting-landing-page",
       image:
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
-      category: "AI Ethics",
-      date: "Oct 14",
-      readTime: "10 min read",
-      slug: "ethical-ai-business",
+        "https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=200&q=80",
     },
   ]
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
-          </div>
+      <AuthHeader currentPage="blog" />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a
-              href="/services"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Service
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-            <a href="/blog" className="text-[#3c3679] underline font-medium transition-all duration-200">
-              Blog
-            </a>
-          </nav>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Back Button */}
+        <Button variant="ghost" onClick={() => router.back()} className="mb-8">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Blog
+        </Button>
 
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              Sign Up
-            </Button>
-            <Button
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
-            >
-              Log In
-            </Button>
-          </div>
+        {/* Article Header */}
+        <div className="mb-8">
+          <Badge className="mb-4 bg-[#3c3679] text-white">{post.category}</Badge>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{post.title}</h1>
+          <p className="text-xl text-gray-600 mb-6">{post.excerpt}</p>
 
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-            <nav className="flex flex-col space-y-4 pt-4">
-              <a
-                href="/"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Home
-              </a>
-              <a
-                href="/services"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Service
-              </a>
-              <a
-                href="/pricing"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Pricing
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                About
-              </a>
-              <a
-                href="/help"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Help
-              </a>
-              <a
-                href="/contact"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Contact
-              </a>
-              <a href="/blog" className="text-[#3c3679] underline font-medium transition-all duration-200">
-                Blog
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
-
-      {/* Blog Post Hero */}
-      <section className="py-8 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative mb-8">
-            <Image
-              src={post.heroImage || "/placeholder.svg"}
-              alt={post.title}
-              width={800}
-              height={400}
-              className="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg"
-            />
-            <div className="absolute top-4 left-4">
-              <span className="bg-[#3c3679] text-white px-3 py-1 rounded-full text-xs font-medium">
-                {post.category}
-              </span>
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-              {post.title}
-            </h1>
-
-            <div className="flex items-center space-x-4 text-sm text-gray-500 mb-6">
-              <div className="flex items-center space-x-1">
-                <Calendar className="w-4 h-4" />
-                <span>{post.date}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Clock className="w-4 h-4" />
-                <span>{post.readTime}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-8 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-4 gap-8">
-            {/* Main Article Content */}
-            <div className="lg:col-span-3">
-              <article className="prose prose-lg max-w-none">
-                {post.content.sections.map((section, index) => (
-                  <div key={index} id={section.id} className="mb-8">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">{section.title}</h2>
-                    <div className="text-gray-600 leading-relaxed whitespace-pre-line">{section.content}</div>
+          {/* Author and Meta Info */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Image
+                src={post.authorImage || "/placeholder.svg"}
+                alt={post.author}
+                width={50}
+                height={50}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div>
+                <div className="font-semibold text-gray-900">{post.author}</div>
+                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    {post.date}
                   </div>
-                ))}
-              </article>
-
-              {/* Social Sharing */}
-              <div className="mt-12 p-6 bg-[#3c3679] rounded-lg text-white text-center">
-                <h3 className="text-lg font-bold mb-4">Like what you see? Share with a friend.</h3>
-                <div className="flex justify-center space-x-4">
-                  <button className="w-10 h-10 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <Facebook className="w-5 h-5" />
-                  </button>
-                  <button className="w-10 h-10 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <Linkedin className="w-5 h-5" />
-                  </button>
-                  <button className="w-10 h-10 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <X className="w-5 h-5" />
-                  </button>
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-1" />
+                    {post.readTime}
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-8 space-y-6">
-                {/* Author Info */}
-                <Card className="bg-[#3c3679] text-white p-6">
-                  <CardContent className="p-0">
-                    <div className="flex items-start space-x-3 mb-4">
-                      <Image
-                        src={post.authorImage || "/placeholder.svg"}
-                        alt={post.author}
-                        width={60}
-                        height={60}
-                        className="w-15 h-15 rounded-lg object-cover"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-bold text-sm">{post.author}</h3>
-                        <p className="text-white/80 text-xs leading-tight">{post.authorTitle}</p>
-                      </div>
-                    </div>
-                    <div className="text-xs text-white/60 mb-4">Share with your community:</div>
-                    <div className="flex space-x-2">
-                      <button className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                        <Facebook className="w-4 h-4" />
-                      </button>
-                      <button className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                        <Linkedin className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Table of Contents */}
-                <Card className="p-6">
-                  <CardContent className="p-0">
-                    <h3 className="font-bold text-gray-900 mb-4">In this article</h3>
-                    <nav className="space-y-2">
-                      {post.tableOfContents.map((item, index) => (
-                        <button
-                          key={index}
-                          onClick={() => scrollToSection(item.id)}
-                          className="block w-full text-left text-sm text-gray-600 hover:text-[#3c3679] transition-colors py-1"
-                        >
-                          {item.title}
-                        </button>
-                      ))}
-                    </nav>
-                  </CardContent>
-                </Card>
+            {/* Social Actions */}
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <ThumbsUp className="h-4 w-4" />
+                <span>{post.likes}</span>
               </div>
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <MessageCircle className="h-4 w-4" />
+                <span>{post.comments}</span>
+              </div>
+              <Button variant="outline" size="sm">
+                <Share2 className="h-4 w-4 mr-2" />
+                Share
+              </Button>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Related Articles */}
-      <section className="py-16 px-4 sm:px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12">Related Articles</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Featured Image */}
+        <div className="mb-8">
+          <Image
+            src={post.image || "/placeholder.svg"}
+            alt={post.title}
+            width={1200}
+            height={600}
+            className="w-full h-96 object-cover rounded-lg"
+          />
+        </div>
+
+        {/* Article Content */}
+        <div className="prose prose-lg max-w-none mb-12">
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        </div>
+
+        {/* Tags */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-2">
+            {post.tags.map((tag, index) => (
+              <Badge key={index} variant="outline">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <Separator className="mb-8" />
+
+        {/* Author Bio */}
+        <Card className="mb-12">
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-4">
+              <Image
+                src={post.authorImage || "/placeholder.svg"}
+                alt={post.author}
+                width={80}
+                height={80}
+                className="w-20 h-20 rounded-full object-cover"
+              />
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">About {post.author}</h3>
+                <p className="text-gray-600 mb-4">
+                  Sarah is a seasoned marketing professional with over 10 years of experience in B2B lead generation and
+                  growth marketing. She has helped numerous companies scale their sales operations and improve their
+                  conversion rates.
+                </p>
+                <Button variant="outline" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  View Profile
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Related Posts */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Articles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {relatedPosts.map((relatedPost, index) => (
-              <Card key={index} className="bg-white hover:shadow-lg transition-shadow duration-300 overflow-hidden">
+              <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
                 <div className="relative">
                   <Image
                     src={relatedPost.image || "/placeholder.svg"}
                     alt={relatedPost.title}
-                    width={400}
-                    height={250}
-                    className="w-full h-48 object-cover"
+                    width={300}
+                    height={200}
+                    className="w-full h-40 object-cover"
                   />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-[#3c3679] text-white px-2 py-1 rounded-full text-xs font-medium">
-                      {relatedPost.category}
-                    </span>
-                  </div>
                 </div>
-                <CardContent className="p-6">
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-bold text-gray-900 leading-tight hover:text-[#3c3679] transition-colors cursor-pointer">
-                      <a href={`/blog/${relatedPost.slug}`}>{relatedPost.title}</a>
-                    </h3>
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>{relatedPost.date}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-4 h-4" />
-                        <span>{relatedPost.readTime}</span>
-                      </div>
-                    </div>
-                  </div>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-gray-900 line-clamp-2">{relatedPost.title}</h3>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* Footer */}
-      <footer className="bg-[#3c3679] text-white px-4 sm:px-6 py-8 sm:py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-2 mb-6">
-                <Image
-                  src="/images/growvy-logo.png"
-                  alt="Growvy Logo"
-                  width={120}
-                  height={40}
-                  className="h-6 sm:h-8 w-auto brightness-0 invert"
-                />
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="/" className="hover:text-gray-300 transition-colors">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/services" className="hover:text-gray-300 transition-colors">
-                    Service
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="hover:text-gray-300 transition-colors">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="hover:text-gray-300 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="/help" className="hover:text-gray-300 transition-colors">
-                    Help
-                  </a>
-                </li>
-                <li>
-                  <a href="/blog" className="hover:text-gray-300 transition-colors">
-                    Blogs
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Contact Us</h4>
-              <ul className="space-y-2 text-sm">
-                <li>+1234567890</li>
-                <li>email@example.com</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Get in touch</h4>
-              <div className="flex space-x-3">
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-white/20 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-sm">
-            <p>
-              All right reserved © 2025, Develop by{" "}
-              <a
-                href="https://uk-developer.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300 transition-colors underline"
-              >
-                UsmanKhan
-              </a>
-            </p>
-          </div>
+        {/* CTA Section */}
+        <div className="mt-16 text-center bg-gray-50 rounded-2xl p-8">
+          <BookOpen className="h-12 w-12 text-[#3c3679] mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Ready to Put These Strategies to Work?</h2>
+          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+            Start generating high-quality leads today with Growvy's powerful lead generation platform.
+          </p>
+          <Button size="lg" className="bg-[#3c3679] hover:bg-[#2d2a5f]">
+            Get Started Free
+          </Button>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }
