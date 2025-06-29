@@ -1,9 +1,9 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Menu } from "lucide-react"
+import { Menu, ChevronDown } from "lucide-react"
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 
 interface AuthHeaderProps {
@@ -12,10 +12,46 @@ interface AuthHeaderProps {
 
 export default function AuthHeader({ currentPage }: AuthHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
   const router = useRouter()
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const services = [
+    {
+      name: "Lead Generation Automation",
+      description:
+        "Growvy helps you discover relevant, high-intent leads based on industry, location, and filters you choose.",
+      highlighted: true,
+    },
+    {
+      name: "Website Scrapping",
+      description: "Extract valuable data from websites automatically",
+      highlighted: false,
+    },
+    {
+      name: "AI Powered Research",
+      description: "Leverage AI to conduct comprehensive market research",
+      highlighted: false,
+    },
+    {
+      name: "Data Enrichment",
+      description: "Enhance your existing data with additional insights",
+      highlighted: false,
+    },
+    {
+      name: "AI Personalization",
+      description: "Create personalized experiences using AI technology",
+      highlighted: false,
+    },
+    {
+      name: "Verified Emails & Phone Numbers",
+      description: "Get accurate contact information for your leads",
+      highlighted: false,
+    },
+  ]
 
   useEffect(() => {
     // Check authentication status
@@ -39,6 +75,20 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
     }
   }, [])
 
+  useEffect(() => {
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsServicesDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
   const handleProfileClick = () => {
     router.push("/dashboard/profile")
   }
@@ -48,7 +98,7 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
   }
 
   return (
-    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
+    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4 relative">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Image
@@ -70,16 +120,71 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
           >
             Home
           </a>
-          <a
-            href="/services"
-            className={`font-medium transition-all duration-200 ${
-              isActivePage("services")
-                ? "text-[#3c3679] underline"
-                : "text-gray-700 hover:text-[#3c3679] hover:underline"
-            }`}
-          >
-            Services
-          </a>
+
+          {/* Services Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setIsServicesDropdownOpen(!isServicesDropdownOpen)}
+              className={`font-medium transition-all duration-200 flex items-center gap-1 ${
+                isActivePage("services")
+                  ? "text-[#3c3679] underline"
+                  : "text-gray-700 hover:text-[#3c3679] hover:underline"
+              }`}
+            >
+              Services
+              <ChevronDown className={`w-4 h-4 transition-transform ${isServicesDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {/* Services Dropdown Menu */}
+            {isServicesDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-[800px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                <div className="grid grid-cols-2 h-[400px]">
+                  {/* Left Side - Featured Service */}
+                  <div className="p-8 bg-gray-50 flex flex-col justify-between">
+                    <div>
+                      <div className="mb-6">
+                        <Image
+                          src="/images/services-dropdown-hero.png"
+                          alt="Lead Generation Automation"
+                          width={300}
+                          height={200}
+                          className="w-full h-48 object-cover rounded-lg"
+                        />
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">Lead Generation Automation</h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        Growvy helps you discover relevant, high-intent leads based on industry, location, and filters
+                        you choose.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Side - Services List */}
+                  <div className="p-6">
+                    <div className="space-y-1">
+                      {services.map((service, index) => (
+                        <a
+                          key={index}
+                          href="/services"
+                          className={`block px-4 py-3 rounded-lg transition-colors ${
+                            service.highlighted
+                              ? "bg-[#d0efff] text-[#3c3679] font-medium"
+                              : "text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          {service.name}
+                        </a>
+                      ))}
+                    </div>
+                    <div className="mt-6 pt-4 border-t border-gray-100">
+                      <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white px-6 py-2">Learn more</Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
           <a
             href="/pricing"
             className={`font-medium transition-all duration-200 ${
@@ -155,7 +260,7 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
               <Button
                 asChild
                 variant="outline"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm bg-transparent"
               >
                 <a href="/login">Log In</a>
               </Button>
@@ -265,7 +370,7 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
                   <Button
                     asChild
                     variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm"
+                    className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm bg-transparent"
                   >
                     <a href="/login">Log In</a>
                   </Button>

@@ -113,7 +113,7 @@ export default function SignUpPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 py-3 flex items-center justify-center gap-3"
+                  className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 py-3 flex items-center justify-center gap-3 bg-transparent"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path
@@ -143,8 +143,8 @@ export default function SignUpPage() {
         {/* Right Side - Image */}
         <div className="hidden lg:block relative">
           <Image
-            src="/images/login-signup-hero.png"
-            alt="Professional woman working on laptop"
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&h=1000&q=80"
+            alt="Professional woman working on laptop with documents and coffee"
             fill
             className="object-cover"
           />
