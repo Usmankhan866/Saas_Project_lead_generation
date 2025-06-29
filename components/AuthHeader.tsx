@@ -48,7 +48,7 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
   }
 
   return (
-    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4 relative">
+    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Image
@@ -70,8 +70,6 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
           >
             Home
           </a>
-
-          {/* Services Dropdown */}
           <a
             href="/services"
             className={`font-medium transition-all duration-200 ${
@@ -82,7 +80,6 @@ export default function AuthHeader({ currentPage }: AuthHeaderProps) {
           >
             Services
           </a>
-
           <a
             href="/pricing"
             className={`font-medium transition-all duration-200 ${
