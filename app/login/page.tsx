@@ -134,8 +134,8 @@ export default function LoginPage() {
         {/* Right Side - Image */}
         <div className="hidden lg:block relative">
           <Image
-            src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&h=1000&q=80"
-            alt="Professional businesswoman working on laptop in modern office"
+            src="/images/login-signup-hero.png"
+            alt="Professional woman working on laptop"
             fill
             className="object-cover"
           />
