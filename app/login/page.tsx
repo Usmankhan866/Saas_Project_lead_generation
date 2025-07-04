@@ -2,29 +2,60 @@
 
 import type React from "react"
 
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { FormField } from "@/components/ui/form-field"
+import { LoadingButton } from "@/components/ui/loading-button"
+import { useApp } from "@/contexts/AppContext"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const { login, isLoading } = useApp()
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.email) {
+      newErrors.email = "Email is required"
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid"
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required"
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulate login - in real app, you'd validate credentials
-    if (email && password) {
-      // Store auth state (in real app, use proper auth)
-      localStorage.setItem("isAuthenticated", "true")
-      localStorage.setItem("userEmail", email)
-      localStorage.setItem("userName", email.split("@")[0] || "User")
 
-      // Trigger storage event for other components to update
-      window.dispatchEvent(new Event("storage"))
+    if (!validateForm()) return
 
+    try {
+      await login(formData.email, formData.password)
       router.push("/dashboard")
+    } catch (error) {
+      // Error is handled in the context
+    }
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }))
     }
   }
 
@@ -43,47 +74,43 @@ export default function LoginPage() {
             <div className="space-y-6">
               <h1 className="text-3xl font-bold text-[#3c3679] mb-8">Log In</h1>
 
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-[#3c3679] mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    required
-                  />
-                </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <FormField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(value) => handleInputChange("email", value)}
+                  placeholder="Enter your email"
+                  required
+                  error={errors.email}
+                />
 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-[#3c3679] mb-2">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    required
-                  />
-                </div>
+                <FormField
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={(value) => handleInputChange("password", value)}
+                  placeholder="Enter your password"
+                  required
+                  error={errors.password}
+                />
 
                 <div className="text-center">
                   <a href="#" className="text-[#3c3679] hover:underline text-sm">
-                    Forget Password
+                    Forgot Password?
                   </a>
                 </div>
 
-                <Button
+                <LoadingButton
                   type="submit"
+                  loading={isLoading}
+                  loadingText="Logging in..."
                   className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold"
                 >
                   Log In
-                </Button>
+                </LoadingButton>
 
                 <div className="text-center">
                   <span className="text-gray-600">Not Registered Yet? </span>
@@ -127,6 +154,16 @@ export default function LoginPage() {
                   Continue with Google
                 </Button>
               </form>
+
+              {/* Demo Credentials */}
+              <div className="mt-8 p-4 bg-blue-50 rounded-lg">
+                <h3 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials</h3>
+                <p className="text-sm text-blue-700">
+                  Email: demo@growvy.com
+                  <br />
+                  Password: password123
+                </p>
+              </div>
             </div>
           </div>
         </div>
