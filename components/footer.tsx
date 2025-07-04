@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react"
+import Image from "next/image"
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -9,7 +10,13 @@ export default function Footer() {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              <img className="h-8 w-auto" src="/images/growvy-logo.png" alt="Growvy" />
+              <Image
+                className="h-8 w-auto brightness-0 invert"
+                src="/images/growvy-logo.png"
+                alt="Growvy"
+                width={120}
+                height={32}
+              />
             </div>
             <p className="text-gray-300 mb-4 max-w-md">
               Growvy helps businesses grow by providing comprehensive business intelligence and lead generation

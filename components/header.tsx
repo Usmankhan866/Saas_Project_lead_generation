@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Menu, X, User, LogOut } from "lucide-react"
+import Image from "next/image"
 
-export default function Header() {
+export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
@@ -45,7 +46,7 @@ export default function Header() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <img className="h-8 w-auto" src="/images/growvy-logo.png" alt="Growvy" />
+              <Image className="h-8 w-auto" src="/images/growvy-logo.png" alt="Growvy" width={120} height={32} />
             </Link>
           </div>
 

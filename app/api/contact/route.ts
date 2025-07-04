@@ -3,7 +3,8 @@ import { validateEmail, validateRequired } from "@/lib/validation"
 
 export async function POST(request: NextRequest) {
   try {
-    const { fullName, email, subject, message } = await request.json()
+    const body = await request.json()
+    const { fullName, email, subject, message } = body
 
     // Validate input
     const nameError = validateRequired(fullName, "Full name")
@@ -27,18 +28,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // In a real application, you would:
+    // 1. Save the message to a database
+    // 2. Send an email notification
+    // 3. Add to a CRM system
 
-    // In a real application, you would save this to a database or send an email
-    console.log("Contact form submission:", { fullName, email, subject, message })
+    console.log("Contact form submission:", {
+      fullName,
+      email,
+      subject,
+      message,
+      timestamp: new Date().toISOString(),
+    })
 
     return NextResponse.json({
       success: true,
-      message: "Thank you for your message! We will get back to you soon.",
+      message: "Thank you for your message! We will get back to you within 24 hours.",
     })
   } catch (error) {
     console.error("Contact form error:", error)
-    return NextResponse.json({ success: false, message: "Failed to send message. Please try again." }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Internal server error",
+      },
+      { status: 500 },
+    )
   }
 }

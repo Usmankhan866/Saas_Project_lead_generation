@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, createContext, useContext, type ReactNode } from "react"
-import { X } from "lucide-react"
+import { X, CheckCircle, AlertCircle, Info } from "lucide-react"
 
 export type ToastType = "success" | "error" | "info"
 
@@ -43,7 +43,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
       {children}
-      <ToastContainer />
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </ToastContext.Provider>
   )
 }
@@ -51,18 +51,26 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 export function useToast() {
   const context = useContext(ToastContext)
   if (!context) {
-    throw new Error("useToast must be used within a ToastProvider")
+    // Return a mock implementation for SSR
+    return {
+      toasts: [],
+      addToast: () => {},
+      removeToast: () => {},
+    }
   }
   return context
 }
 
-function ToastContainer() {
-  const { toasts, removeToast } = useToast()
+interface ToastContainerProps {
+  toasts: Toast[]
+  onRemove: (id: string) => void
+}
 
+export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
   return (
     <div className="fixed top-4 right-4 z-50 space-y-2">
       {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onRemove={removeToast} />
+        <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
       ))}
     </div>
   )
@@ -93,6 +101,19 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
     }
   }
 
+  const getIcon = () => {
+    switch (toast.type) {
+      case "success":
+        return <CheckCircle className="w-5 h-5" />
+      case "error":
+        return <AlertCircle className="w-5 h-5" />
+      case "info":
+        return <Info className="w-5 h-5" />
+      default:
+        return <Info className="w-5 h-5" />
+    }
+  }
+
   return (
     <div
       className={`
@@ -102,8 +123,9 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
         ${getToastStyles()}
       `}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
+      <div className="flex items-start">
+        <div className="flex-shrink-0">{getIcon()}</div>
+        <div className="ml-3 flex-1">
           <h4 className="font-medium text-sm">{toast.title}</h4>
           {toast.message && <p className="mt-1 text-sm opacity-90">{toast.message}</p>}
         </div>

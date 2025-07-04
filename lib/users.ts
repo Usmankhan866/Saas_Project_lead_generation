@@ -12,24 +12,24 @@ const users: User[] = [
     id: "1",
     name: "John Doe",
     email: "john@example.com",
-    password: "password123",
-    createdAt: new Date("2024-01-01"),
+    password: "password123", // In production, this would be hashed
+    createdAt: new Date(),
   },
   {
     id: "2",
     name: "Jane Smith",
     email: "jane@example.com",
-    password: "password456",
-    createdAt: new Date("2024-01-02"),
+    password: "password456", // In production, this would be hashed
+    createdAt: new Date(),
   },
 ]
 
-export function findUserByEmail(email: string): User | undefined {
-  return users.find((user) => user.email.toLowerCase() === email.toLowerCase())
+export function findUserByEmail(email: string): User | null {
+  return users.find((user) => user.email.toLowerCase() === email.toLowerCase()) || null
 }
 
-export function findUserById(id: string): User | undefined {
-  return users.find((user) => user.id === id)
+export function findUserById(id: string): User | null {
+  return users.find((user) => user.id === id) || null
 }
 
 export function createUser(userData: Omit<User, "id" | "createdAt">): User {
@@ -43,13 +43,11 @@ export function createUser(userData: Omit<User, "id" | "createdAt">): User {
   return newUser
 }
 
-export function getAllUsers(): User[] {
-  return users
-}
-
 export function updateUser(id: string, updates: Partial<Omit<User, "id" | "createdAt">>): User | null {
   const userIndex = users.findIndex((user) => user.id === id)
-  if (userIndex === -1) return null
+  if (userIndex === -1) {
+    return null
+  }
 
   users[userIndex] = { ...users[userIndex], ...updates }
   return users[userIndex]
@@ -57,8 +55,14 @@ export function updateUser(id: string, updates: Partial<Omit<User, "id" | "creat
 
 export function deleteUser(id: string): boolean {
   const userIndex = users.findIndex((user) => user.id === id)
-  if (userIndex === -1) return false
+  if (userIndex === -1) {
+    return false
+  }
 
   users.splice(userIndex, 1)
   return true
+}
+
+export function getAllUsers(): User[] {
+  return users
 }

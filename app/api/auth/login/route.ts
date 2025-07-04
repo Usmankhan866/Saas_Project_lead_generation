@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { findUserByEmail } from "@/lib/users"
 import { signToken } from "@/lib/jwt"
-import { validateEmail, validatePassword } from "@/lib/validation"
+import { validateEmail, validateRequired } from "@/lib/validation"
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,16 +10,17 @@ export async function POST(request: NextRequest) {
 
     // Validate input
     const emailError = validateEmail(email)
-    const passwordError = validatePassword(password)
+    const passwordError = validateRequired(password, "Password")
 
     if (emailError || passwordError) {
       return NextResponse.json(
         {
-          error: "Validation failed",
-          details: {
-            email: emailError,
-            password: passwordError,
-          },
+          success: false,
+          message: "Validation failed",
+          errors: [
+            ...(emailError ? [{ field: "email", message: emailError }] : []),
+            ...(passwordError ? [{ field: "password", message: passwordError }] : []),
+          ],
         },
         { status: 400 },
       )
@@ -28,12 +29,24 @@ export async function POST(request: NextRequest) {
     // Find user
     const user = findUserByEmail(email)
     if (!user) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid email or password",
+        },
+        { status: 401 },
+      )
     }
 
-    // Check password (in production, use bcrypt)
+    // Check password (in production, use bcrypt to compare hashed passwords)
     if (user.password !== password) {
-      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid email or password",
+        },
+        { status: 401 },
+      )
     }
 
     // Generate JWT token
@@ -43,9 +56,9 @@ export async function POST(request: NextRequest) {
       name: user.name,
     })
 
-    // Return success response
     return NextResponse.json({
       success: true,
+      message: "Login successful",
       token,
       user: {
         id: user.id,
@@ -55,6 +68,12 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Login error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Internal server error",
+      },
+      { status: 500 },
+    )
   }
 }

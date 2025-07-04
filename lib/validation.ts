@@ -1,15 +1,6 @@
-export interface ValidationError {
-  field: string
-  message: string
-}
-
 export function validateEmail(email: string): string | null {
   if (!email) {
     return "Email is required"
-  }
-
-  if (email.length < 3) {
-    return "Email must be at least 3 characters long"
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -17,6 +8,13 @@ export function validateEmail(email: string): string | null {
     return "Please enter a valid email address"
   }
 
+  return null
+}
+
+export function validateRequired(value: string, fieldName: string): string | null {
+  if (!value || value.trim() === "") {
+    return `${fieldName} is required`
+  }
   return null
 }
 
@@ -33,32 +31,12 @@ export function validatePassword(password: string): string | null {
 }
 
 export function validateName(name: string): string | null {
-  if (!name) {
+  if (!name || name.trim() === "") {
     return "Name is required"
   }
 
-  if (name.length < 2) {
+  if (name.trim().length < 2) {
     return "Name must be at least 2 characters long"
-  }
-
-  if (name.length > 50) {
-    return "Name must be less than 50 characters"
-  }
-
-  return null
-}
-
-export function validateMessage(message: string): string | null {
-  if (!message) {
-    return "Message is required"
-  }
-
-  if (message.length < 10) {
-    return "Message must be at least 10 characters long"
-  }
-
-  if (message.length > 1000) {
-    return "Message must be less than 1000 characters"
   }
 
   return null
@@ -66,36 +44,13 @@ export function validateMessage(message: string): string | null {
 
 export function validatePhone(phone: string): string | null {
   if (!phone) {
-    return null // Phone is optional
+    return "Phone number is required"
   }
 
   const phoneRegex = /^[+]?[1-9][\d]{0,15}$/
-  if (!phoneRegex.test(phone.replace(/[\s\-()]/g, ""))) {
+  if (!phoneRegex.test(phone.replace(/[\s\-$$$$]/g, ""))) {
     return "Please enter a valid phone number"
   }
 
   return null
-}
-
-export function validateRequired(value: string, fieldName: string): string | null {
-  if (!value || value.trim() === "") {
-    return `${fieldName} is required`
-  }
-  return null
-}
-
-export function validateForm(
-  data: Record<string, string>,
-  rules: Record<string, (value: string) => string | null>,
-): ValidationError[] {
-  const errors: ValidationError[] = []
-
-  Object.entries(rules).forEach(([field, validator]) => {
-    const error = validator(data[field] || "")
-    if (error) {
-      errors.push({ field, message: error })
-    }
-  })
-
-  return errors
 }
