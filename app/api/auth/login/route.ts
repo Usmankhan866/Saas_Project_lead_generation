@@ -1,11 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { findUserByEmail } from "@/lib/users"
 import { signToken } from "@/lib/jwt"
 import { validateEmail, validatePassword } from "@/lib/validation"
-import { findUserByCredentials } from "@/lib/users"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
+    const { email, password } = body
 
     // Validate input
     const emailError = validateEmail(email)
@@ -14,51 +15,46 @@ export async function POST(request: NextRequest) {
     if (emailError || passwordError) {
       return NextResponse.json(
         {
-          success: false,
-          message: "Validation failed",
-          errors: [
-            ...(emailError ? [{ field: "email", message: emailError }] : []),
-            ...(passwordError ? [{ field: "password", message: passwordError }] : []),
-          ],
+          error: "Validation failed",
+          details: {
+            email: emailError,
+            password: passwordError,
+          },
         },
         { status: 400 },
       )
     }
 
-    // Find user with credentials
-    const user = findUserByCredentials(email, password)
-
+    // Find user
+    const user = findUserByEmail(email)
     if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid email or password. Please check your credentials and try again.",
-        },
-        { status: 401 },
-      )
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
+    }
+
+    // Check password (in production, use bcrypt)
+    if (user.password !== password) {
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
     // Generate JWT token
-    const token = signToken({
+    const token = await signToken({
       userId: user.id,
       email: user.email,
       name: user.name,
     })
 
+    // Return success response
     return NextResponse.json({
       success: true,
-      message: "Login successful",
-      data: {
-        token,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        },
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
       },
     })
   } catch (error) {
     console.error("Login error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

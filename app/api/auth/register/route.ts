@@ -1,11 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { createUser, findUserByEmail } from "@/lib/users"
 import { signToken } from "@/lib/jwt"
 import { validateEmail, validatePassword, validateName } from "@/lib/validation"
-import { findUserByEmail, addUser } from "@/lib/users"
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password } = await request.json()
+    const body = await request.json()
+    const { name, email, password } = body
 
     // Validate input
     const nameError = validateName(name)
@@ -15,13 +16,12 @@ export async function POST(request: NextRequest) {
     if (nameError || emailError || passwordError) {
       return NextResponse.json(
         {
-          success: false,
-          message: "Validation failed",
-          errors: [
-            ...(nameError ? [{ field: "name", message: nameError }] : []),
-            ...(emailError ? [{ field: "email", message: emailError }] : []),
-            ...(passwordError ? [{ field: "password", message: passwordError }] : []),
-          ],
+          error: "Validation failed",
+          details: {
+            name: nameError,
+            email: emailError,
+            password: passwordError,
+          },
         },
         { status: 400 },
       )
@@ -30,39 +30,35 @@ export async function POST(request: NextRequest) {
     // Check if user already exists
     const existingUser = findUserByEmail(email)
     if (existingUser) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "An account with this email already exists. Please use a different email or try logging in.",
-        },
-        { status: 409 },
-      )
+      return NextResponse.json({ error: "User with this email already exists" }, { status: 409 })
     }
 
-    // Create new user
-    const newUser = addUser({ name, email, password })
+    // Create new user (in production, hash the password)
+    const newUser = createUser({
+      name,
+      email,
+      password, // In production, use bcrypt to hash this
+    })
 
     // Generate JWT token
-    const token = signToken({
+    const token = await signToken({
       userId: newUser.id,
       email: newUser.email,
       name: newUser.name,
     })
 
+    // Return success response
     return NextResponse.json({
       success: true,
-      message: "Account created successfully",
-      data: {
-        token,
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          name: newUser.name,
-        },
+      token,
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
       },
     })
   } catch (error) {
     console.error("Registration error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

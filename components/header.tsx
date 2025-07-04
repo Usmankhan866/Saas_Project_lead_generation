@@ -1,233 +1,170 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { Menu, X, User, LogOut } from "lucide-react"
 
-interface HeaderProps {
-  showAuthButtons?: boolean
-}
-
-export function Header({ showAuthButtons = true }: HeaderProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userName, setUserName] = useState("")
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null)
   const router = useRouter()
 
   useEffect(() => {
     // Check if user is logged in
-    const token = localStorage.getItem("authToken")
-    const name = localStorage.getItem("userName")
-    if (token && name) {
+    const token = localStorage.getItem("token")
+    const userData = localStorage.getItem("user")
+
+    if (token && userData) {
       setIsLoggedIn(true)
-      setUserName(name)
+      setUser(JSON.parse(userData))
     }
   }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken")
-    localStorage.removeItem("userEmail")
-    localStorage.removeItem("userName")
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
     setIsLoggedIn(false)
-    setUserName("")
+    setUser(null)
     router.push("/")
   }
 
+  const navigation = [
+    { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ]
+
   return (
-    <>
-      {/* Top Notification Bar */}
-      <div className="bg-[#3c3679] text-white text-center py-2 px-4 text-sm">
-        <span>🎉 Special Offer: Get 50% off your first month! </span>
-        <a href="#" className="underline hover:no-underline">
-          Learn More
-        </a>
-      </div>
+    <header className="bg-white shadow-sm border-b">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link href="/" className="flex items-center">
+              <img className="h-8 w-auto" src="/images/growvy-logo.png" alt="Growvy" />
+            </Link>
+          </div>
 
-      {/* Main Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center space-x-2">
-                <Image src="/images/growvy-logo.png" alt="Growvy Logo" width={120} height={40} className="h-8 w-auto" />
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
+              >
+                {item.name}
               </Link>
-            </div>
+            ))}
+          </nav>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/services" className="text-gray-700 hover:text-[#3c3679] font-medium">
-                Services
-              </Link>
-              <Link href="/pricing" className="text-gray-700 hover:text-[#3c3679] font-medium">
-                Pricing
-              </Link>
-              <Link href="/about" className="text-gray-700 hover:text-[#3c3679] font-medium">
-                About
-              </Link>
-              <Link href="/blog" className="text-gray-700 hover:text-[#3c3679] font-medium">
-                Blog
-              </Link>
-              <Link href="/help" className="text-gray-700 hover:text-[#3c3679] font-medium">
-                Help
-              </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-[#3c3679] font-medium">
-                Contact
-              </Link>
-            </nav>
-
-            {/* Auth Buttons */}
-            {showAuthButtons && (
-              <div className="hidden md:flex items-center space-x-4">
-                {isLoggedIn ? (
-                  <div className="flex items-center space-x-4">
-                    <span className="text-gray-700">Welcome, {userName}</span>
-                    <Button
-                      onClick={() => router.push("/dashboard")}
-                      variant="outline"
-                      className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white"
-                    >
-                      Dashboard
-                    </Button>
-                    <Button onClick={handleLogout} variant="ghost" className="text-gray-700 hover:text-[#3c3679]">
-                      Logout
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <Button
-                      onClick={() => router.push("/login")}
-                      variant="ghost"
-                      className="text-gray-700 hover:text-[#3c3679]"
-                    >
-                      Log In
-                    </Button>
-                    <Button
-                      onClick={() => router.push("/signup")}
-                      className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white"
-                    >
-                      Sign Up
-                    </Button>
-                  </>
-                )}
+          {/* Desktop Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/dashboard"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors flex items-center"
+                >
+                  <User className="w-4 h-4 mr-1" />
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-700 hover:text-red-600 px-3 py-2 text-sm font-medium transition-colors flex items-center"
+                >
+                  <LogOut className="w-4 h-4 mr-1" />
+                  Logout
+                </button>
               </div>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Sign up
+                </Link>
+              </>
             )}
+          </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-700 hover:text-[#3c3679] hover:bg-gray-100"
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-gray-700 hover:text-blue-600 p-2">
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200">
-            <div className="px-4 py-2 space-y-1">
-              <Link
-                href="/services"
-                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Services
-              </Link>
-              <Link
-                href="/pricing"
-                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-              <Link
-                href="/about"
-                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                About
-              </Link>
-              <Link
-                href="/blog"
-                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Blog
-              </Link>
-              <Link
-                href="/help"
-                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Help
-              </Link>
-              <Link
-                href="/contact"
-                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Contact
-              </Link>
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
 
-              {showAuthButtons && (
-                <div className="pt-4 border-t border-gray-200">
-                  {isLoggedIn ? (
-                    <div className="space-y-2">
-                      <div className="px-3 py-2 text-gray-700">Welcome, {userName}</div>
-                      <Button
-                        onClick={() => {
-                          router.push("/dashboard")
-                          setIsMobileMenuOpen(false)
-                        }}
-                        variant="outline"
-                        className="w-full border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white"
-                      >
-                        Dashboard
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          handleLogout()
-                          setIsMobileMenuOpen(false)
-                        }}
-                        variant="ghost"
-                        className="w-full text-gray-700 hover:text-[#3c3679]"
-                      >
-                        Logout
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Button
-                        onClick={() => {
-                          router.push("/login")
-                          setIsMobileMenuOpen(false)
-                        }}
-                        variant="ghost"
-                        className="w-full text-gray-700 hover:text-[#3c3679]"
-                      >
-                        Log In
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          router.push("/signup")
-                          setIsMobileMenuOpen(false)
-                        }}
-                        className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white"
-                      >
-                        Sign Up
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
+              <div className="border-t pt-4 mt-4">
+                {isLoggedIn ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout()
+                        setIsMenuOpen(false)
+                      }}
+                      className="text-gray-700 hover:text-red-600 block px-3 py-2 text-base font-medium transition-colors w-full text-left"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="bg-blue-600 text-white hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium transition-colors mx-3 mt-2 text-center"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign up
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
-      </header>
-    </>
+      </div>
+    </header>
   )
 }

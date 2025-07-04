@@ -1,3 +1,8 @@
+export interface ValidationError {
+  field: string
+  message: string
+}
+
 export function validateEmail(email: string): string | null {
   if (!email) {
     return "Email is required"
@@ -65,9 +70,32 @@ export function validatePhone(phone: string): string | null {
   }
 
   const phoneRegex = /^[+]?[1-9][\d]{0,15}$/
-  if (!phoneRegex.test(phone.replace(/[\s\-$$$$]/g, ""))) {
+  if (!phoneRegex.test(phone.replace(/[\s\-()]/g, ""))) {
     return "Please enter a valid phone number"
   }
 
   return null
+}
+
+export function validateRequired(value: string, fieldName: string): string | null {
+  if (!value || value.trim() === "") {
+    return `${fieldName} is required`
+  }
+  return null
+}
+
+export function validateForm(
+  data: Record<string, string>,
+  rules: Record<string, (value: string) => string | null>,
+): ValidationError[] {
+  const errors: ValidationError[] = []
+
+  Object.entries(rules).forEach(([field, validator]) => {
+    const error = validator(data[field] || "")
+    if (error) {
+      errors.push({ field, message: error })
+    }
+  })
+
+  return errors
 }

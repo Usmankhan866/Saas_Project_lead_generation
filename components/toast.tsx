@@ -1,100 +1,116 @@
 "use client"
 
-import { X, CheckCircle, AlertCircle, Info } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState, useEffect, createContext, useContext, type ReactNode } from "react"
+import { X } from "lucide-react"
+
+export type ToastType = "success" | "error" | "info"
 
 export interface Toast {
   id: string
-  type: "success" | "error" | "info"
+  type: ToastType
   title: string
-  message: string
+  message?: string
   duration?: number
 }
 
-interface ToastProps {
-  toast: Toast
-  onRemove: (id: string) => void
-}
-
-function ToastComponent({ toast, onRemove }: ToastProps) {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onRemove(toast.id)
-    }, toast.duration || 5000)
-
-    return () => clearTimeout(timer)
-  }, [toast.id, toast.duration, onRemove])
-
-  const getIcon = () => {
-    switch (toast.type) {
-      case "success":
-        return <CheckCircle className="w-5 h-5 text-green-500" />
-      case "error":
-        return <AlertCircle className="w-5 h-5 text-red-500" />
-      case "info":
-        return <Info className="w-5 h-5 text-blue-500" />
-    }
-  }
-
-  const getBorderColor = () => {
-    switch (toast.type) {
-      case "success":
-        return "border-l-green-500"
-      case "error":
-        return "border-l-red-500"
-      case "info":
-        return "border-l-blue-500"
-    }
-  }
-
-  return (
-    <div
-      className={`bg-white border-l-4 ${getBorderColor()} rounded-lg shadow-lg p-4 mb-3 max-w-sm w-full animate-in slide-in-from-right duration-300`}
-    >
-      <div className="flex items-start">
-        <div className="flex-shrink-0">{getIcon()}</div>
-        <div className="ml-3 flex-1">
-          <h4 className="text-sm font-semibold text-gray-900">{toast.title}</h4>
-          <p className="text-sm text-gray-600 mt-1">{toast.message}</p>
-        </div>
-        <button onClick={() => onRemove(toast.id)} className="flex-shrink-0 ml-4 text-gray-400 hover:text-gray-600">
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-interface ToastContainerProps {
+interface ToastContextType {
   toasts: Toast[]
-  onRemove: (id: string) => void
+  addToast: (toast: Omit<Toast, "id">) => void
+  removeToast: (id: string) => void
 }
 
-export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
-  return (
-    <div className="fixed top-4 right-4 z-50">
-      {toasts.map((toast) => (
-        <ToastComponent key={toast.id} toast={toast} onRemove={onRemove} />
-      ))}
-    </div>
-  )
-}
+const ToastContext = createContext<ToastContextType | undefined>(undefined)
 
-export function useToast() {
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([])
 
   const addToast = (toast: Omit<Toast, "id">) => {
-    const id = Math.random().toString(36).substr(2, 9)
-    setToasts((prev) => [...prev, { ...toast, id }])
+    const id = Date.now().toString()
+    const newToast = { ...toast, id }
+    setToasts((prev) => [...prev, newToast])
+
+    // Auto remove after duration
+    const duration = toast.duration || 5000
+    setTimeout(() => {
+      removeToast(id)
+    }, duration)
   }
 
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
   }
 
-  return {
-    toasts,
-    addToast,
-    removeToast,
+  return (
+    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+      {children}
+      <ToastContainer />
+    </ToastContext.Provider>
+  )
+}
+
+export function useToast() {
+  const context = useContext(ToastContext)
+  if (!context) {
+    throw new Error("useToast must be used within a ToastProvider")
   }
+  return context
+}
+
+function ToastContainer() {
+  const { toasts, removeToast } = useToast()
+
+  return (
+    <div className="fixed top-4 right-4 z-50 space-y-2">
+      {toasts.map((toast) => (
+        <ToastItem key={toast.id} toast={toast} onRemove={removeToast} />
+      ))}
+    </div>
+  )
+}
+
+function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) => void }) {
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
+  const handleRemove = () => {
+    setIsVisible(false)
+    setTimeout(() => onRemove(toast.id), 300)
+  }
+
+  const getToastStyles = () => {
+    switch (toast.type) {
+      case "success":
+        return "bg-green-50 border-green-200 text-green-800"
+      case "error":
+        return "bg-red-50 border-red-200 text-red-800"
+      case "info":
+        return "bg-blue-50 border-blue-200 text-blue-800"
+      default:
+        return "bg-gray-50 border-gray-200 text-gray-800"
+    }
+  }
+
+  return (
+    <div
+      className={`
+        transform transition-all duration-300 ease-in-out
+        ${isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}
+        max-w-sm w-full bg-white border rounded-lg shadow-lg p-4
+        ${getToastStyles()}
+      `}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <h4 className="font-medium text-sm">{toast.title}</h4>
+          {toast.message && <p className="mt-1 text-sm opacity-90">{toast.message}</p>}
+        </div>
+        <button onClick={handleRemove} className="ml-3 flex-shrink-0 opacity-70 hover:opacity-100 transition-opacity">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  )
 }

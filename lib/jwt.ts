@@ -1,22 +1,28 @@
-import jwt from "jsonwebtoken"
+import { SignJWT, jwtVerify } from "jose"
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-here"
+const secret = new TextEncoder().encode(process.env.JWT_SECRET || "your-secret-key")
 
-export interface JWTPayload {
-  userId: string
-  email: string
-  name: string
+export async function signToken(payload: any): Promise<string> {
+  return await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("24h")
+    .sign(secret)
 }
 
-export function signToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" })
-}
-
-export function verifyToken(token: string): JWTPayload | null {
+export async function verifyToken(token: string): Promise<any> {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
-    return decoded
+    const { payload } = await jwtVerify(token, secret)
+    return payload
   } catch (error) {
+    throw new Error("Invalid token")
+  }
+}
+
+export function getTokenFromRequest(request: Request): string | null {
+  const authHeader = request.headers.get("authorization")
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return null
   }
+  return authHeader.substring(7)
 }
