@@ -1,20 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
+import { signToken } from "@/lib/jwt"
+import { validateEmail, validatePassword } from "@/lib/validation"
 
 // Mock user database - in production, use a real database
 const users = [
   {
     id: "1",
-    email: "demo@growvy.com",
-    password: "password123", // In production, hash passwords
+    email: "demo@example.com",
+    password: "password123",
     name: "Demo User",
-    company: "Growvy Inc",
-    phone: "+1 (555) 123-4567",
-    bio: "Lead generation specialist",
-    plan: "professional" as const,
-    credits: 1000,
+  },
+  {
+    id: "2",
+    email: "alexarawles@gmail.com",
+    password: "password123",
+    name: "Alexa Rawles",
   },
 ]
 
@@ -23,29 +23,51 @@ export async function POST(request: NextRequest) {
     const { email, password } = await request.json()
 
     // Validate input
-    if (!email || !password) {
-      return NextResponse.json({ message: "Email and password are required" }, { status: 400 })
+    const emailError = validateEmail(email)
+    const passwordError = validatePassword(password)
+
+    if (emailError || passwordError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Validation failed",
+          errors: [
+            ...(emailError ? [{ field: "email", message: emailError }] : []),
+            ...(passwordError ? [{ field: "password", message: passwordError }] : []),
+          ],
+        },
+        { status: 400 },
+      )
     }
 
     // Find user
     const user = users.find((u) => u.email === email && u.password === password)
 
     if (!user) {
-      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 })
+      return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 })
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: "7d" })
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
+    const token = signToken({
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+    })
 
     return NextResponse.json({
-      token,
-      user: userWithoutPassword,
+      success: true,
+      message: "Login successful",
+      data: {
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        },
+      },
     })
   } catch (error) {
     console.error("Login error:", error)
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
   }
 }

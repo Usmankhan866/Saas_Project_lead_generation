@@ -1,391 +1,258 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  Search,
-  Plus,
-  MapPin,
-  Users,
-  TrendingUp,
-  Clock,
-  Star,
-  Building,
-  Phone,
-  Mail,
-  Globe,
-  ExternalLink,
-} from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Search, Building2, Users, Home, Star, HelpCircle, CreditCard } from "lucide-react"
+import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import AuthHeader from "@/components/AuthHeader"
 
 export default function DashboardPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [searchLocation, setSearchLocation] = useState("")
-  const [searchIndustry, setSearchIndustry] = useState("")
-  const [searchResults, setSearchResults] = useState<any[]>([])
-  const [isSearching, setIsSearching] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    const checkAuth = () => {
-      const isAuth = localStorage.getItem("isAuthenticated")
-      const name = localStorage.getItem("userName") || ""
-
-      if (!isAuth) {
-        router.push("/login")
-        return
-      }
-
-      setIsAuthenticated(!!isAuth)
-      setUserName(name)
+    // Check authentication
+    const token = localStorage.getItem("authToken")
+    if (!token) {
+      router.push("/login")
+      return
     }
 
-    checkAuth()
+    // Get user data
+    const email = localStorage.getItem("userEmail") || "alexarawles@gmail.com"
+    const name = localStorage.getItem("userName") || "Alexa Rawles"
+    setUserEmail(email)
+    setUserName(name)
+    setIsLoading(false)
   }, [router])
 
-  const handleSearch = async () => {
-    setIsSearching(true)
+  const handleLogout = () => {
+    localStorage.removeItem("authToken")
+    localStorage.removeItem("userEmail")
+    localStorage.removeItem("userName")
+    router.push("/")
+  }
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // Mock search results
-    const mockResults = [
-      {
-        id: 1,
-        name: "TechCorp Solutions",
-        industry: "Technology",
-        location: "San Francisco, CA",
-        employees: "50-100",
-        website: "techcorp.com",
-        phone: "+1 (555) 123-4567",
-        email: "contact@techcorp.com",
-        rating: 4.5,
-        description: "Leading software development company specializing in AI solutions",
-      },
-      {
-        id: 2,
-        name: "Digital Marketing Pro",
-        industry: "Marketing",
-        location: "New York, NY",
-        employees: "10-50",
-        website: "digitalmarketingpro.com",
-        phone: "+1 (555) 987-6543",
-        email: "hello@digitalmarketingpro.com",
-        rating: 4.2,
-        description: "Full-service digital marketing agency helping businesses grow online",
-      },
-      {
-        id: 3,
-        name: "Green Energy Systems",
-        industry: "Energy",
-        location: "Austin, TX",
-        employees: "100-500",
-        website: "greenenergysys.com",
-        phone: "+1 (555) 456-7890",
-        email: "info@greenenergysys.com",
-        rating: 4.8,
-        description: "Renewable energy solutions for commercial and residential properties",
-      },
-    ]
-
-    setSearchResults(mockResults)
-    setIsSearching(false)
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#3c3679] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   const recentSearches = [
-    {
-      id: 1,
-      query: "Software companies in Silicon Valley",
-      date: "2024-01-15",
-      results: 45,
-      status: "completed",
-    },
-    {
-      id: 2,
-      query: "Marketing agencies in NYC",
-      date: "2024-01-14",
-      results: 32,
-      status: "completed",
-    },
-    {
-      id: 3,
-      query: "Startups in Austin",
-      date: "2024-01-13",
-      results: 28,
-      status: "completed",
-    },
+    { name: "Name here", lastModified: "10 May 2025", owner: "Alexa Rawles" },
+    { name: "Name here", lastModified: "10 May 2025", owner: "Alexa Rawles" },
   ]
-
-  if (!isAuthenticated) {
-    return <div>Loading...</div>
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AuthHeader currentPage="dashboard" />
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Image src="/images/growvy-logo.png" alt="Growvy Logo" width={120} height={40} className="h-8 w-auto" />
+          </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {userName}!</h1>
-          <p className="text-gray-600">Here's what's happening with your lead generation today.</p>
+          <div className="flex items-center space-x-4">
+            {/* Trial Badge */}
+            <div className="bg-[#3c3679] text-white px-3 py-1 rounded-full text-sm flex items-center space-x-1">
+              <Star className="w-4 h-4" />
+              <span>13 days left</span>
+            </div>
+
+            {/* Credits */}
+            <div className="flex items-center space-x-2 text-gray-700">
+              <CreditCard className="w-4 h-4" />
+              <span className="text-sm font-medium">Credits</span>
+            </div>
+
+            {/* Help */}
+            <HelpCircle className="w-5 h-5 text-gray-500" />
+
+            {/* User Profile */}
+            <div className="flex items-center space-x-3">
+              <Image
+                src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40&q=80"
+                alt={userName}
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                onClick={() => router.push("/dashboard/profile")}
+              />
+              <div className="text-sm">
+                <div className="font-medium text-gray-900">{userName}</div>
+                <div className="text-gray-500">{userEmail}</div>
+              </div>
+            </div>
+          </div>
         </div>
+      </header>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Leads</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">1,234</div>
-              <p className="text-xs text-muted-foreground">+12% from last month</p>
-            </CardContent>
-          </Card>
+      {/* Main Content */}
+      <main className="p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Quick Start Section */}
+          <section className="mb-12">
+            <h1 className="text-2xl font-bold text-gray-900 mb-6">Quick Start</h1>
+            <div className="grid md:grid-cols-3 gap-4">
+              <Button
+                onClick={() => setShowModal(true)}
+                className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white p-6 h-auto flex items-center justify-center space-x-3 text-lg"
+              >
+                <Search className="w-6 h-6" />
+                <span>Fetch Google Listings</span>
+              </Button>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Searches</CardTitle>
-              <Search className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">23</div>
-              <p className="text-xs text-muted-foreground">+3 new this week</p>
-            </CardContent>
-          </Card>
+              <Button
+                variant="outline"
+                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white p-6 h-auto flex items-center justify-center space-x-3 text-lg bg-transparent"
+              >
+                <Building2 className="w-6 h-6" />
+                <span>Fetch Businesses</span>
+              </Button>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">24.5%</div>
-              <p className="text-xs text-muted-foreground">+2.1% from last month</p>
-            </CardContent>
-          </Card>
+              <Button
+                variant="outline"
+                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white p-6 h-auto flex items-center justify-center space-x-3 text-lg bg-transparent"
+              >
+                <Users className="w-6 h-6" />
+                <span>Fetch People</span>
+              </Button>
+            </div>
+          </section>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Credits Remaining</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">847</div>
-              <p className="text-xs text-muted-foreground">Renews in 15 days</p>
-            </CardContent>
-          </Card>
-        </div>
+          {/* Recent Searches */}
+          <section>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-2">
+                <Home className="w-5 h-5 text-gray-700" />
+                <h2 className="text-xl font-bold text-gray-900">Your Recent Searches</h2>
+              </div>
+              <Search className="w-5 h-5 text-gray-500" />
+            </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Start</CardTitle>
-                <CardDescription>Get started with your lead generation</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Dialog open={isSearchModalOpen} onOpenChange={setIsSearchModalOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Start New Search
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[600px]">
-                    <DialogHeader>
-                      <DialogTitle>Find Google Listings</DialogTitle>
-                      <DialogDescription>
-                        Search for businesses and get detailed information including contact details.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="search-query">Search Query</Label>
-                        <Input
-                          id="search-query"
-                          placeholder="e.g., restaurants, dentists, software companies"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="location">Location</Label>
-                        <Input
-                          id="location"
-                          placeholder="e.g., New York, NY or 10001"
-                          value={searchLocation}
-                          onChange={(e) => setSearchLocation(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="industry">Industry (Optional)</Label>
-                        <Input
-                          id="industry"
-                          placeholder="e.g., Technology, Healthcare, Retail"
-                          value={searchIndustry}
-                          onChange={(e) => setSearchIndustry(e.target.value)}
-                        />
-                      </div>
-                      <Button
-                        onClick={handleSearch}
-                        disabled={!searchQuery || !searchLocation || isSearching}
-                        className="w-full bg-[#3c3679] hover:bg-[#2d2a5f]"
-                      >
-                        {isSearching ? "Searching..." : "Search Google Listings"}
-                      </Button>
-
-                      {searchResults.length > 0 && (
-                        <div className="mt-6">
-                          <h3 className="text-lg font-semibold mb-4">Search Results ({searchResults.length})</h3>
-                          <div className="space-y-4 max-h-96 overflow-y-auto">
-                            {searchResults.map((result) => (
-                              <Card key={result.id} className="p-4">
-                                <div className="flex justify-between items-start mb-2">
-                                  <h4 className="font-semibold text-lg">{result.name}</h4>
-                                  <div className="flex items-center">
-                                    <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                                    <span className="text-sm">{result.rating}</span>
-                                  </div>
-                                </div>
-                                <p className="text-gray-600 text-sm mb-3">{result.description}</p>
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                  <div className="flex items-center">
-                                    <Building className="h-4 w-4 mr-2 text-gray-400" />
-                                    {result.industry}
-                                  </div>
-                                  <div className="flex items-center">
-                                    <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                                    {result.location}
-                                  </div>
-                                  <div className="flex items-center">
-                                    <Users className="h-4 w-4 mr-2 text-gray-400" />
-                                    {result.employees} employees
-                                  </div>
-                                  <div className="flex items-center">
-                                    <Globe className="h-4 w-4 mr-2 text-gray-400" />
-                                    <a
-                                      href={`https://${result.website}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-blue-600 hover:underline"
-                                    >
-                                      {result.website}
-                                    </a>
-                                  </div>
-                                  <div className="flex items-center">
-                                    <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                                    {result.phone}
-                                  </div>
-                                  <div className="flex items-center">
-                                    <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                                    {result.email}
-                                  </div>
-                                </div>
-                              </Card>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" className="w-full bg-transparent">
-                    <Search className="mr-2 h-4 w-4" />
-                    Browse Templates
-                  </Button>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    <TrendingUp className="mr-2 h-4 w-4" />
-                    View Analytics
-                  </Button>
+            <Card className="bg-white">
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="border-b border-gray-200">
+                      <tr>
+                        <th className="text-left p-4 font-medium text-gray-900">Name</th>
+                        <th className="text-left p-4 font-medium text-gray-900">Last Modified</th>
+                        <th className="text-left p-4 font-medium text-gray-900">Owner</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentSearches.map((search, index) => (
+                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+                          <td className="p-4 text-gray-900">{search.name}</td>
+                          <td className="p-4 text-gray-600">{search.lastModified}</td>
+                          <td className="p-4 text-gray-600">{search.owner}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </section>
+        </div>
+      </main>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Account Status</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Plan</span>
-                <Badge variant="secondary">Pro</Badge>
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <Card className="bg-white max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-2">
+                  <Search className="w-5 h-5 text-gray-700" />
+                  <h3 className="text-xl font-bold text-gray-900">Fetch Google Listings</h3>
+                </div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ×
+                </Button>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Credits Used</span>
-                <span className="text-sm font-medium">153/1000</span>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Form */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Keywords</label>
+                    <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none">
+                      <option>Select Country</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none">
+                      <option>Select Region</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                    <input
+                      type="number"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <Button className="w-full bg-gray-300 text-gray-600 cursor-not-allowed">Preview</Button>
+                </div>
+
+                {/* Preview Table */}
+                <div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="text-left p-3 font-medium text-gray-900">Keywords</th>
+                          <th className="text-left p-3 font-medium text-gray-900">Country</th>
+                          <th className="text-left p-3 font-medium text-gray-900">Region</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Array.from({ length: 9 }).map((_, i) => (
+                          <tr key={i} className="border-t border-gray-100">
+                            <td className="p-3 text-gray-600">Keywords</td>
+                            <td className="p-3 text-gray-600">Country</td>
+                            <td className="p-3 text-gray-600">Region</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <Button className="w-full mt-4 bg-[#3c3679] hover:bg-[#2d2a5f] text-white">Import</Button>
+                </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-[#3c3679] h-2 rounded-full" style={{ width: "15.3%" }}></div>
-              </div>
-              <Button variant="outline" className="w-full bg-transparent">
-                Upgrade Plan
-              </Button>
             </CardContent>
           </Card>
         </div>
-
-        {/* Recent Searches */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Searches</CardTitle>
-            <CardDescription>Your latest lead generation activities</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Search Query</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Results</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentSearches.map((search) => (
-                  <TableRow key={search.id}>
-                    <TableCell className="font-medium">{search.query}</TableCell>
-                    <TableCell>{search.date}</TableCell>
-                    <TableCell>{search.results}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{search.status}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="ghost" size="sm">
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
+      )}
     </div>
   )
 }

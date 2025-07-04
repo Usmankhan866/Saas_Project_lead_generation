@@ -2,13 +2,14 @@
 
 import type React from "react"
 
+import { Button } from "@/components/ui/button"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { ToastContainer, useToast } from "@/components/toast"
+import Image from "next/image"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form-field"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { useApp } from "@/contexts/AppContext"
+import { validateEmail, validatePassword } from "@/lib/validation"
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -16,101 +17,163 @@ export default function LoginPage() {
     password: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
-
-  const { login, isLoading } = useApp()
+  const [isLoading, setIsLoading] = useState(false)
+  const { toasts, addToast, removeToast } = useToast()
   const router = useRouter()
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }))
+    }
+  }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.email) {
-      newErrors.email = "Email is required"
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid"
-    }
+    const emailError = validateEmail(formData.email)
+    const passwordError = validatePassword(formData.password)
 
-    if (!formData.password) {
-      newErrors.password = "Password is required"
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters"
-    }
+    if (emailError) newErrors.email = emailError
+    if (passwordError) newErrors.password = passwordError
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!validateForm()) return
+    if (!validateForm()) {
+      addToast({
+        type: "error",
+        title: "Validation Error",
+        message: "Please fix the errors below",
+      })
+      return
+    }
+
+    setIsLoading(true)
 
     try {
-      await login(formData.email, formData.password)
-      router.push("/dashboard")
-    } catch (error) {
-      // Error is handled in the context
-    }
-  }
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }))
+      const result = await response.json()
+
+      if (result.success) {
+        // Store auth data
+        localStorage.setItem("authToken", result.data.token)
+        localStorage.setItem("userEmail", result.data.user.email)
+        localStorage.setItem("userName", result.data.user.name)
+
+        addToast({
+          type: "success",
+          title: "Login Successful",
+          message: "Welcome back!",
+        })
+
+        // Redirect to dashboard
+        setTimeout(() => {
+          router.push("/dashboard")
+        }, 1000)
+      } else {
+        if (result.errors) {
+          const newErrors: Record<string, string> = {}
+          result.errors.forEach((error: any) => {
+            newErrors[error.field] = error.message
+          })
+          setErrors(newErrors)
+        }
+
+        addToast({
+          type: "error",
+          title: "Login Failed",
+          message: result.message,
+        })
+      }
+    } catch (error) {
+      addToast({
+        type: "error",
+        title: "Error",
+        message: "Something went wrong. Please try again.",
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="grid lg:grid-cols-2 min-h-screen">
+      <Header showAuthButtons={false} />
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      <div className="grid lg:grid-cols-2 min-h-[calc(100vh-80px)]">
         {/* Left Side - Login Form */}
         <div className="flex flex-col justify-center px-8 sm:px-12 lg:px-16">
           <div className="max-w-md mx-auto w-full">
-            {/* Logo */}
-            <div className="mb-12">
-              <Image src="/images/growvy-logo.png" alt="Growvy Logo" width={120} height={40} className="h-10 w-auto" />
-            </div>
-
             {/* Login Form */}
             <div className="space-y-6">
               <h1 className="text-3xl font-bold text-[#3c3679] mb-8">Log In</h1>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <FormField
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(value) => handleInputChange("email", value)}
-                  placeholder="Enter your email"
-                  required
-                  error={errors.email}
-                />
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-[#3c3679] mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your email"
+                  />
+                  {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                </div>
 
-                <FormField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(value) => handleInputChange("password", value)}
-                  placeholder="Enter your password"
-                  required
-                  error={errors.password}
-                />
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-[#3c3679] mb-2">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your password"
+                  />
+                  {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
+                </div>
 
                 <div className="text-center">
                   <a href="#" className="text-[#3c3679] hover:underline text-sm">
-                    Forgot Password?
+                    Forget Password
                   </a>
                 </div>
 
-                <LoadingButton
+                <Button
                   type="submit"
-                  loading={isLoading}
-                  loadingText="Logging in..."
-                  className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold"
+                  disabled={isLoading}
+                  className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold disabled:opacity-50"
                 >
-                  Log In
-                </LoadingButton>
+                  {isLoading ? "Logging in..." : "Log In"}
+                </Button>
 
                 <div className="text-center">
                   <span className="text-gray-600">Not Registered Yet? </span>
@@ -154,16 +217,6 @@ export default function LoginPage() {
                   Continue with Google
                 </Button>
               </form>
-
-              {/* Demo Credentials */}
-              <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-                <h3 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials</h3>
-                <p className="text-sm text-blue-700">
-                  Email: demo@growvy.com
-                  <br />
-                  Password: password123
-                </p>
-              </div>
             </div>
           </div>
         </div>
@@ -178,6 +231,8 @@ export default function LoginPage() {
           />
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }

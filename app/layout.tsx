@@ -1,13 +1,10 @@
-import type React from "react"
-import type { Metadata } from "next"
-import "./globals.css"
-import { AppProvider } from "@/contexts/AppContext"
-import { Toaster } from "@/components/ui/toaster"
+import type { Metadata } from 'next'
+import './globals.css'
 
 export const metadata: Metadata = {
-  title: "Growvy - AI-Powered Lead Generation",
-  description: "Transform your business with intelligent lead generation and automation",
-  generator: "v0.dev",
+  title: 'v0 App',
+  description: 'Created with v0',
+  generator: 'v0.dev',
 }
 
 export default function RootLayout({
@@ -17,12 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AppProvider>
-          {children}
-          <Toaster />
-        </AppProvider>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }

@@ -149,6 +149,12 @@ export default function HelpPage() {
             >
               Contact
             </a>
+            <a
+              href="#"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Blog
+            </a>
           </nav>
 
           {/* Desktop Buttons */}
@@ -158,7 +164,7 @@ export default function HelpPage() {
             </Button>
             <Button
               variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm bg-transparent"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
             >
               Log In
             </Button>
@@ -213,6 +219,12 @@ export default function HelpPage() {
               >
                 Contact
               </a>
+              <a
+                href="#"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Blog
+              </a>
             </nav>
           </div>
         )}
@@ -257,7 +269,7 @@ export default function HelpPage() {
                     <p className="text-gray-600 text-sm leading-relaxed mb-4">{article.description}</p>
                     <Button
                       variant="outline"
-                      className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white text-sm bg-transparent"
+                      className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white text-sm"
                     >
                       Read More
                     </Button>
@@ -307,7 +319,7 @@ export default function HelpPage() {
               <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white px-8 py-3">Contact Now</Button>
               <Button
                 variant="outline"
-                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white px-8 py-3 bg-transparent"
+                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white px-8 py-3"
               >
                 Book a Demo Today
               </Button>

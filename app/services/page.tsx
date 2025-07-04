@@ -1,448 +1,473 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { CheckCircle, ArrowRight, Zap, Target, Users, BarChart3, Mail, Phone, MapPin, Menu } from "lucide-react"
+import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react"
 import Image from "next/image"
+import { useState } from "react"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export default function ServicesPage() {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+
+  const testimonials = [
+    {
+      name: "Olivia Green",
+      image:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
+      text: "Followed by some bogus content. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+      rating: 4,
+    },
+    {
+      name: "Michael Chen",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
+      text: "Followed by some bogus content. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+      rating: 5,
+    },
+    {
+      name: "Sarah Johnson",
+      image:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
+      text: "Followed by some bogus content. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+      rating: 4,
+    },
+  ]
+
+  const nextTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev + 3) % testimonials.length)
+  }
+
+  const prevTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev - 3 + testimonials.length) % testimonials.length)
+  }
+
+  const visibleTestimonials = testimonials.slice(currentTestimonial, currentTestimonial + 3)
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
-          </div>
+      <Header />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a href="/services" className="text-[#3c3679] underline font-medium transition-all duration-200">
-              Service
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/blog"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Blog
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-          </nav>
-
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              Sign Up
-            </Button>
-            <Button
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm bg-transparent"
-            >
-              Log In
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2">
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#f8faff] to-[#e8f4ff] px-4 sm:px-6 py-16 lg:py-24">
+      {/* Services Hero Section */}
+      <section className="bg-[#3c3679] text-white py-8 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto text-center">
-          <Badge className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 py-2 text-sm font-medium mb-6">
-            🎯 Complete Lead Generation Suite
-          </Badge>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            Our <span className="text-[#3c3679]">Services</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Comprehensive AI-powered solutions to help you find, connect, and convert your ideal customers
+          <h1 className="text-2xl sm:text-3xl font-bold">Explore our Services</h1>
+          <p className="mt-2 text-sm sm:text-base text-white/80 max-w-2xl mx-auto">
+            Discover our comprehensive suite of AI-powered solutions designed to accelerate your business growth
           </p>
-          <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white px-8 py-4 text-lg font-semibold">
-            Get Started Today
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
         </div>
       </section>
 
-      {/* Services Grid */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {[
-              {
-                icon: Target,
-                title: "Lead Generation Automation",
-                description:
-                  "Discover relevant, high-intent leads based on industry, location, and custom filters you choose.",
-                features: [
-                  "AI-powered prospect identification",
-                  "Advanced filtering options",
-                  "Real-time lead scoring",
-                  "Automated lead qualification",
-                ],
-                image: "/images/how-it-work-1.png",
-              },
-              {
-                icon: Zap,
-                title: "Website Scrapping",
-                description:
-                  "Extract valuable data from websites automatically with our intelligent scraping technology.",
-                features: [
-                  "Automated data extraction",
-                  "Real-time website monitoring",
-                  "Custom scraping rules",
-                  "Data validation & cleaning",
-                ],
-                image: "/images/how-it-work-2.png",
-              },
-              {
-                icon: BarChart3,
-                title: "AI Powered Research",
-                description:
-                  "Leverage artificial intelligence to conduct comprehensive market research and competitor analysis.",
-                features: [
-                  "Market trend analysis",
-                  "Competitor intelligence",
-                  "Industry insights",
-                  "Predictive analytics",
-                ],
-                image: "/images/how-it-work-3.svg",
-              },
-              {
-                icon: Users,
-                title: "Data Enrichment",
-                description: "Enhance your existing customer data with additional insights and contact information.",
-                features: [
-                  "Contact information enrichment",
-                  "Company data enhancement",
-                  "Social media profiles",
-                  "Behavioral insights",
-                ],
-                image: "/images/mobile-solution.png",
-              },
-            ].map((service, index) => (
-              <Card key={index} className="bg-white border-0 shadow-lg hover:shadow-xl transition-shadow">
-                <CardContent className="p-8">
-                  <div className="mb-6">
-                    <Image
-                      src={service.image || "/placeholder.svg"}
-                      alt={service.title}
-                      width={400}
-                      height={250}
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
-                  </div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-[#f0f7ff] rounded-lg">
-                      <service.icon className="w-6 h-6 text-[#3c3679]" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-gray-900">{service.title}</h3>
-                  </div>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
-                  <ul className="space-y-3 mb-6">
-                    {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 text-[#3c3679] flex-shrink-0" />
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white">Learn More</Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Additional Services */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Additional Services</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Complete your lead generation toolkit with these powerful add-on services
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                title: "AI Personalization",
-                description:
-                  "Create personalized experiences and messages using advanced AI technology to increase engagement and conversion rates.",
-                features: [
-                  "Personalized email campaigns",
-                  "Dynamic content generation",
-                  "Behavioral targeting",
-                  "A/B testing optimization",
-                ],
-              },
-              {
-                title: "Verified Emails & Phone Numbers",
-                description:
-                  "Get accurate, up-to-date contact information for your leads with our real-time verification system.",
-                features: [
-                  "Email verification",
-                  "Phone number validation",
-                  "Real-time updates",
-                  "Bounce rate reduction",
-                ],
-              },
-            ].map((service, index) => (
-              <Card key={index} className="bg-white border-0 shadow-lg">
-                <CardContent className="p-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
-                  <ul className="space-y-3 mb-6">
-                    {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 text-[#3c3679] flex-shrink-0" />
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    variant="outline"
-                    className="w-full border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white bg-transparent"
-                  >
-                    Get Started
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Process Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Our Process</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              How we deliver exceptional results for your business
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-4 gap-8">
-            {[
-              {
-                step: "01",
-                title: "Discovery",
-                description: "We analyze your business goals and target audience to create a customized strategy.",
-              },
-              {
-                step: "02",
-                title: "Setup",
-                description: "Our team configures the AI systems and integrates with your existing tools.",
-              },
-              {
-                step: "03",
-                title: "Execution",
-                description: "We launch your campaigns and begin generating high-quality leads for your business.",
-              },
-              {
-                step: "04",
-                title: "Optimization",
-                description: "Continuous monitoring and optimization to improve performance and ROI.",
-              },
-            ].map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-[#3c3679] text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                  {step.step}
+      {/* Services Content */}
+      <section className="py-12 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto space-y-16">
+          {/* Service 1 - Lead Generation Automation */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-[#d0efff] rounded-full flex items-center justify-center">
+                  <span className="text-[#3c3679] font-bold text-sm">01</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Lead Generation Automation</h2>
               </div>
-            ))}
+              <div className="space-y-3">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Transform your sales pipeline with our intelligent lead generation system. Our AI-powered platform
+                  automatically identifies and qualifies high-potential prospects, saving you countless hours of manual
+                  research while delivering superior results.
+                </p>
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Leverage advanced algorithms to discover leads that match your ideal customer profile. Our system
+                  analyzes millions of data points to ensure you're targeting the right prospects at the right time,
+                  increasing your conversion rates by up to 300%.
+                </p>
+                <div className="pt-2">
+                  <h4 className="font-semibold text-gray-900 text-sm mb-2">Key Features:</h4>
+                  <ul className="text-gray-600 text-sm space-y-1">
+                    <li>• Real-time prospect identification</li>
+                    <li>• Advanced filtering and segmentation</li>
+                    <li>• Automated lead scoring and qualification</li>
+                    <li>• Integration with popular CRM systems</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] p-4 rounded-lg">
+                <Image
+                  src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=350&q=80"
+                  alt="Lead Generation Network Visualization"
+                  width={500}
+                  height={350}
+                  className="w-full h-auto rounded-lg object-cover shadow-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Service 2 - Website Scraping */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="relative order-2 lg:order-1">
+              <div className="bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] p-4 rounded-lg">
+                <Image
+                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=350&q=80"
+                  alt="Website Scraping Data Visualization"
+                  width={500}
+                  height={350}
+                  className="w-full h-auto rounded-lg object-cover shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="space-y-4 order-1 lg:order-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-[#d0efff] rounded-full flex items-center justify-center">
+                  <span className="text-[#3c3679] font-bold text-sm">02</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Website Scraping</h2>
+              </div>
+              <div className="space-y-3">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Extract valuable business intelligence from any website with our sophisticated scraping technology.
+                  Our platform handles complex JavaScript-rendered sites, dynamic content, and anti-bot measures while
+                  maintaining complete data accuracy and compliance.
+                </p>
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Scale your data collection efforts without the technical complexity. Our robust infrastructure
+                  processes millions of pages daily, delivering structured, clean data ready for immediate use in your
+                  business operations and decision-making processes.
+                </p>
+                <div className="pt-2">
+                  <h4 className="font-semibold text-gray-900 text-sm mb-2">Key Features:</h4>
+                  <ul className="text-gray-600 text-sm space-y-1">
+                    <li>• JavaScript and SPA support</li>
+                    <li>• Anti-detection and proxy rotation</li>
+                    <li>• Real-time data extraction</li>
+                    <li>• Custom data formatting and export</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Service 3 - AI Powered Research */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-[#d0efff] rounded-full flex items-center justify-center">
+                  <span className="text-[#3c3679] font-bold text-sm">03</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">AI Powered Research</h2>
+              </div>
+              <div className="space-y-3">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Revolutionize your research process with cutting-edge artificial intelligence. Our AI research
+                  assistant analyzes vast amounts of data from multiple sources, providing comprehensive insights and
+                  actionable intelligence in minutes rather than hours.
+                </p>
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  From market analysis to competitor research, our AI engine processes complex information patterns and
+                  delivers detailed reports with key findings, trends, and recommendations tailored to your specific
+                  business needs and objectives.
+                </p>
+                <div className="pt-2">
+                  <h4 className="font-semibold text-gray-900 text-sm mb-2">Key Features:</h4>
+                  <ul className="text-gray-600 text-sm space-y-1">
+                    <li>• Multi-source data aggregation</li>
+                    <li>• Intelligent pattern recognition</li>
+                    <li>• Automated report generation</li>
+                    <li>• Custom research parameters</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] p-4 rounded-lg">
+                <Image
+                  src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=350&q=80"
+                  alt="AI Powered Research Technology"
+                  width={500}
+                  height={350}
+                  className="w-full h-auto rounded-lg object-cover shadow-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Service 4 - Data Enrichment */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="relative order-2 lg:order-1">
+              <div className="bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] p-4 rounded-lg">
+                <Image
+                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=350&q=80"
+                  alt="Data Enrichment Business Analytics"
+                  width={500}
+                  height={350}
+                  className="w-full h-auto rounded-lg object-cover shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="space-y-4 order-1 lg:order-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-[#d0efff] rounded-full flex items-center justify-center">
+                  <span className="text-[#3c3679] font-bold text-sm">04</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Data Enrichment</h2>
+              </div>
+              <div className="space-y-3">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Enhance your existing data with comprehensive business intelligence. Our enrichment service adds
+                  missing contact information, company details, social profiles, and behavioral insights to transform
+                  incomplete records into actionable customer profiles.
+                </p>
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Improve data quality and completeness with our advanced matching algorithms. We cross-reference
+                  multiple premium databases to ensure accuracy while maintaining GDPR compliance and data privacy
+                  standards throughout the enrichment process.
+                </p>
+                <div className="pt-2">
+                  <h4 className="font-semibold text-gray-900 text-sm mb-2">Key Features:</h4>
+                  <ul className="text-gray-600 text-sm space-y-1">
+                    <li>• Contact information completion</li>
+                    <li>• Company and industry data</li>
+                    <li>• Social media profile matching</li>
+                    <li>• Data quality scoring and validation</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Service 5 - AI Personalization */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-[#d0efff] rounded-full flex items-center justify-center">
+                  <span className="text-[#3c3679] font-bold text-sm">05</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">AI Personalization</h2>
+              </div>
+              <div className="space-y-3">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Create highly personalized outreach campaigns that resonate with your prospects. Our AI analyzes
+                  individual preferences, communication styles, and behavioral patterns to craft messages that feel
+                  genuinely personal and drive higher engagement rates.
+                </p>
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Move beyond generic templates with intelligent content generation. Our system creates unique,
+                  contextually relevant messages for each prospect, incorporating their industry, role, recent
+                  activities, and pain points to maximize response rates and conversion potential.
+                </p>
+                <div className="pt-2">
+                  <h4 className="font-semibold text-gray-900 text-sm mb-2">Key Features:</h4>
+                  <ul className="text-gray-600 text-sm space-y-1">
+                    <li>• Dynamic content generation</li>
+                    <li>• Behavioral pattern analysis</li>
+                    <li>• Multi-channel personalization</li>
+                    <li>• A/B testing and optimization</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] p-4 rounded-lg">
+                <Image
+                  src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=350&q=80"
+                  alt="AI Personalization Interface"
+                  width={500}
+                  height={350}
+                  className="w-full h-auto rounded-lg object-cover shadow-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Service 6 - Verified Emails and Phone Numbers */}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="relative order-2 lg:order-1">
+              <div className="bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] p-4 rounded-lg">
+                <Image
+                  src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=350&q=80"
+                  alt="Verified Contact Information Workspace"
+                  width={500}
+                  height={350}
+                  className="w-full h-auto rounded-lg object-cover shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="space-y-4 order-1 lg:order-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-[#d0efff] rounded-full flex items-center justify-center">
+                  <span className="text-[#3c3679] font-bold text-sm">06</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Verified Emails and Phone Numbers</h2>
+              </div>
+              <div className="space-y-3">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Access the most accurate and up-to-date contact information available. Our verification system uses
+                  multiple validation methods and real-time checks to ensure every email and phone number in your
+                  database is current, active, and deliverable.
+                </p>
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  Protect your sender reputation and improve campaign performance with our comprehensive verification
+                  process. We eliminate bounces, reduce spam complaints, and ensure your messages reach the intended
+                  recipients, maximizing your outreach effectiveness.
+                </p>
+                <div className="pt-2">
+                  <h4 className="font-semibold text-gray-900 text-sm mb-2">Key Features:</h4>
+                  <ul className="text-gray-600 text-sm space-y-1">
+                    <li>• Real-time email verification</li>
+                    <li>• Phone number validation and formatting</li>
+                    <li>• Deliverability scoring</li>
+                    <li>• Bulk verification processing</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-[#3c3679]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">Ready to Get Started?</h2>
-          <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-            Let's discuss how our services can help you achieve your lead generation goals.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-white text-[#3c3679] hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
-              Start Free Trial
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-[#3c3679] px-8 py-4 text-lg font-semibold bg-transparent"
-            >
-              Contact Sales
-            </Button>
+      <section className="px-4 sm:px-6 py-16 bg-White">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Testimonials</h2>
           </div>
+
+          {/* Testimonial Cards Container */}
+          <div className="relative">
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevTestimonial}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200"
+              aria-label="Previous testimonials"
+            >
+              <ChevronLeft className="w-6 h-6 text-gray-700" />
+            </button>
+
+            <button
+              onClick={nextTestimonial}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200"
+              aria-label="Next testimonials"
+            >
+              <ChevronRight className="w-6 h-6 text-gray-700" />
+            </button>
+
+            {/* Testimonial Cards Grid */}
+            <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {visibleTestimonials.map((testimonial, i) => (
+                <div key={i} className="relative">
+                  <Card className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 relative">
+                    {/* Purple Quote Icon */}
+                    <div className="absolute -top-4 right-6">
+                      <div className="w-12 h-12 bg-[#3c3679] rounded-full flex items-center justify-center shadow-lg">
+                        <Quote className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+
+                    <CardContent className="p-0">
+                      {/* Profile Section */}
+                      <div className="flex items-start space-x-4 mb-4">
+                        <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-gray-100">
+                          <Image
+                            src={testimonial.image || "/placeholder.svg"}
+                            alt={testimonial.name}
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 pt-2">
+                          <h4 className="font-bold text-gray-900 text-lg mb-1">{testimonial.name}</h4>
+                          {/* Star Rating */}
+                          <div className="flex space-x-1 mb-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`w-4 h-4 ${
+                                  star <= testimonial.rating
+                                    ? "fill-yellow-400 text-yellow-400"
+                                    : "fill-gray-200 text-gray-200"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Testimonial Text */}
+                      <div className="mt-4">
+                        <p className="text-gray-700 leading-relaxed text-sm">{testimonial.text}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+
+            {/* Dot Indicators */}
+            <div className="flex justify-center space-x-2 mt-8">
+              {Array.from({ length: Math.ceil(testimonials.length / 3) }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentTestimonial(i)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    i === currentTestimonial ? "bg-[#3c3679]" : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={`Go to testimonial set ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Us Section */}
+      <section className="px-4 sm:px-6 py-16 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-12">Contact Us</h2>
+          <form className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                />
+              </div>
+              <div>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                />
+              </div>
+            </div>
+            <div>
+              <input
+                type="text"
+                placeholder="Subject"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+              />
+            </div>
+            <div>
+              <textarea
+                placeholder="Message"
+                rows={6}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none resize-none"
+              ></textarea>
+            </div>
+            <Button className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold">
+              Submit
+            </Button>
+          </form>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid lg:grid-cols-4 gap-8">
-            <div className="lg:col-span-1">
-              <Image
-                src="/images/growvy-logo.png"
-                alt="Growvy Logo"
-                width={120}
-                height={40}
-                className="h-10 w-auto mb-4 brightness-0 invert"
-              />
-              <p className="text-gray-400 mb-6">
-                AI-powered lead generation platform helping businesses find their perfect customers.
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white">
-                  <Mail className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white">
-                  <Phone className="w-5 h-5" />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white">
-                  <MapPin className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="/services" className="hover:text-white">
-                    Services
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="hover:text-white">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Integrations
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="/about" className="hover:text-white">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="/blog" className="hover:text-white">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="/contact" className="hover:text-white">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Careers
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <a href="/help" className="hover:text-white">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    API Reference
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Status
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">© 2024 Growvy. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 sm:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm">
-                Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm">
-                Cookie Policy
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

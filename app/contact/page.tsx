@@ -1,16 +1,123 @@
 "use client"
 
+import type React from "react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Instagram, Linkedin, Facebook, X, Phone, Mail, MapPin } from "lucide-react"
-import Image from "next/image"
-import AuthHeader from "@/components/AuthHeader"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { ToastContainer, useToast } from "@/components/toast"
+import { Phone, Mail, MapPin } from "lucide-react"
+import { useState } from "react"
+import { validateEmail, validateRequired } from "@/lib/validation"
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    subject: "",
+    message: "",
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const { toasts, addToast, removeToast } = useToast()
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }))
+    }
+  }
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    const nameError = validateRequired(formData.fullName, "Full name")
+    const emailError = validateEmail(formData.email)
+    const subjectError = validateRequired(formData.subject, "Subject")
+    const messageError = validateRequired(formData.message, "Message")
+
+    if (nameError) newErrors.fullName = nameError
+    if (emailError) newErrors.email = emailError
+    if (subjectError) newErrors.subject = subjectError
+    if (messageError) newErrors.message = messageError
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!validateForm()) {
+      addToast({
+        type: "error",
+        title: "Validation Error",
+        message: "Please fix the errors below",
+      })
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        addToast({
+          type: "success",
+          title: "Message Sent",
+          message: result.message,
+        })
+
+        // Reset form
+        setFormData({
+          fullName: "",
+          email: "",
+          subject: "",
+          message: "",
+        })
+      } else {
+        if (result.errors) {
+          const newErrors: Record<string, string> = {}
+          result.errors.forEach((error: any) => {
+            newErrors[error.field] = error.message
+          })
+          setErrors(newErrors)
+        }
+
+        addToast({
+          type: "error",
+          title: "Failed to Send",
+          message: result.message,
+        })
+      }
+    } catch (error) {
+      addToast({
+        type: "error",
+        title: "Error",
+        message: "Something went wrong. Please try again.",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <AuthHeader currentPage="contact" />
+      <Header />
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {/* Contact Hero Section */}
       <section className="bg-[#3c3679] text-white py-16 px-4 sm:px-6">
@@ -67,7 +174,7 @@ export default function ContactPage() {
 
             {/* Contact Form */}
             <div className="lg:col-span-2">
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -76,8 +183,15 @@ export default function ContactPage() {
                     <input
                       type="text"
                       id="fullName"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                        errors.fullName ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="Enter your full name"
                     />
+                    {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -86,8 +200,15 @@ export default function ContactPage() {
                     <input
                       type="email"
                       id="email"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                        errors.email ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="Enter your email"
                     />
+                    {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
                   </div>
                 </div>
 
@@ -98,8 +219,15 @@ export default function ContactPage() {
                   <input
                     type="text"
                     id="subject"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                      errors.subject ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter subject"
                   />
+                  {errors.subject && <p className="mt-1 text-sm text-red-600">{errors.subject}</p>}
                 </div>
 
                 <div>
@@ -108,13 +236,24 @@ export default function ContactPage() {
                   </label>
                   <textarea
                     id="message"
+                    name="message"
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none resize-none"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none resize-none ${
+                      errors.message ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your message"
                   ></textarea>
+                  {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
                 </div>
 
-                <Button className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold">
-                  Send Message
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold disabled:opacity-50"
+                >
+                  {isLoading ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </div>
@@ -122,103 +261,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#3c3679] text-white px-4 sm:px-6 py-8 sm:py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-2 mb-6">
-                <Image
-                  src="/images/growvy-logo.png"
-                  alt="Growvy Logo"
-                  width={120}
-                  height={40}
-                  className="h-6 sm:h-8 w-auto brightness-0 invert"
-                />
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="/" className="hover:text-gray-300 transition-colors">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/services" className="hover:text-gray-300 transition-colors">
-                    Service
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="hover:text-gray-300 transition-colors">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="hover:text-gray-300 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="/help" className="hover:text-gray-300 transition-colors">
-                    Help
-                  </a>
-                </li>
-                <li>
-                  <a href="/blog" className="hover:text-gray-300 transition-colors">
-                    Blogs
-                  </a>
-                </li>
-                <li>
-                  <a href="/contact" className="hover:text-gray-300 transition-colors">
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Contact Us</h4>
-              <ul className="space-y-2 text-sm">
-                <li>+12345678976</li>
-                <li>emailhere@gmail.com</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Get in touch</h4>
-              <div className="flex space-x-3">
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-white/20 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-sm">
-            <p>Copyright Reserved | 2025</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

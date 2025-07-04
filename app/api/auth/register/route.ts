@@ -1,39 +1,84 @@
 import { type NextRequest, NextResponse } from "next/server"
-import jwt from "jsonwebtoken"
+import { signToken } from "@/lib/jwt"
+import { validateEmail, validatePassword, validateName } from "@/lib/validation"
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"
+// Mock user database - in production, use a real database
+const users = [
+  {
+    id: "1",
+    email: "demo@example.com",
+    password: "password123",
+    name: "Demo User",
+  },
+  {
+    id: "2",
+    email: "alexarawles@gmail.com",
+    password: "password123",
+    name: "Alexa Rawles",
+  },
+]
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password } = await request.json()
+    const { email, password, fullName } = await request.json()
 
     // Validate input
-    if (!name || !email || !password) {
-      return NextResponse.json({ message: "Name, email and password are required" }, { status: 400 })
+    const emailError = validateEmail(email)
+    const passwordError = validatePassword(password)
+    const nameError = validateName(fullName)
+
+    if (emailError || passwordError || nameError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Validation failed",
+          errors: [
+            ...(emailError ? [{ field: "email", message: emailError }] : []),
+            ...(passwordError ? [{ field: "password", message: passwordError }] : []),
+            ...(nameError ? [{ field: "fullName", message: nameError }] : []),
+          ],
+        },
+        { status: 400 },
+      )
     }
 
-    // In production, check if user already exists and hash password
-    const newUser = {
-      id: Date.now().toString(),
-      name,
-      email,
-      password, // Hash this in production
-      plan: "starter" as const,
-      credits: 100,
+    // Check if user already exists
+    const existingUser = users.find((u) => u.email === email)
+    if (existingUser) {
+      return NextResponse.json({ success: false, message: "User with this email already exists" }, { status: 409 })
     }
+
+    // Create new user
+    const newUser = {
+      id: (users.length + 1).toString(),
+      email,
+      password,
+      name: fullName,
+    }
+
+    users.push(newUser)
 
     // Generate JWT token
-    const token = jwt.sign({ userId: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: "7d" })
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = newUser
+    const token = signToken({
+      userId: newUser.id,
+      email: newUser.email,
+      name: newUser.name,
+    })
 
     return NextResponse.json({
-      token,
-      user: userWithoutPassword,
+      success: true,
+      message: "Registration successful",
+      data: {
+        token,
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+        },
+      },
     })
   } catch (error) {
     console.error("Registration error:", error)
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
   }
 }

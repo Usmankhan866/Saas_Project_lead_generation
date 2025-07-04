@@ -3,43 +3,126 @@
 import type React from "react"
 
 import { Button } from "@/components/ui/button"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { ToastContainer, useToast } from "@/components/toast"
 import Image from "next/image"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { validateEmail, validatePassword, validateName } from "@/lib/validation"
 
 export default function SignUpPage() {
-  const [fullName, setFullName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
+  const { toasts, addToast, removeToast } = useToast()
   const router = useRouter()
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }))
+    }
+  }
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    const nameError = validateName(formData.fullName)
+    const emailError = validateEmail(formData.email)
+    const passwordError = validatePassword(formData.password)
+
+    if (nameError) newErrors.fullName = nameError
+    if (emailError) newErrors.email = emailError
+    if (passwordError) newErrors.password = passwordError
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulate signup - in real app, you'd create account
-    if (fullName && email && password) {
-      // Store auth state (in real app, use proper auth)
-      localStorage.setItem("isAuthenticated", "true")
-      localStorage.setItem("userEmail", email)
-      localStorage.setItem("userName", fullName)
 
-      // Trigger storage event for other components to update
-      window.dispatchEvent(new Event("storage"))
+    if (!validateForm()) {
+      addToast({
+        type: "error",
+        title: "Validation Error",
+        message: "Please fix the errors below",
+      })
+      return
+    }
 
-      router.push("/dashboard")
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Store auth data
+        localStorage.setItem("authToken", result.data.token)
+        localStorage.setItem("userEmail", result.data.user.email)
+        localStorage.setItem("userName", result.data.user.name)
+
+        addToast({
+          type: "success",
+          title: "Registration Successful",
+          message: "Welcome to Growvy!",
+        })
+
+        // Redirect to dashboard
+        setTimeout(() => {
+          router.push("/dashboard")
+        }, 1000)
+      } else {
+        if (result.errors) {
+          const newErrors: Record<string, string> = {}
+          result.errors.forEach((error: any) => {
+            newErrors[error.field] = error.message
+          })
+          setErrors(newErrors)
+        }
+
+        addToast({
+          type: "error",
+          title: "Registration Failed",
+          message: result.message,
+        })
+      }
+    } catch (error) {
+      addToast({
+        type: "error",
+        title: "Error",
+        message: "Something went wrong. Please try again.",
+      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-white">
-      <div className="grid lg:grid-cols-2 min-h-screen">
+      <Header showAuthButtons={false} />
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      <div className="grid lg:grid-cols-2 min-h-[calc(100vh-80px)]">
         {/* Left Side - Sign Up Form */}
         <div className="flex flex-col justify-center px-8 sm:px-12 lg:px-16">
           <div className="max-w-md mx-auto w-full">
-            {/* Logo */}
-            <div className="mb-12">
-              <Image src="/images/growvy-logo.png" alt="Growvy Logo" width={120} height={40} className="h-10 w-auto" />
-            </div>
-
             {/* Sign Up Form */}
             <div className="space-y-6">
               <h1 className="text-3xl font-bold text-[#3c3679] mb-8">Sign Up</h1>
@@ -52,11 +135,15 @@ export default function SignUpPage() {
                   <input
                     type="text"
                     id="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    required
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                      errors.fullName ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your full name"
                   />
+                  {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
                 </div>
 
                 <div>
@@ -66,11 +153,15 @@ export default function SignUpPage() {
                   <input
                     type="email"
                     id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    required
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your email"
                   />
+                  {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
                 </div>
 
                 <div>
@@ -80,18 +171,23 @@ export default function SignUpPage() {
                   <input
                     type="password"
                     id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    required
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your password"
                   />
+                  {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold"
+                  disabled={isLoading}
+                  className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold disabled:opacity-50"
                 >
-                  Sign Up
+                  {isLoading ? "Creating Account..." : "Sign Up"}
                 </Button>
 
                 <div className="text-center">
@@ -150,6 +246,8 @@ export default function SignUpPage() {
           />
         </div>
       </div>
+
+      <Footer />
     </div>
   )
 }
