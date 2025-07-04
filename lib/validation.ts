@@ -11,13 +11,6 @@ export function validateEmail(email: string): string | null {
   return null
 }
 
-export function validateRequired(value: string, fieldName: string): string | null {
-  if (!value || value.trim() === "") {
-    return `${fieldName} is required`
-  }
-  return null
-}
-
 export function validatePassword(password: string): string | null {
   if (!password) {
     return "Password is required"
@@ -27,6 +20,13 @@ export function validatePassword(password: string): string | null {
     return "Password must be at least 6 characters long"
   }
 
+  return null
+}
+
+export function validateRequired(value: string, fieldName: string): string | null {
+  if (!value || value.trim() === "") {
+    return `${fieldName} is required`
+  }
   return null
 }
 

@@ -11,9 +11,9 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { validateEmail, validatePassword, validateName } from "@/lib/validation"
 
-export default function SignUpPage() {
+export default function SignupPage() {
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
     password: "",
   })
@@ -35,11 +35,11 @@ export default function SignUpPage() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    const nameError = validateName(formData.fullName)
+    const nameError = validateName(formData.name)
     const emailError = validateEmail(formData.email)
     const passwordError = validatePassword(formData.password)
 
-    if (nameError) newErrors.fullName = nameError
+    if (nameError) newErrors.name = nameError
     if (emailError) newErrors.email = emailError
     if (passwordError) newErrors.password = passwordError
 
@@ -47,7 +47,7 @@ export default function SignUpPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!validateForm()) {
@@ -120,30 +120,30 @@ export default function SignUpPage() {
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       <div className="grid lg:grid-cols-2 min-h-[calc(100vh-80px)]">
-        {/* Left Side - Sign Up Form */}
+        {/* Left Side - Signup Form */}
         <div className="flex flex-col justify-center px-8 sm:px-12 lg:px-16">
           <div className="max-w-md mx-auto w-full">
-            {/* Sign Up Form */}
+            {/* Signup Form */}
             <div className="space-y-6">
               <h1 className="text-3xl font-bold text-[#3c3679] mb-8">Sign Up</h1>
 
-              <form onSubmit={handleSignUp} className="space-y-6">
+              <form onSubmit={handleSignup} className="space-y-6">
                 <div>
-                  <label htmlFor="fullName" className="block text-sm font-medium text-[#3c3679] mb-2">
+                  <label htmlFor="name" className="block text-sm font-medium text-[#3c3679] mb-2">
                     Full Name
                   </label>
                   <input
                     type="text"
-                    id="fullName"
-                    name="fullName"
-                    value={formData.fullName}
+                    id="name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
-                      errors.fullName ? "border-red-500" : "border-gray-300"
+                      errors.name ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter your full name"
                   />
-                  {errors.fullName && <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>}
+                  {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                 </div>
 
                 <div>
@@ -191,7 +191,7 @@ export default function SignUpPage() {
                 </Button>
 
                 <div className="text-center">
-                  <span className="text-gray-600">Already Registered? </span>
+                  <span className="text-gray-600">Already have an account? </span>
                   <a href="/login" className="text-[#3c3679] hover:underline font-medium">
                     Log In
                   </a>

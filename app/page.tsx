@@ -1,65 +1,59 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowRight, CheckCircle, Star, Users, Target, TrendingUp } from "lucide-react"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { Star, ArrowRight, Users, Building, Search } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function HomePage() {
+  const router = useRouter()
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 to-indigo-100 py-20 px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-br from-[#3c3679] to-[#2d2a5f] text-white py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                  Grow Your Business with
-                  <span className="text-blue-600"> Smart Data</span>
-                </h1>
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Discover qualified leads, analyze market trends, and accelerate your business growth with our
-                  comprehensive business intelligence platform.
-                </p>
-              </div>
-
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+                Grow Your Business with
+                <span className="block text-[#d0efff]">Smart Data Solutions</span>
+              </h1>
+              <p className="text-xl text-gray-200 max-w-lg">
+                Access millions of business listings and contact information to fuel your growth. Get the data you need
+                to reach your ideal customers.
+              </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/signup">
-                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-                    Get Started Free
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-                <Link href="/contact">
-                  <Button variant="outline" size="lg" className="px-8 py-3 text-lg bg-transparent">
-                    Schedule Demo
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="flex items-center space-x-6 text-sm text-gray-600">
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
-                  Free 14-day trial
-                </div>
-                <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
-                  No credit card required
-                </div>
+                <Button
+                  onClick={() => router.push("/signup")}
+                  size="lg"
+                  className="bg-white text-[#3c3679] hover:bg-gray-100 font-semibold px-8 py-4 text-lg"
+                >
+                  Start Free Trial
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+                <Button
+                  onClick={() => router.push("/pricing")}
+                  variant="outline"
+                  size="lg"
+                  className="border-white text-white hover:bg-white hover:text-[#3c3679] font-semibold px-8 py-4 text-lg bg-transparent"
+                >
+                  View Pricing
+                </Button>
               </div>
             </div>
-
             <div className="relative">
               <Image
                 src="/images/main-hero-new.png"
-                alt="Business Growth Dashboard"
+                alt="Business Growth Illustration"
                 width={600}
-                height={400}
-                className="rounded-lg shadow-2xl"
+                height={500}
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -67,54 +61,52 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Everything you need to grow your business
+              Everything You Need to Scale Your Business
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Our comprehensive platform provides all the tools and insights you need to identify opportunities, connect
-              with prospects, and drive sustainable growth.
+              Our comprehensive platform provides all the tools and data you need to identify, connect, and convert your
+              ideal prospects.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Users className="w-8 h-8 text-blue-600" />
+                <div className="w-16 h-16 bg-[#3c3679] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Search className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Lead Generation</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Find and connect with qualified prospects using our advanced search and filtering capabilities. Build
-                  targeted lists of potential customers.
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Smart Search</h3>
+                <p className="text-gray-600">
+                  Find exactly what you're looking for with our advanced search algorithms and comprehensive database.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Target className="w-8 h-8 text-green-600" />
+                <div className="w-16 h-16 bg-[#3c3679] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Building className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Market Intelligence</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Get deep insights into market trends, competitor analysis, and industry opportunities to make informed
-                  business decisions.
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Business Intelligence</h3>
+                <p className="text-gray-600">
+                  Access detailed business information including contact details, reviews, and operational data.
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <TrendingUp className="w-8 h-8 text-purple-600" />
+                <div className="w-16 h-16 bg-[#3c3679] rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Growth Analytics</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Track your performance, measure ROI, and optimize your strategies with comprehensive analytics and
-                  reporting tools.
+                <h3 className="text-xl font-bold text-gray-900 mb-4">People Discovery</h3>
+                <p className="text-gray-600">
+                  Connect with key decision makers and build your professional network with accurate contact
+                  information.
                 </p>
               </CardContent>
             </Card>
@@ -123,10 +115,10 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="bg-gray-50 py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How it works</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Get started in minutes with our simple three-step process
             </p>
@@ -140,15 +132,15 @@ export default function HomePage() {
                   alt="Search and Discover"
                   width={300}
                   height={200}
-                  className="mx-auto rounded-lg shadow-lg"
+                  className="w-full h-auto rounded-lg shadow-lg"
                 />
-                <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-[#3c3679] text-white rounded-full flex items-center justify-center font-bold text-xl">
                   1
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Search & Discover</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Search & Discover</h3>
               <p className="text-gray-600">
-                Use our powerful search tools to find businesses and contacts that match your ideal customer profile.
+                Use our powerful search tools to find businesses and people that match your criteria.
               </p>
             </div>
 
@@ -156,18 +148,18 @@ export default function HomePage() {
               <div className="relative mb-8">
                 <Image
                   src="/images/how-it-work-2-new.png"
-                  alt="Analyze and Filter"
+                  alt="Filter and Refine"
                   width={300}
                   height={200}
-                  className="mx-auto rounded-lg shadow-lg"
+                  className="w-full h-auto rounded-lg shadow-lg"
                 />
-                <div className="absolute -top-4 -left-4 w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-[#3c3679] text-white rounded-full flex items-center justify-center font-bold text-xl">
                   2
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Analyze & Filter</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Filter & Refine</h3>
               <p className="text-gray-600">
-                Apply advanced filters and analyze data to identify the most promising opportunities for your business.
+                Narrow down your results with advanced filters to find exactly what you need.
               </p>
             </div>
 
@@ -175,19 +167,18 @@ export default function HomePage() {
               <div className="relative mb-8">
                 <Image
                   src="/images/how-it-work-3.svg"
-                  alt="Connect and Grow"
+                  alt="Export and Connect"
                   width={300}
                   height={200}
-                  className="mx-auto rounded-lg shadow-lg"
+                  className="w-full h-auto rounded-lg shadow-lg"
                 />
-                <div className="absolute -top-4 -left-4 w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-xl">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-[#3c3679] text-white rounded-full flex items-center justify-center font-bold text-xl">
                   3
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Connect & Grow</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Export & Connect</h3>
               <p className="text-gray-600">
-                Export your leads, integrate with your CRM, and start building meaningful relationships that drive
-                growth.
+                Export your data and start connecting with your prospects to grow your business.
               </p>
             </div>
           </div>
@@ -195,11 +186,11 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Trusted by thousands of businesses</h2>
-            <p className="text-xl text-gray-600">See what our customers have to say about their success with Growvy</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+            <p className="text-xl text-gray-600">Join thousands of satisfied customers who trust Growvy</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -210,21 +201,48 @@ export default function HomePage() {
                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-6 italic">
-                  "Growvy has transformed how we find and connect with potential clients. Our lead generation has
-                  increased by 300% since we started using the platform."
+                <p className="text-gray-600 mb-6">
+                  "Growvy has transformed how we find and connect with potential clients. The data quality is
+                  exceptional and the platform is incredibly easy to use."
                 </p>
                 <div className="flex items-center">
                   <Image
-                    src="/images/testimonial-design.png"
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50&q=80"
+                    alt="John Smith"
+                    width={50}
+                    height={50}
+                    className="w-12 h-12 rounded-full object-cover mr-4"
+                  />
+                  <div>
+                    <div className="font-semibold text-gray-900">John Smith</div>
+                    <div className="text-gray-600 text-sm">Sales Director, TechCorp</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-8">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-6">
+                  "The ROI we've seen since using Growvy is incredible. We've increased our lead generation by 300% in
+                  just three months."
+                </p>
+                <div className="flex items-center">
+                  <Image
+                    src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50&q=80"
                     alt="Sarah Johnson"
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full mr-4"
+                    width={50}
+                    height={50}
+                    className="w-12 h-12 rounded-full object-cover mr-4"
                   />
                   <div>
                     <div className="font-semibold text-gray-900">Sarah Johnson</div>
-                    <div className="text-sm text-gray-600">CEO, TechStart Inc.</div>
+                    <div className="text-gray-600 text-sm">Marketing Manager, GrowthCo</div>
                   </div>
                 </div>
               </CardContent>
@@ -237,48 +255,21 @@ export default function HomePage() {
                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-6 italic">
-                  "The market intelligence features are incredible. We now make data-driven decisions that have
-                  significantly improved our business strategy and ROI."
+                <p className="text-gray-600 mb-6">
+                  "Finally, a platform that delivers accurate, up-to-date business information. Growvy has become an
+                  essential tool for our sales team."
                 </p>
                 <div className="flex items-center">
                   <Image
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=48&h=48&q=80"
-                    alt="Michael Chen"
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full mr-4"
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&h=50&q=80"
+                    alt="Mike Davis"
+                    width={50}
+                    height={50}
+                    className="w-12 h-12 rounded-full object-cover mr-4"
                   />
                   <div>
-                    <div className="font-semibold text-gray-900">Michael Chen</div>
-                    <div className="text-sm text-gray-600">Marketing Director, GrowthCo</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-8">
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-6 italic">
-                  "Easy to use, powerful features, and excellent customer support. Growvy has become an essential tool
-                  for our sales and marketing teams."
-                </p>
-                <div className="flex items-center">
-                  <Image
-                    src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=48&h=48&q=80"
-                    alt="Emily Rodriguez"
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full mr-4"
-                  />
-                  <div>
-                    <div className="font-semibold text-gray-900">Emily Rodriguez</div>
-                    <div className="text-sm text-gray-600">VP Sales, ScaleUp Solutions</div>
+                    <div className="font-semibold text-gray-900">Mike Davis</div>
+                    <div className="text-gray-600 text-sm">CEO, StartupXYZ</div>
                   </div>
                 </div>
               </CardContent>
@@ -288,28 +279,29 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-blue-600">
+      <section className="bg-[#3c3679] text-white py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">Ready to accelerate your business growth?</h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join thousands of businesses that trust Growvy to find their next customers and drive sustainable growth.
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Grow Your Business?</h2>
+          <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
+            Join thousands of businesses that trust Growvy to find and connect with their ideal customers.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/signup">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg">
-                Start Free Trial
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/contact">
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 text-lg bg-transparent"
-              >
-                Contact Sales
-              </Button>
-            </Link>
+            <Button
+              onClick={() => router.push("/signup")}
+              size="lg"
+              className="bg-white text-[#3c3679] hover:bg-gray-100 font-semibold px-8 py-4 text-lg"
+            >
+              Start Your Free Trial
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+            <Button
+              onClick={() => router.push("/contact")}
+              variant="outline"
+              size="lg"
+              className="border-white text-white hover:bg-white hover:text-[#3c3679] font-semibold px-8 py-4 text-lg bg-transparent"
+            >
+              Contact Sales
+            </Button>
           </div>
         </div>
       </section>

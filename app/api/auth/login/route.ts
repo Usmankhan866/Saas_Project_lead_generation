@@ -8,6 +8,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { email, password } = body
 
+    console.log("Login attempt for:", email)
+
     // Validate input
     const emailError = validateEmail(email)
     const passwordError = validateRequired(password, "Password")
@@ -29,6 +31,7 @@ export async function POST(request: NextRequest) {
     // Find user
     const user = findUserByEmail(email)
     if (!user) {
+      console.log("User not found:", email)
       return NextResponse.json(
         {
           success: false,
@@ -40,6 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Check password (in production, use bcrypt to compare hashed passwords)
     if (user.password !== password) {
+      console.log("Password mismatch for user:", email)
       return NextResponse.json(
         {
           success: false,
@@ -50,20 +54,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate JWT token
-    const token = await signToken({
+    const token = signToken({
       userId: user.id,
       email: user.email,
       name: user.name,
     })
 
+    console.log("Login successful for:", email)
+
     return NextResponse.json({
       success: true,
       message: "Login successful",
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
       },
     })
   } catch (error) {

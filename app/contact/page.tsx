@@ -2,12 +2,13 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { ToastContainer, useToast } from "@/components/toast"
 import { Phone, Mail, MapPin } from "lucide-react"
+import { useState } from "react"
 import { validateEmail, validateRequired } from "@/lib/validation"
 
 export default function ContactPage() {
@@ -19,7 +20,7 @@ export default function ContactPage() {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
-  const [submitMessage, setSubmitMessage] = useState("")
+  const { toasts, addToast, removeToast } = useToast()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -52,12 +53,15 @@ export default function ContactPage() {
     e.preventDefault()
 
     if (!validateForm()) {
-      setSubmitMessage("Please fix the errors below")
+      addToast({
+        type: "error",
+        title: "Validation Error",
+        message: "Please fix the errors below",
+      })
       return
     }
 
     setIsLoading(true)
-    setSubmitMessage("")
 
     try {
       const response = await fetch("/api/contact", {
@@ -71,7 +75,11 @@ export default function ContactPage() {
       const result = await response.json()
 
       if (result.success) {
-        setSubmitMessage("Message sent successfully! We'll get back to you soon.")
+        addToast({
+          type: "success",
+          title: "Message Sent",
+          message: result.message,
+        })
 
         // Reset form
         setFormData({
@@ -89,10 +97,18 @@ export default function ContactPage() {
           setErrors(newErrors)
         }
 
-        setSubmitMessage(result.message || "Failed to send message. Please try again.")
+        addToast({
+          type: "error",
+          title: "Failed to Send",
+          message: result.message,
+        })
       }
     } catch (error) {
-      setSubmitMessage("Something went wrong. Please try again.")
+      addToast({
+        type: "error",
+        title: "Error",
+        message: "Something went wrong. Please try again.",
+      })
     } finally {
       setIsLoading(false)
     }
@@ -101,50 +117,55 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {/* Contact Hero Section */}
-      <section className="bg-blue-600 text-white py-16 px-4 sm:px-6">
+      <section className="bg-[#3c3679] text-white py-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold">Contact Us</h1>
-          <p className="text-xl mt-4 text-blue-100">
-            Get in touch with our team. We're here to help you grow your business.
-          </p>
+          <h1 className="text-4xl sm:text-5xl font-bold">Contact</h1>
         </div>
       </section>
 
       {/* Contact Content */}
       <section className="py-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Get in touch</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+            </p>
+          </div>
+
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Contact Info Sidebar */}
             <div className="lg:col-span-1">
-              <Card className="bg-blue-50 p-6 h-fit">
+              <Card className="bg-[#d0efff] p-6 h-fit">
                 <CardContent className="p-0">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Contact Info</h3>
                   <p className="text-gray-600 text-sm mb-6">
-                    Ready to take your business to the next level? Get in touch with our team of experts.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
                   </p>
 
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                      <div className="w-10 h-10 bg-[#3c3679] rounded-full flex items-center justify-center">
                         <Phone className="w-5 h-5 text-white" />
                       </div>
-                      <span className="text-gray-900 font-medium">+1 (555) 123-4567</span>
+                      <span className="text-gray-900 font-medium">123 456 789 10</span>
                     </div>
 
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                      <div className="w-10 h-10 bg-[#3c3679] rounded-full flex items-center justify-center">
                         <Mail className="w-5 h-5 text-white" />
                       </div>
-                      <span className="text-gray-900 font-medium">support@growvy.com</span>
+                      <span className="text-gray-900 font-medium">yourname@gmail.com</span>
                     </div>
 
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                      <div className="w-10 h-10 bg-[#3c3679] rounded-full flex items-center justify-center">
                         <MapPin className="w-5 h-5 text-white" />
                       </div>
-                      <span className="text-gray-900 font-medium">123 Business Ave, Suite 100, San Francisco, CA</span>
+                      <span className="text-gray-900 font-medium">Lorem Ipsum dolor sit amet</span>
                     </div>
                   </div>
                 </CardContent>
@@ -165,7 +186,7 @@ export default function ContactPage() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
                         errors.fullName ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter your full name"
@@ -182,7 +203,7 @@ export default function ContactPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none ${
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
                         errors.email ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter your email"
@@ -201,7 +222,7 @@ export default function ContactPage() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none ${
                       errors.subject ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter subject"
@@ -219,7 +240,7 @@ export default function ContactPage() {
                     rows={6}
                     value={formData.message}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none resize-none ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none resize-none ${
                       errors.message ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter your message"
@@ -227,22 +248,10 @@ export default function ContactPage() {
                   {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
                 </div>
 
-                {submitMessage && (
-                  <div
-                    className={`p-4 rounded-lg ${
-                      submitMessage.includes("successfully")
-                        ? "bg-green-50 text-green-800 border border-green-200"
-                        : "bg-red-50 text-red-800 border border-red-200"
-                    }`}
-                  >
-                    {submitMessage}
-                  </div>
-                )}
-
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold disabled:opacity-50"
+                  className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white py-3 text-lg font-semibold disabled:opacity-50"
                 >
                   {isLoading ? "Sending..." : "Send Message"}
                 </Button>
