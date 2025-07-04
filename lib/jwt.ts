@@ -6,17 +6,16 @@ export interface JWTPayload {
   userId: string
   email: string
   name: string
-  iat?: number
-  exp?: number
 }
 
-export function signToken(payload: Omit<JWTPayload, "iat" | "exp">): string {
+export function signToken(payload: JWTPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" })
 }
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    return decoded
   } catch (error) {
     return null
   }

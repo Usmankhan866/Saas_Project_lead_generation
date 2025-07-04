@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export interface Toast {
   id: string
   type: "success" | "error" | "info"
   title: string
-  message?: string
+  message: string
   duration?: number
 }
 
@@ -16,7 +16,7 @@ interface ToastProps {
   onRemove: (id: string) => void
 }
 
-function ToastItem({ toast, onRemove }: ToastProps) {
+function ToastComponent({ toast, onRemove }: ToastProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       onRemove(toast.id)
@@ -36,26 +36,28 @@ function ToastItem({ toast, onRemove }: ToastProps) {
     }
   }
 
-  const getBgColor = () => {
+  const getBorderColor = () => {
     switch (toast.type) {
       case "success":
-        return "bg-green-50 border-green-200"
+        return "border-l-green-500"
       case "error":
-        return "bg-red-50 border-red-200"
+        return "border-l-red-500"
       case "info":
-        return "bg-blue-50 border-blue-200"
+        return "border-l-blue-500"
     }
   }
 
   return (
-    <div className={`${getBgColor()} border rounded-lg p-4 shadow-lg max-w-sm w-full`}>
+    <div
+      className={`bg-white border-l-4 ${getBorderColor()} rounded-lg shadow-lg p-4 mb-3 max-w-sm w-full animate-in slide-in-from-right duration-300`}
+    >
       <div className="flex items-start">
         <div className="flex-shrink-0">{getIcon()}</div>
         <div className="ml-3 flex-1">
-          <p className="text-sm font-medium text-gray-900">{toast.title}</p>
-          {toast.message && <p className="mt-1 text-sm text-gray-500">{toast.message}</p>}
+          <h4 className="text-sm font-semibold text-gray-900">{toast.title}</h4>
+          <p className="text-sm text-gray-600 mt-1">{toast.message}</p>
         </div>
-        <button onClick={() => onRemove(toast.id)} className="ml-4 flex-shrink-0 text-gray-400 hover:text-gray-600">
+        <button onClick={() => onRemove(toast.id)} className="flex-shrink-0 ml-4 text-gray-400 hover:text-gray-600">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -70,15 +72,14 @@ interface ToastContainerProps {
 
 export function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2">
+    <div className="fixed top-4 right-4 z-50">
       {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
+        <ToastComponent key={toast.id} toast={toast} onRemove={onRemove} />
       ))}
     </div>
   )
 }
 
-// Hook for managing toasts
 export function useToast() {
   const [toasts, setToasts] = useState<Toast[]>([])
 
@@ -91,5 +92,9 @@ export function useToast() {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
   }
 
-  return { toasts, addToast, removeToast }
+  return {
+    toasts,
+    addToast,
+    removeToast,
+  }
 }

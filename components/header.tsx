@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
@@ -12,197 +13,221 @@ interface HeaderProps {
 
 export function Header({ showAuthButtons = true }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userName, setUserName] = useState("")
   const router = useRouter()
 
   useEffect(() => {
+    // Check if user is logged in
     const token = localStorage.getItem("authToken")
     const name = localStorage.getItem("userName")
-    setIsAuthenticated(!!token)
-    setUserName(name || "")
+    if (token && name) {
+      setIsLoggedIn(true)
+      setUserName(name)
+    }
   }, [])
 
   const handleLogout = () => {
     localStorage.removeItem("authToken")
     localStorage.removeItem("userEmail")
     localStorage.removeItem("userName")
-    setIsAuthenticated(false)
+    setIsLoggedIn(false)
+    setUserName("")
     router.push("/")
   }
 
   return (
-    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Image
-            src="/images/growvy-logo.png"
-            alt="Growvy Logo"
-            width={120}
-            height={40}
-            className="h-8 sm:h-10 w-auto cursor-pointer"
-            onClick={() => router.push("/")}
-          />
-        </div>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center space-x-8">
-          <a
-            href="/"
-            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-          >
-            Home
-          </a>
-          <a
-            href="/services"
-            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-          >
-            Services
-          </a>
-          <a
-            href="/pricing"
-            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-          >
-            Pricing
-          </a>
-          <a
-            href="/about"
-            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-          >
-            About
-          </a>
-          <a
-            href="/help"
-            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-          >
-            Help
-          </a>
-          <a
-            href="/blog"
-            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-          >
-            Blog
-          </a>
-          <a
-            href="/contact"
-            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-          >
-            Contact
-          </a>
-        </nav>
-
-        {/* Desktop Auth Buttons */}
-        {showAuthButtons && (
-          <div className="hidden sm:flex items-center space-x-3">
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                <Button
-                  onClick={() => router.push("/dashboard")}
-                  variant="outline"
-                  className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white bg-transparent"
-                >
-                  Dashboard
-                </Button>
-                <div className="flex items-center space-x-2">
-                  <Image
-                    src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40&q=80"
-                    alt={userName}
-                    width={40}
-                    height={40}
-                    className="w-10 h-10 rounded-full object-cover cursor-pointer"
-                    onClick={() => router.push("/dashboard/profile")}
-                  />
-                  <Button onClick={handleLogout} variant="ghost" size="sm">
-                    Logout
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <Button
-                  onClick={() => router.push("/login")}
-                  variant="outline"
-                  className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white bg-transparent"
-                >
-                  Log In
-                </Button>
-                <Button onClick={() => router.push("/signup")} className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
-                  Sign Up
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Mobile Menu Button */}
-        <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
-        </button>
+    <>
+      {/* Top Notification Bar */}
+      <div className="bg-[#3c3679] text-white text-center py-2 px-4 text-sm">
+        <span>🎉 Special Offer: Get 50% off your first month! </span>
+        <a href="#" className="underline hover:no-underline">
+          Learn More
+        </a>
       </div>
 
-      {/* Mobile Navigation Menu */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-          <nav className="flex flex-col space-y-4 pt-4">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a
-              href="/services"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Services
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/blog"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Blog
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-            {showAuthButtons && !isAuthenticated && (
-              <div className="flex flex-col space-y-2 pt-4">
-                <Button
-                  onClick={() => router.push("/login")}
-                  variant="outline"
-                  className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white bg-transparent"
-                >
-                  Log In
-                </Button>
-                <Button onClick={() => router.push("/signup")} className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
-                  Sign Up
-                </Button>
+      {/* Main Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center space-x-2">
+                <Image src="/images/growvy-logo.png" alt="Growvy Logo" width={120} height={40} className="h-8 w-auto" />
+              </Link>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link href="/services" className="text-gray-700 hover:text-[#3c3679] font-medium">
+                Services
+              </Link>
+              <Link href="/pricing" className="text-gray-700 hover:text-[#3c3679] font-medium">
+                Pricing
+              </Link>
+              <Link href="/about" className="text-gray-700 hover:text-[#3c3679] font-medium">
+                About
+              </Link>
+              <Link href="/blog" className="text-gray-700 hover:text-[#3c3679] font-medium">
+                Blog
+              </Link>
+              <Link href="/help" className="text-gray-700 hover:text-[#3c3679] font-medium">
+                Help
+              </Link>
+              <Link href="/contact" className="text-gray-700 hover:text-[#3c3679] font-medium">
+                Contact
+              </Link>
+            </nav>
+
+            {/* Auth Buttons */}
+            {showAuthButtons && (
+              <div className="hidden md:flex items-center space-x-4">
+                {isLoggedIn ? (
+                  <div className="flex items-center space-x-4">
+                    <span className="text-gray-700">Welcome, {userName}</span>
+                    <Button
+                      onClick={() => router.push("/dashboard")}
+                      variant="outline"
+                      className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white"
+                    >
+                      Dashboard
+                    </Button>
+                    <Button onClick={handleLogout} variant="ghost" className="text-gray-700 hover:text-[#3c3679]">
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => router.push("/login")}
+                      variant="ghost"
+                      className="text-gray-700 hover:text-[#3c3679]"
+                    >
+                      Log In
+                    </Button>
+                    <Button
+                      onClick={() => router.push("/signup")}
+                      className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white"
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
             )}
-          </nav>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-md text-gray-700 hover:text-[#3c3679] hover:bg-gray-100"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
-      )}
-    </header>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200">
+            <div className="px-4 py-2 space-y-1">
+              <Link
+                href="/services"
+                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Services
+              </Link>
+              <Link
+                href="/pricing"
+                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/about"
+                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link
+                href="/blog"
+                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
+              <Link
+                href="/help"
+                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Help
+              </Link>
+              <Link
+                href="/contact"
+                className="block px-3 py-2 text-gray-700 hover:text-[#3c3679] hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+
+              {showAuthButtons && (
+                <div className="pt-4 border-t border-gray-200">
+                  {isLoggedIn ? (
+                    <div className="space-y-2">
+                      <div className="px-3 py-2 text-gray-700">Welcome, {userName}</div>
+                      <Button
+                        onClick={() => {
+                          router.push("/dashboard")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        variant="outline"
+                        className="w-full border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white"
+                      >
+                        Dashboard
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          handleLogout()
+                          setIsMobileMenuOpen(false)
+                        }}
+                        variant="ghost"
+                        className="w-full text-gray-700 hover:text-[#3c3679]"
+                      >
+                        Logout
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Button
+                        onClick={() => {
+                          router.push("/login")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        variant="ghost"
+                        className="w-full text-gray-700 hover:text-[#3c3679]"
+                      >
+                        Log In
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          router.push("/signup")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className="w-full bg-[#3c3679] hover:bg-[#2d2a5f] text-white"
+                      >
+                        Sign Up
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </header>
+    </>
   )
 }

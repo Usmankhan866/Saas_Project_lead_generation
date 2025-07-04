@@ -1,22 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { signToken } from "@/lib/jwt"
 import { validateEmail, validatePassword } from "@/lib/validation"
-
-// Mock user database - in production, use a real database
-const users = [
-  {
-    id: "1",
-    email: "demo@example.com",
-    password: "password123",
-    name: "Demo User",
-  },
-  {
-    id: "2",
-    email: "alexarawles@gmail.com",
-    password: "password123",
-    name: "Alexa Rawles",
-  },
-]
+import { findUserByCredentials } from "@/lib/users"
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,11 +25,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Find user
-    const user = users.find((u) => u.email === email && u.password === password)
+    // Find user with credentials
+    const user = findUserByCredentials(email, password)
 
     if (!user) {
-      return NextResponse.json({ success: false, message: "Invalid email or password" }, { status: 401 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid email or password. Please check your credentials and try again.",
+        },
+        { status: 401 },
+      )
     }
 
     // Generate JWT token

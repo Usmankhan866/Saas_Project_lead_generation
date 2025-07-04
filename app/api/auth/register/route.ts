@@ -1,41 +1,26 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { signToken } from "@/lib/jwt"
 import { validateEmail, validatePassword, validateName } from "@/lib/validation"
-
-// Mock user database - in production, use a real database
-const users = [
-  {
-    id: "1",
-    email: "demo@example.com",
-    password: "password123",
-    name: "Demo User",
-  },
-  {
-    id: "2",
-    email: "alexarawles@gmail.com",
-    password: "password123",
-    name: "Alexa Rawles",
-  },
-]
+import { findUserByEmail, addUser } from "@/lib/users"
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, fullName } = await request.json()
+    const { name, email, password } = await request.json()
 
     // Validate input
+    const nameError = validateName(name)
     const emailError = validateEmail(email)
     const passwordError = validatePassword(password)
-    const nameError = validateName(fullName)
 
-    if (emailError || passwordError || nameError) {
+    if (nameError || emailError || passwordError) {
       return NextResponse.json(
         {
           success: false,
           message: "Validation failed",
           errors: [
+            ...(nameError ? [{ field: "name", message: nameError }] : []),
             ...(emailError ? [{ field: "email", message: emailError }] : []),
             ...(passwordError ? [{ field: "password", message: passwordError }] : []),
-            ...(nameError ? [{ field: "fullName", message: nameError }] : []),
           ],
         },
         { status: 400 },
@@ -43,20 +28,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = users.find((u) => u.email === email)
+    const existingUser = findUserByEmail(email)
     if (existingUser) {
-      return NextResponse.json({ success: false, message: "User with this email already exists" }, { status: 409 })
+      return NextResponse.json(
+        {
+          success: false,
+          message: "An account with this email already exists. Please use a different email or try logging in.",
+        },
+        { status: 409 },
+      )
     }
 
     // Create new user
-    const newUser = {
-      id: (users.length + 1).toString(),
-      email,
-      password,
-      name: fullName,
-    }
-
-    users.push(newUser)
+    const newUser = addUser({ name, email, password })
 
     // Generate JWT token
     const token = signToken({
@@ -67,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Registration successful",
+      message: "Account created successfully",
       data: {
         token,
         user: {
