@@ -1,255 +1,459 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import {
-  Search,
-  BookOpen,
-  MessageCircle,
-  Video,
-  FileText,
-  HelpCircle,
-  Zap,
-  Users,
-  CreditCard,
-  Settings,
-} from "lucide-react"
-import AuthHeader from "@/components/AuthHeader"
+import { Card, CardContent } from "@/components/ui/card"
+import { Menu, Instagram, Linkedin, Facebook, X, ChevronDown, ChevronUp } from "lucide-react"
+import Image from "next/image"
 import { useState } from "react"
 
 export default function HelpPage() {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(0)
 
-  const categories = [
+  const helpArticles = [
     {
-      icon: <Zap className="h-6 w-6" />,
       title: "Getting Started",
-      description: "Learn the basics of using Growvy",
-      articles: 12,
-      color: "bg-blue-100 text-blue-600",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      image:
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
+      category: "Basics",
     },
     {
-      icon: <Users className="h-6 w-6" />,
+      title: "Prompt Writing Guide",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
+      category: "Advanced",
+    },
+    {
       title: "Lead Generation",
-      description: "Master the art of finding quality leads",
-      articles: 18,
-      color: "bg-green-100 text-green-600",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      image:
+        "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
+      category: "Features",
     },
     {
-      icon: <CreditCard className="h-6 w-6" />,
-      title: "Billing & Plans",
-      description: "Manage your subscription and billing",
-      articles: 8,
-      color: "bg-purple-100 text-purple-600",
+      title: "Data Analytics",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      image:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
+      category: "Analytics",
     },
     {
-      icon: <Settings className="h-6 w-6" />,
-      title: "Account Settings",
-      description: "Customize your account preferences",
-      articles: 15,
-      color: "bg-orange-100 text-orange-600",
-    },
-  ]
-
-  const popularArticles = [
-    {
-      title: "How to create your first lead search",
-      category: "Getting Started",
-      readTime: "3 min read",
-      views: "2.1k views",
+      title: "Team Collaboration",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      image:
+        "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
+      category: "Collaboration",
     },
     {
-      title: "Understanding search filters and criteria",
-      category: "Lead Generation",
-      readTime: "5 min read",
-      views: "1.8k views",
-    },
-    {
-      title: "Exporting leads to your CRM",
-      category: "Integrations",
-      readTime: "4 min read",
-      views: "1.5k views",
-    },
-    {
-      title: "Managing your credit usage",
-      category: "Billing & Plans",
-      readTime: "2 min read",
-      views: "1.2k views",
+      title: "Account Management",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      image:
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
+      category: "Account",
     },
   ]
 
   const faqs = [
     {
-      question: "How accurate is the lead data?",
+      question: "How do I get started with Growvy's lead generation tools?",
       answer:
-        "Our lead data is sourced from multiple verified databases and is updated regularly. We maintain an accuracy rate of over 95% for contact information and business details.",
+        "Getting started with Growvy is simple. First, sign up for an account and choose your plan. Then, define your target audience using our advanced filtering options. Our AI will automatically start identifying and qualifying prospects that match your ideal customer profile. You can begin outreach immediately with our personalized messaging tools.",
     },
     {
-      question: "Can I integrate Growvy with my existing CRM?",
+      question: "What types of data can I extract using the website scraping feature?",
       answer:
-        "Yes! Growvy integrates with popular CRMs including Salesforce, HubSpot, Pipedrive, and many others. You can also export data in various formats like CSV, Excel, and JSON.",
+        "Our website scraping tool can extract various types of business data including contact information, company details, social media profiles, business descriptions, location data, and more. The tool handles JavaScript-rendered sites and dynamic content while maintaining GDPR compliance and data accuracy.",
     },
     {
-      question: "What happens if I exceed my monthly credit limit?",
+      question: "How accurate is the AI-powered research and personalization?",
       answer:
-        "If you exceed your monthly credit limit, you can purchase additional credits or upgrade to a higher plan. Your account won't be suspended, but you'll need more credits to continue searching.",
+        "Our AI research engine maintains over 95% accuracy by cross-referencing multiple premium databases and using advanced pattern recognition. The personalization feature analyzes individual communication styles, industry trends, and behavioral patterns to create highly relevant, contextual messages that significantly improve response rates.",
     },
     {
-      question: "Do you offer a free trial?",
+      question: "Can I integrate Growvy with my existing CRM system?",
       answer:
-        "Yes, we offer a 14-day free trial for new users with 50 free credits to test our platform. No credit card required to start your trial.",
+        "Yes, Growvy integrates seamlessly with popular CRM systems including Salesforce, HubSpot, Pipedrive, and many others. Our integration allows for automatic data synchronization, lead scoring updates, and workflow automation to streamline your sales process.",
     },
     {
-      question: "How do I cancel my subscription?",
+      question: "What support options are available if I need help?",
       answer:
-        "You can cancel your subscription anytime from your account settings. Your access will continue until the end of your current billing period, and you won't be charged for the next cycle.",
-    },
-    {
-      question: "Can I get a refund?",
-      answer:
-        "We offer a 30-day money-back guarantee for all new subscriptions. If you're not satisfied within the first 30 days, contact our support team for a full refund.",
+        "We offer comprehensive support including 24/7 chat support, email assistance, video tutorials, detailed documentation, and for Enterprise customers, dedicated account managers. Our support team is trained to help with both technical issues and strategic guidance for maximizing your results.",
     },
   ]
 
+  const toggleFaq = (index: number) => {
+    setExpandedFaq(expandedFaq === index ? null : index)
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <AuthHeader currentPage="help" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">How can we help you?</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            Find answers to your questions, learn how to use Growvy effectively, or get in touch with our support team.
-          </p>
-
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
-              placeholder="Search for help articles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 py-4 text-lg"
+      {/* Header */}
+      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/images/growvy-logo.png"
+              alt="Growvy Logo"
+              width={120}
+              height={40}
+              className="h-8 sm:h-10 w-auto"
             />
           </div>
-        </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <Card className="text-center p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="pt-6">
-              <BookOpen className="h-12 w-12 text-[#3c3679] mx-auto mb-4" />
-              <CardTitle className="mb-2">Browse Articles</CardTitle>
-              <CardDescription>Explore our comprehensive knowledge base</CardDescription>
-            </CardContent>
-          </Card>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8">
+            <a
+              href="/"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Home
+            </a>
+            <a
+              href="/services"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Service
+            </a>
+            <a
+              href="/pricing"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Pricing
+            </a>
+            <a
+              href="/about"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              About
+            </a>
+            <a href="#" className="text-[#3c3679] underline font-medium transition-all duration-200">
+              Help
+            </a>
+            <a
+              href="/blog"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Blog
+            </a>
+            <a
+              href="/contact"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Contact
+            </a>
+          </nav>
 
-          <Card className="text-center p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="pt-6">
-              <MessageCircle className="h-12 w-12 text-[#3c3679] mx-auto mb-4" />
-              <CardTitle className="mb-2">Contact Support</CardTitle>
-              <CardDescription>Get help from our expert support team</CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center p-6 hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="pt-6">
-              <Video className="h-12 w-12 text-[#3c3679] mx-auto mb-4" />
-              <CardTitle className="mb-2">Video Tutorials</CardTitle>
-              <CardDescription>Watch step-by-step video guides</CardDescription>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Categories */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Browse by Category</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((category, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <div className={`w-12 h-12 rounded-lg ${category.color} flex items-center justify-center mb-4`}>
-                    {category.icon}
-                  </div>
-                  <CardTitle className="text-lg">{category.title}</CardTitle>
-                  <CardDescription>{category.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Badge variant="secondary">{category.articles} articles</Badge>
-                </CardContent>
-              </Card>
-            ))}
+          {/* Desktop Buttons */}
+          <div className="hidden sm:flex items-center space-x-3">
+            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
+              Sign Up
+            </Button>
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm bg-transparent"
+            >
+              Log In
+            </Button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            <Menu className="w-6 h-6 text-gray-700" />
+          </button>
         </div>
 
-        {/* Popular Articles */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Popular Articles</h2>
-          <div className="space-y-4">
-            {popularArticles.map((article, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{article.title}</h3>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
-                        <Badge variant="outline">{article.category}</Badge>
-                        <span>{article.readTime}</span>
-                        <span>{article.views}</span>
-                      </div>
-                    </div>
-                    <FileText className="h-6 w-6 text-gray-400 ml-4" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
+            <nav className="flex flex-col space-y-4 pt-4">
+              <a
+                href="/"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Home
+              </a>
+              <a
+                href="/services"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Service
+              </a>
+              <a
+                href="/pricing"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Pricing
+              </a>
+              <a
+                href="/about"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                About
+              </a>
+              <a href="#" className="text-[#3c3679] underline font-medium transition-all duration-200">
+                Help
+              </a>
+              <a
+                href="/blog"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Blog
+              </a>
+              <a
+                href="/contact"
+                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+              >
+                Contact
+              </a>
+            </nav>
           </div>
-        </div>
+        )}
+      </header>
 
-        {/* FAQ Section */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Frequently Asked Questions</h2>
-          <Card>
-            <CardContent className="p-6">
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq, index) => (
-                  <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
-                    <AccordionContent className="text-gray-600">{faq.answer}</AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Contact Support */}
-        <div className="text-center bg-gray-50 rounded-2xl p-12">
-          <HelpCircle className="h-16 w-16 text-[#3c3679] mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Still need help?</h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Can't find what you're looking for? Our support team is here to help you get the most out of Growvy.
+      {/* Help Hero Section */}
+      <section className="bg-[#3c3679] text-white py-16 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold">Help Page</h1>
+          <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
+            Find answers to your questions and learn how to make the most of Growvy's powerful features
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-[#3c3679] hover:bg-[#2d2a5f]">
-              <MessageCircle className="mr-2 h-5 w-5" />
-              Contact Support
-            </Button>
-            <Button size="lg" variant="outline">
-              <Video className="mr-2 h-5 w-5" />
-              Schedule a Demo
-            </Button>
-          </div>
-          <div className="mt-8 text-sm text-gray-500">
-            <p>Average response time: 2 hours</p>
-            <p>Support available: Monday - Friday, 9 AM - 6 PM EST</p>
+        </div>
+      </section>
+
+      {/* Help Articles Section */}
+      <section className="py-16 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {helpArticles.map((article, index) => (
+              <Card
+                key={index}
+                className="bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-200"
+              >
+                <CardContent className="p-0">
+                  <div className="relative">
+                    <Image
+                      src={article.image || "/placeholder.svg"}
+                      alt={article.title}
+                      width={400}
+                      height={250}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-[#3c3679] text-white px-3 py-1 rounded-full text-xs font-medium">
+                        {article.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{article.title}</h3>
+                    <p className="text-gray-600 text-sm leading-relaxed mb-4">{article.description}</p>
+                    <Button
+                      variant="outline"
+                      className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white text-sm bg-transparent"
+                    >
+                      Read More
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 px-4 sm:px-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <p className="text-gray-600">Find quick answers to common questions about Growvy</p>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <Card key={index} className="bg-white">
+                <CardContent className="p-0">
+                  <button
+                    onClick={() => toggleFaq(index)}
+                    className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="font-medium text-gray-900 pr-4">{faq.question}</span>
+                    {expandedFaq === index ? (
+                      <ChevronUp className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                    )}
+                  </button>
+                  {expandedFaq === index && (
+                    <div className="px-6 pb-6">
+                      <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white px-8 py-3">Contact Now</Button>
+              <Button
+                variant="outline"
+                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white px-8 py-3 bg-transparent"
+              >
+                Book a Demo Today
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Support Section */}
+      <section className="py-16 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Still Need Help?</h2>
+          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+            Can't find what you're looking for? Our support team is here to help you succeed with Growvy.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-6">
+            <Card className="bg-[#d0efff] p-6 text-center">
+              <CardContent className="p-0">
+                <div className="text-2xl mb-3">💬</div>
+                <h3 className="font-bold text-gray-900 mb-2">Live Chat</h3>
+                <p className="text-gray-600 text-sm mb-4">Get instant help from our support team</p>
+                <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white text-sm">Start Chat</Button>
+              </CardContent>
+            </Card>
+            <Card className="bg-[#d0efff] p-6 text-center">
+              <CardContent className="p-0">
+                <div className="text-2xl mb-3">📧</div>
+                <h3 className="font-bold text-gray-900 mb-2">Email Support</h3>
+                <p className="text-gray-600 text-sm mb-4">Send us a detailed message</p>
+                <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white text-sm">Send Email</Button>
+              </CardContent>
+            </Card>
+            <Card className="bg-[#d0efff] p-6 text-center">
+              <CardContent className="p-0">
+                <div className="text-2xl mb-3">📞</div>
+                <h3 className="font-bold text-gray-900 mb-2">Phone Support</h3>
+                <p className="text-gray-600 text-sm mb-4">Speak directly with our experts</p>
+                <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white text-sm">Call Now</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#3c3679] text-white px-4 sm:px-6 py-8 sm:py-16">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center space-x-2 mb-6">
+                <Image
+                  src="/images/growvy-logo.png"
+                  alt="Growvy Logo"
+                  width={120}
+                  height={40}
+                  className="h-6 sm:h-8 w-auto brightness-0 invert"
+                />
+              </div>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a href="/" className="hover:text-gray-300 transition-colors">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a href="/services" className="hover:text-gray-300 transition-colors">
+                    Service
+                  </a>
+                </li>
+                <li>
+                  <a href="/pricing" className="hover:text-gray-300 transition-colors">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="/about" className="hover:text-gray-300 transition-colors">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="/help" className="hover:text-gray-300 transition-colors">
+                    Help
+                  </a>
+                </li>
+                <li>
+                  <a href="/blog" className="hover:text-gray-300 transition-colors">
+                    Blogs
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Contact Us</h4>
+              <ul className="space-y-2 text-sm">
+                <li>+1234567890</li>
+                <li>email@example.com</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Get in touch</h4>
+              <div className="flex space-x-3">
+                <a
+                  href="#"
+                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
+                >
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a
+                  href="#"
+                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
+                <a
+                  href="#"
+                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
+                >
+                  <Facebook className="w-4 h-4" />
+                </a>
+                <a
+                  href="#"
+                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-white/20 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-sm">
+            <p>
+              All right reserved © 2025, Develop by{" "}
+              <a
+                href="https://uk-developer.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-300 transition-colors underline"
+              >
+                UsmanKhan
+              </a>
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

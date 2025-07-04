@@ -1,14 +1,87 @@
-import AuthHeader from "@/components/AuthHeader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, ArrowRight, Zap, Target, Users, BarChart3, Mail, Phone, MapPin } from "lucide-react"
+import { CheckCircle, ArrowRight, Zap, Target, Users, BarChart3, Mail, Phone, MapPin, Menu } from "lucide-react"
 import Image from "next/image"
 
 export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-white">
-      <AuthHeader currentPage="services" />
+      {/* Header */}
+      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/images/growvy-logo.png"
+              alt="Growvy Logo"
+              width={120}
+              height={40}
+              className="h-8 sm:h-10 w-auto"
+            />
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8">
+            <a
+              href="/"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Home
+            </a>
+            <a href="/services" className="text-[#3c3679] underline font-medium transition-all duration-200">
+              Service
+            </a>
+            <a
+              href="/pricing"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Pricing
+            </a>
+            <a
+              href="/about"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              About
+            </a>
+            <a
+              href="/help"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Help
+            </a>
+            <a
+              href="/blog"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Blog
+            </a>
+            <a
+              href="/contact"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Contact
+            </a>
+          </nav>
+
+          {/* Desktop Buttons */}
+          <div className="hidden sm:flex items-center space-x-3">
+            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
+              Sign Up
+            </Button>
+            <Button
+              variant="outline"
+              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm bg-transparent"
+            >
+              Log In
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button className="lg:hidden p-2">
+            <Menu className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
+      </header>
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#f8faff] to-[#e8f4ff] px-4 sm:px-6 py-16 lg:py-24">
@@ -45,7 +118,7 @@ export default function ServicesPage() {
                   "Real-time lead scoring",
                   "Automated lead qualification",
                 ],
-                image: "/images/how-it-work-1-new.png",
+                image: "/images/how-it-work-1.png",
               },
               {
                 icon: Zap,
@@ -58,7 +131,7 @@ export default function ServicesPage() {
                   "Custom scraping rules",
                   "Data validation & cleaning",
                 ],
-                image: "/images/how-it-work-2-new.png",
+                image: "/images/how-it-work-2.png",
               },
               {
                 icon: BarChart3,
