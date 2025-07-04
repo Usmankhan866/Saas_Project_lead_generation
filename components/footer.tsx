@@ -27,7 +27,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="/services" className="hover:text-gray-300 transition-colors">
-                  Services
+                  Service
                 </a>
               </li>
               <li>
@@ -47,7 +47,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="/blog" className="hover:text-gray-300 transition-colors">
-                  Blog
+                  Blogs
                 </a>
               </li>
             </ul>

@@ -1,10 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Menu } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 interface HeaderProps {
   showAuthButtons?: boolean
@@ -13,21 +13,14 @@ interface HeaderProps {
 export function Header({ showAuthButtons = true }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [userEmail, setUserEmail] = useState("")
   const [userName, setUserName] = useState("")
   const router = useRouter()
-  const pathname = usePathname()
 
   useEffect(() => {
     const token = localStorage.getItem("authToken")
-    const email = localStorage.getItem("userEmail")
     const name = localStorage.getItem("userName")
-
-    if (token && email) {
-      setIsAuthenticated(true)
-      setUserEmail(email)
-      setUserName(name || "User")
-    }
+    setIsAuthenticated(!!token)
+    setUserName(name || "")
   }, [])
 
   const handleLogout = () => {
@@ -38,22 +31,8 @@ export function Header({ showAuthButtons = true }: HeaderProps) {
     router.push("/")
   }
 
-  const isActivePage = (path: string) => {
-    return pathname === path
-  }
-
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/services", label: "Services" },
-    { href: "/pricing", label: "Pricing" },
-    { href: "/about", label: "About" },
-    { href: "/help", label: "Help" },
-    { href: "/blog", label: "Blog" },
-    { href: "/contact", label: "Contact" },
-  ]
-
   return (
-    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4 sticky top-0 z-50">
+    <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Image
@@ -68,79 +47,96 @@ export function Header({ showAuthButtons = true }: HeaderProps) {
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className={`font-medium transition-all duration-200 ${
-                isActivePage(link.href)
-                  ? "text-[#3c3679] underline"
-                  : "text-gray-700 hover:text-[#3c3679] hover:underline"
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
+          <a
+            href="/"
+            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+          >
+            Home
+          </a>
+          <a
+            href="/services"
+            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+          >
+            Services
+          </a>
+          <a
+            href="/pricing"
+            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+          >
+            Pricing
+          </a>
+          <a
+            href="/about"
+            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+          >
+            About
+          </a>
+          <a
+            href="/help"
+            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+          >
+            Help
+          </a>
+          <a
+            href="/blog"
+            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+          >
+            Blog
+          </a>
+          <a
+            href="/contact"
+            className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+          >
+            Contact
+          </a>
         </nav>
 
-        {/* Desktop User Section */}
-        <div className="hidden sm:flex items-center space-x-3">
-          {showAuthButtons && (
-            <>
-              {isAuthenticated ? (
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-3">
-                    <Image
-                      src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40&q=80"
-                      alt={userName}
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded-full object-cover cursor-pointer"
-                      onClick={() => router.push("/dashboard/profile")}
-                    />
-                    <div className="text-sm">
-                      <div className="font-medium text-gray-900">{userName}</div>
-                      <div className="text-gray-500">{userEmail}</div>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => router.push("/dashboard")}
-                    className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm"
-                  >
-                    Dashboard
-                  </Button>
-                  <Button
-                    onClick={handleLogout}
-                    variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm bg-transparent"
-                  >
+        {/* Desktop Auth Buttons */}
+        {showAuthButtons && (
+          <div className="hidden sm:flex items-center space-x-3">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-3">
+                <Button
+                  onClick={() => router.push("/dashboard")}
+                  variant="outline"
+                  className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white bg-transparent"
+                >
+                  Dashboard
+                </Button>
+                <div className="flex items-center space-x-2">
+                  <Image
+                    src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40&q=80"
+                    alt={userName}
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                    onClick={() => router.push("/dashboard/profile")}
+                  />
+                  <Button onClick={handleLogout} variant="ghost" size="sm">
                     Logout
                   </Button>
                 </div>
-              ) : (
-                <>
-                  <Button
-                    onClick={() => router.push("/signup")}
-                    className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm"
-                  >
-                    Sign Up
-                  </Button>
-                  <Button
-                    onClick={() => router.push("/login")}
-                    variant="outline"
-                    className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
-                  >
-                    Log In
-                  </Button>
-                </>
-              )}
-            </>
-          )}
-        </div>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Button
+                  onClick={() => router.push("/login")}
+                  variant="outline"
+                  className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white bg-transparent"
+                >
+                  Log In
+                </Button>
+                <Button onClick={() => router.push("/signup")} className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
+                  Sign Up
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Mobile Menu Button */}
         <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          <Menu className="w-6 h-6 text-gray-700" />
+          {isMobileMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
         </button>
       </div>
 
@@ -148,55 +144,60 @@ export function Header({ showAuthButtons = true }: HeaderProps) {
       {isMobileMenuOpen && (
         <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
           <nav className="flex flex-col space-y-4 pt-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={`font-medium transition-all duration-200 ${
-                  isActivePage(link.href)
-                    ? "text-[#3c3679] underline"
-                    : "text-gray-700 hover:text-[#3c3679] hover:underline"
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
-
-            {showAuthButtons && (
-              <div className="flex flex-col sm:hidden space-y-2 pt-4">
-                {isAuthenticated ? (
-                  <>
-                    <Button
-                      onClick={() => router.push("/dashboard")}
-                      className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-6 py-2 text-sm"
-                    >
-                      Dashboard
-                    </Button>
-                    <Button
-                      onClick={handleLogout}
-                      variant="outline"
-                      className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm bg-transparent"
-                    >
-                      Logout
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      onClick={() => router.push("/signup")}
-                      className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-6 py-2 text-sm"
-                    >
-                      Sign Up
-                    </Button>
-                    <Button
-                      onClick={() => router.push("/login")}
-                      variant="outline"
-                      className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-2 text-sm"
-                    >
-                      Log In
-                    </Button>
-                  </>
-                )}
+            <a
+              href="/"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Home
+            </a>
+            <a
+              href="/services"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Services
+            </a>
+            <a
+              href="/pricing"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Pricing
+            </a>
+            <a
+              href="/about"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              About
+            </a>
+            <a
+              href="/help"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Help
+            </a>
+            <a
+              href="/blog"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Blog
+            </a>
+            <a
+              href="/contact"
+              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
+            >
+              Contact
+            </a>
+            {showAuthButtons && !isAuthenticated && (
+              <div className="flex flex-col space-y-2 pt-4">
+                <Button
+                  onClick={() => router.push("/login")}
+                  variant="outline"
+                  className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white bg-transparent"
+                >
+                  Log In
+                </Button>
+                <Button onClick={() => router.push("/signup")} className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
+                  Sign Up
+                </Button>
               </div>
             )}
           </nav>
