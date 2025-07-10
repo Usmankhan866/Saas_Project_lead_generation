@@ -11,6 +11,7 @@ import {
   Star,
   HelpCircle,
   CreditCard,
+  Edit,
   Trash2,
   Download,
   Plus,
@@ -171,7 +172,7 @@ export default function DashboardPage() {
   // Quick Start Templates
   const executeQuickStart = (template: string) => {
     switch (template) {
-      case 'google-basic':
+      case "google-basic":
         setGoogleBusinessForm({
           keywords: "restaurants",
           countries: ["United States"],
@@ -188,8 +189,8 @@ export default function DashboardPage() {
         })
         setShowModal("google-business")
         break
-      
-      case 'people-advanced':
+
+      case "people-advanced":
         setPeopleSearchForm({
           includeLevels: ["C-suite", "Manager"],
           includeJobFunctions: ["Sales", "Engineering"],
@@ -219,8 +220,8 @@ export default function DashboardPage() {
         })
         setShowModal("people-search")
         break
-      
-      case 'business-advanced':
+
+      case "business-advanced":
         setGoogleBusinessForm({
           keywords: "software companies",
           countries: ["United States"],
@@ -609,10 +610,13 @@ export default function DashboardPage() {
           {/* Quick Start Section */}
           <section className="mb-12">
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Quick Start Templates</h1>
-            
+
             {/* Quick Start Templates */}
             <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => executeQuickStart('google-basic')}>
+              <Card
+                className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => executeQuickStart("google-basic")}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="bg-blue-600 text-white p-3 rounded-lg mr-4">
@@ -624,10 +628,18 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="space-y-2 text-sm text-gray-700">
-                    <p><strong>Keywords:</strong> restaurants</p>
-                    <p><strong>Country:</strong> United States</p>
-                    <p><strong>Region:</strong> New York</p>
-                    <p><strong>Quantity:</strong> 50 results</p>
+                    <p>
+                      <strong>Keywords:</strong> restaurants
+                    </p>
+                    <p>
+                      <strong>Country:</strong> United States
+                    </p>
+                    <p>
+                      <strong>Region:</strong> New York
+                    </p>
+                    <p>
+                      <strong>Quantity:</strong> 50 results
+                    </p>
                   </div>
                   <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white">
                     <Zap className="w-4 h-4 mr-2" />
@@ -636,7 +648,10 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => executeQuickStart('people-advanced')}>
+              <Card
+                className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => executeQuickStart("people-advanced")}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="bg-purple-600 text-white p-3 rounded-lg mr-4">
@@ -648,10 +663,18 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="space-y-2 text-sm text-gray-700">
-                    <p><strong>Levels:</strong> C-suite, Manager</p>
-                    <p><strong>Functions:</strong> Sales, Engineering</p>
-                    <p><strong>Titles:</strong> Founder, VP, CEO</p>
-                    <p><strong>Company Size:</strong> 11-200 employees</p>
+                    <p>
+                      <strong>Levels:</strong> C-suite, Manager
+                    </p>
+                    <p>
+                      <strong>Functions:</strong> Sales, Engineering
+                    </p>
+                    <p>
+                      <strong>Titles:</strong> Founder, VP, CEO
+                    </p>
+                    <p>
+                      <strong>Company Size:</strong> 11-200 employees
+                    </p>
                   </div>
                   <Button className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white">
                     <Zap className="w-4 h-4 mr-2" />
@@ -660,7 +683,10 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => executeQuickStart('business-advanced')}>
+              <Card
+                className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-shadow cursor-pointer"
+                onClick={() => executeQuickStart("business-advanced")}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="bg-green-600 text-white p-3 rounded-lg mr-4">
@@ -672,10 +698,18 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div className="space-y-2 text-sm text-gray-700">
-                    <p><strong>Industry:</strong> Software Development</p>
-                    <p><strong>Size:</strong> 11-50 employees</p>
-                    <p><strong>Type:</strong> Privately Held</p>
-                    <p><strong>Keywords:</strong> sales, data, outbound</p>
+                    <p>
+                      <strong>Industry:</strong> Software Development
+                    </p>
+                    <p>
+                      <strong>Size:</strong> 11-50 employees
+                    </p>
+                    <p>
+                      <strong>Type:</strong> Privately Held
+                    </p>
+                    <p>
+                      <strong>Keywords:</strong> sales, data, outbound
+                    </p>
                   </div>
                   <Button className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white">
                     <Zap className="w-4 h-4 mr-2" />
@@ -824,4 +858,988 @@ export default function DashboardPage() {
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thea\
+                      <thead className="border-b border-gray-200">
+                        <tr>
+                          <th className="text-left p-4 font-medium text-gray-900">
+                            <input
+                              type="checkbox"
+                              checked={businesses.every((b) => b.selected)}
+                              onChange={(e) => handleSelectAll("businesses", e.target.checked)}
+                              className="rounded border-gray-300"
+                            />
+                          </th>
+                          <th className="text-left p-4 font-medium text-gray-900">Business Name</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Address</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Phone</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Rating</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Category</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {businesses.map((business) => (
+                          <tr key={business.id} className="border-b border-gray-100 hover:bg-gray-50">
+                            <td className="p-4">
+                              <input
+                                type="checkbox"
+                                checked={business.selected}
+                                onChange={(e) => handleSelectItem("businesses", business.id, e.target.checked)}
+                                className="rounded border-gray-300"
+                              />
+                            </td>
+                            <td className="p-4">
+                              {editingRow === business.id ? (
+                                <input
+                                  type="text"
+                                  value={editData.name || ""}
+                                  onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                />
+                              ) : (
+                                <div>
+                                  <div className="font-medium text-gray-900">{business.name}</div>
+                                  <div className="text-sm text-gray-500">{business.website}</div>
+                                </div>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              {editingRow === business.id ? (
+                                <input
+                                  type="text"
+                                  value={editData.address || ""}
+                                  onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                />
+                              ) : (
+                                <span className="text-gray-600">{business.address}</span>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              {editingRow === business.id ? (
+                                <input
+                                  type="text"
+                                  value={editData.phone || ""}
+                                  onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                />
+                              ) : (
+                                <span className="text-gray-600">{business.phone}</span>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center space-x-1">
+                                <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                <span className="text-gray-900">{business.rating}</span>
+                                <span className="text-gray-500">({business.reviews})</span>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <span className="text-gray-600">{business.category}</span>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center space-x-2">
+                                {editingRow === business.id ? (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleSaveEdit("businesses", business.id)}
+                                      className="bg-green-600 hover:bg-green-700 text-white"
+                                    >
+                                      Save
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => setEditingRow(null)}
+                                      className="text-gray-600"
+                                    >
+                                      Cancel
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleEditRow("businesses", business.id)}
+                                      className="text-blue-600 hover:text-blue-800"
+                                    >
+                                      <Edit className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleDeleteRow("businesses", business.id)}
+                                      className="text-red-600 hover:text-red-800"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+          )}
+
+          {/* People Search Results */}
+          {people.length > 0 && (
+            <section className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-900">People Search Results</h2>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleSelectAll("people", true)}
+                    className="bg-transparent"
+                  >
+                    Select All
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleSelectAll("people", false)}
+                    className="bg-transparent"
+                  >
+                    Deselect All
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleExportSelected("people")}
+                    className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Export Selected
+                  </Button>
+                </div>
+              </div>
+
+              <Card className="bg-white">
+                <CardContent className="p-0">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="border-b border-gray-200">
+                        <tr>
+                          <th className="text-left p-4 font-medium text-gray-900">
+                            <input
+                              type="checkbox"
+                              checked={people.every((p) => p.selected)}
+                              onChange={(e) => handleSelectAll("people", e.target.checked)}
+                              className="rounded border-gray-300"
+                            />
+                          </th>
+                          <th className="text-left p-4 font-medium text-gray-900">Name</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Job Title</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Company</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Location</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Email</th>
+                          <th className="text-left p-4 font-medium text-gray-900">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {people.map((person) => (
+                          <tr key={person.id} className="border-b border-gray-100 hover:bg-gray-50">
+                            <td className="p-4">
+                              <input
+                                type="checkbox"
+                                checked={person.selected}
+                                onChange={(e) => handleSelectItem("people", person.id, e.target.checked)}
+                                className="rounded border-gray-300"
+                              />
+                            </td>
+                            <td className="p-4">
+                              {editingRow === person.id ? (
+                                <input
+                                  type="text"
+                                  value={editData.name || ""}
+                                  onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                />
+                              ) : (
+                                <div className="font-medium text-gray-900">{person.name}</div>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              {editingRow === person.id ? (
+                                <input
+                                  type="text"
+                                  value={editData.jobTitle || ""}
+                                  onChange={(e) => setEditData({ ...editData, jobTitle: e.target.value })}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                />
+                              ) : (
+                                <span className="text-gray-600">{person.jobTitle}</span>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              {editingRow === person.id ? (
+                                <input
+                                  type="text"
+                                  value={editData.company || ""}
+                                  onChange={(e) => setEditData({ ...editData, company: e.target.value })}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                />
+                              ) : (
+                                <span className="text-gray-600">{person.company}</span>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              <span className="text-gray-600">{person.location}</span>
+                            </td>
+                            <td className="p-4">
+                              {editingRow === person.id ? (
+                                <input
+                                  type="email"
+                                  value={editData.email || ""}
+                                  onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                                  className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                                />
+                              ) : (
+                                <span className="text-gray-600">{person.email}</span>
+                              )}
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center space-x-2">
+                                {editingRow === person.id ? (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleSaveEdit("people", person.id)}
+                                      className="bg-green-600 hover:bg-green-700 text-white"
+                                    >
+                                      Save
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => setEditingRow(null)}
+                                      className="text-gray-600"
+                                    >
+                                      Cancel
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleEditRow("people", person.id)}
+                                      className="text-blue-600 hover:text-blue-800"
+                                    >
+                                      <Edit className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleDeleteRow("people", person.id)}
+                                      className="text-red-600 hover:text-red-800"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+          )}
+        </div>
+      </main>
+
+      {/* Google Business Search Modal */}
+      {showModal === "google-business" && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Google Business Search</h2>
+                <Button variant="ghost" onClick={() => setShowModal(null)} className="text-gray-500">
+                  ×
+                </Button>
+              </div>
+
+              <form onSubmit={handleGoogleBusinessSearch} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Keywords *</label>
+                    <input
+                      type="text"
+                      value={googleBusinessForm.keywords}
+                      onChange={(e) => setGoogleBusinessForm({ ...googleBusinessForm, keywords: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      placeholder="e.g., restaurants, dentists, lawyers"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Limit Results</label>
+                    <input
+                      type="number"
+                      value={googleBusinessForm.limit}
+                      onChange={(e) =>
+                        setGoogleBusinessForm({ ...googleBusinessForm, limit: Number.parseInt(e.target.value) || 50 })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      min="1"
+                      max="1000"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <MultiSelectDropdown
+                    label="Countries"
+                    options={[
+                      "United States",
+                      "Canada",
+                      "United Kingdom",
+                      "Australia",
+                      "Germany",
+                      "France",
+                      "Spain",
+                      "Italy",
+                    ]}
+                    selected={googleBusinessForm.countries}
+                    onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, countries: values })}
+                    placeholder="Select countries"
+                  />
+
+                  <MultiSelectDropdown
+                    label="Industries"
+                    options={[
+                      "Software Development",
+                      "Healthcare",
+                      "Finance",
+                      "Retail",
+                      "Manufacturing",
+                      "Education",
+                      "Real Estate",
+                      "Advertising Services",
+                    ]}
+                    selected={googleBusinessForm.industries}
+                    onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, industries: values })}
+                    placeholder="Select industries"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <MultiSelectDropdown
+                    label="Include Cities"
+                    options={[
+                      "New York",
+                      "Los Angeles",
+                      "Chicago",
+                      "Houston",
+                      "Phoenix",
+                      "Philadelphia",
+                      "San Antonio",
+                      "San Diego",
+                      "Dallas",
+                      "San Jose",
+                      "Austin",
+                      "Jacksonville",
+                      "Fort Worth",
+                      "Columbus",
+                      "Charlotte",
+                      "San Francisco",
+                      "Indianapolis",
+                      "Seattle",
+                      "Denver",
+                      "Washington",
+                    ]}
+                    selected={googleBusinessForm.includeCities}
+                    onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, includeCities: values })}
+                    placeholder="Select cities to include"
+                  />
+
+                  <MultiSelectDropdown
+                    label="Exclude Cities"
+                    options={[
+                      "New York",
+                      "Los Angeles",
+                      "Chicago",
+                      "Houston",
+                      "Phoenix",
+                      "Philadelphia",
+                      "San Antonio",
+                      "San Diego",
+                      "Dallas",
+                      "San Jose",
+                      "Austin",
+                      "Jacksonville",
+                      "Fort Worth",
+                      "Columbus",
+                      "Charlotte",
+                      "San Francisco",
+                      "Indianapolis",
+                      "Seattle",
+                      "Denver",
+                      "Washington",
+                    ]}
+                    selected={googleBusinessForm.excludeCities}
+                    onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, excludeCities: values })}
+                    placeholder="Select cities to exclude"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <MultiSelectDropdown
+                    label="Company Sizes"
+                    options={[
+                      "1-10 employees",
+                      "11-50 employees",
+                      "51-200 employees",
+                      "201-500 employees",
+                      "501-1000 employees",
+                      "1000+ employees",
+                    ]}
+                    selected={googleBusinessForm.companySizes}
+                    onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, companySizes: values })}
+                    placeholder="Select company sizes"
+                  />
+
+                  <MultiSelectDropdown
+                    label="Company Types"
+                    options={[
+                      "Privately Held",
+                      "Public Company",
+                      "Partnership",
+                      "Non-profit",
+                      "Government Agency",
+                      "Educational Institution",
+                    ]}
+                    selected={googleBusinessForm.companyTypes}
+                    onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, companyTypes: values })}
+                    placeholder="Select company types"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Include Description Keywords</label>
+                    <input
+                      type="text"
+                      value={googleBusinessForm.includeDescriptionKeywords}
+                      onChange={(e) =>
+                        setGoogleBusinessForm({ ...googleBusinessForm, includeDescriptionKeywords: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      placeholder="e.g., sales, data, outbound"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Exclude Description Keywords</label>
+                    <input
+                      type="text"
+                      value={googleBusinessForm.excludeDescriptionKeywords}
+                      onChange={(e) =>
+                        setGoogleBusinessForm({ ...googleBusinessForm, excludeDescriptionKeywords: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      placeholder="e.g., agency, marketing"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Follower Count</label>
+                  <input
+                    type="number"
+                    value={googleBusinessForm.minFollowerCount}
+                    onChange={(e) => setGoogleBusinessForm({ ...googleBusinessForm, minFollowerCount: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                    placeholder="e.g., 10"
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-4">
+                  <Button type="button" variant="outline" onClick={() => setShowModal(null)} className="bg-transparent">
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting} className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
+                    {isSubmitting ? "Searching..." : "Start Search"}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* People Search Modal */}
+      {showModal === "people-search" && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">People Search</h2>
+                <Button variant="ghost" onClick={() => setShowModal(null)} className="text-gray-500">
+                  ×
+                </Button>
+              </div>
+
+              <form onSubmit={handlePeopleSearch} className="space-y-8">
+                {/* Job Title & Role Section */}
+                <div className="border-b border-gray-200 pb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 Job Title & Role</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <MultiSelectDropdown
+                      label="Include Levels"
+                      options={["C-suite", "VP", "Director", "Manager", "Senior", "Mid-level", "Junior", "Entry-level"]}
+                      selected={peopleSearchForm.includeLevels}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeLevels: values })}
+                      placeholder="Select job levels"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Job Functions"
+                      options={[
+                        "Sales",
+                        "Marketing",
+                        "Engineering",
+                        "Product",
+                        "Operations",
+                        "Finance",
+                        "HR",
+                        "Customer Success",
+                      ]}
+                      selected={peopleSearchForm.includeJobFunctions}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeJobFunctions: values })}
+                      placeholder="Select job functions"
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6 mt-4">
+                    <MultiSelectDropdown
+                      label="Include Job Titles"
+                      options={[
+                        "Founder",
+                        "CEO",
+                        "CTO",
+                        "VP Sales",
+                        "VP Marketing",
+                        "Director",
+                        "Manager",
+                        "Senior Manager",
+                      ]}
+                      selected={peopleSearchForm.includeJobTitles}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeJobTitles: values })}
+                      placeholder="Select job titles to include"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Job Titles"
+                      options={["Vice", "Junior", "Intern", "Assistant", "Coordinator", "Analyst"]}
+                      selected={peopleSearchForm.excludeJobTitles}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeJobTitles: values })}
+                      placeholder="Select job titles to exclude"
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={peopleSearchForm.exactKeywordMatch}
+                        onChange={(e) =>
+                          setPeopleSearchForm({ ...peopleSearchForm, exactKeywordMatch: e.target.checked })
+                        }
+                        className="rounded border-gray-300 mr-2"
+                      />
+                      <span className="text-sm text-gray-700">
+                        Use Exact Keyword Match (only match exact job titles)
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Company Attributes Section */}
+                <div className="border-b border-gray-200 pb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🏢 Company Attributes</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <MultiSelectDropdown
+                      label="Company Sizes"
+                      options={["1–10", "11–50", "51–200", "201–500", "501–1000", "1001–5000", "5000+"]}
+                      selected={peopleSearchForm.companySizes}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, companySizes: values })}
+                      placeholder="Select company sizes"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Industries"
+                      options={[
+                        "Software Development",
+                        "Technology",
+                        "Healthcare",
+                        "Finance",
+                        "Retail",
+                        "Manufacturing",
+                        "Education",
+                        "Consulting",
+                      ]}
+                      selected={peopleSearchForm.includeIndustries}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeIndustries: values })}
+                      placeholder="Select industries to include"
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Include Description Keywords
+                      </label>
+                      <input
+                        type="text"
+                        value={peopleSearchForm.includeDescriptionKeywords}
+                        onChange={(e) =>
+                          setPeopleSearchForm({ ...peopleSearchForm, includeDescriptionKeywords: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., sales, data, outbound"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Exclude Description Keywords
+                      </label>
+                      <input
+                        type="text"
+                        value={peopleSearchForm.excludeDescriptionKeywords}
+                        onChange={(e) =>
+                          setPeopleSearchForm({ ...peopleSearchForm, excludeDescriptionKeywords: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., marketing, agency"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location Filters Section */}
+                <div className="border-b border-gray-200 pb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🌍 Location Filters</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <MultiSelectDropdown
+                      label="Include Countries"
+                      options={[
+                        "United States",
+                        "Canada",
+                        "United Kingdom",
+                        "Germany",
+                        "France",
+                        "Spain",
+                        "Australia",
+                        "Netherlands",
+                      ]}
+                      selected={peopleSearchForm.includeCountries}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeCountries: values })}
+                      placeholder="Select countries to include"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Countries"
+                      options={[
+                        "United States",
+                        "Canada",
+                        "United Kingdom",
+                        "Germany",
+                        "France",
+                        "Spain",
+                        "Australia",
+                        "Netherlands",
+                      ]}
+                      selected={peopleSearchForm.excludeCountries}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeCountries: values })}
+                      placeholder="Select countries to exclude"
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6 mt-4">
+                    <MultiSelectDropdown
+                      label="Include Regions"
+                      options={["NAM", "LATAM", "EMEA", "APAC"]}
+                      selected={peopleSearchForm.includeRegions}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeRegions: values })}
+                      placeholder="Select regions to include"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Regions"
+                      options={["NAM", "LATAM", "EMEA", "APAC"]}
+                      selected={peopleSearchForm.excludeRegions}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeRegions: values })}
+                      placeholder="Select regions to exclude"
+                    />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6 mt-4">
+                    <MultiSelectDropdown
+                      label="Include Cities"
+                      options={[
+                        "San Francisco",
+                        "New York",
+                        "London",
+                        "Toronto",
+                        "Berlin",
+                        "Paris",
+                        "Sydney",
+                        "Amsterdam",
+                      ]}
+                      selected={peopleSearchForm.includeCities}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeCities: values })}
+                      placeholder="Select cities to include"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Cities"
+                      options={[
+                        "San Francisco",
+                        "New York",
+                        "London",
+                        "Toronto",
+                        "Berlin",
+                        "Paris",
+                        "Sydney",
+                        "Amsterdam",
+                      ]}
+                      selected={peopleSearchForm.excludeCities}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeCities: values })}
+                      placeholder="Select cities to exclude"
+                    />
+                  </div>
+
+                  <div className="mt-4">
+                    <MultiSelectDropdown
+                      label="Include States/Provinces"
+                      options={["California", "New York", "Texas", "Florida", "Ontario", "Quebec", "British Columbia"]}
+                      selected={peopleSearchForm.includeStates}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeStates: values })}
+                      placeholder="Select states/provinces"
+                    />
+                  </div>
+                </div>
+
+                {/* Experience Section */}
+                <div className="border-b border-gray-200 pb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🧠 Experience</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Minimum Months in Current Role
+                      </label>
+                      <input
+                        type="number"
+                        value={peopleSearchForm.minMonthsInRole}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            minMonthsInRole: Number.parseInt(e.target.value) || 0,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        min="0"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Maximum Months in Current Role
+                      </label>
+                      <input
+                        type="number"
+                        value={peopleSearchForm.maxMonthsInRole}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            maxMonthsInRole: Number.parseInt(e.target.value) || 0,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6 mt-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Minimum Number of Experiences
+                      </label>
+                      <input
+                        type="number"
+                        value={peopleSearchForm.minExperiences}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            minExperiences: Number.parseInt(e.target.value) || 0,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        min="0"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Maximum Number of Experiences
+                      </label>
+                      <input
+                        type="number"
+                        value={peopleSearchForm.maxExperiences}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            maxExperiences: Number.parseInt(e.target.value) || 0,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Experience Keywords</label>
+                    <input
+                      type="text"
+                      value={peopleSearchForm.experienceKeywords}
+                      onChange={(e) => setPeopleSearchForm({ ...peopleSearchForm, experienceKeywords: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      placeholder="e.g., Product roadmap, manager, growth"
+                    />
+                  </div>
+                </div>
+
+                {/* Limit Results Section */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📉 Limit Results</h3>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Total Limit</label>
+                      <input
+                        type="number"
+                        value={peopleSearchForm.totalLimit}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            totalLimit: Number.parseInt(e.target.value) || 50,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        min="1"
+                        max="1000"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Limit Per Company</label>
+                      <input
+                        type="number"
+                        value={peopleSearchForm.limitPerCompany}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            limitPerCompany: Number.parseInt(e.target.value) || 10,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        min="1"
+                        max="100"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Follower Count</label>
+                      <input
+                        type="number"
+                        value={peopleSearchForm.minFollowerCount}
+                        onChange={(e) => setPeopleSearchForm({ ...peopleSearchForm, minFollowerCount: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., 10"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-4">
+                  <Button type="button" variant="outline" onClick={() => setShowModal(null)} className="bg-transparent">
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting} className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
+                    {isSubmitting ? "Searching..." : "Start Search"}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Create Workflow Modal */}
+      {showModal === "create-workflow" && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Create Workflow</h2>
+                <Button variant="ghost" onClick={() => setShowModal(null)} className="text-gray-500">
+                  ×
+                </Button>
+              </div>
+
+              <form onSubmit={handleCreateWorkflow} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Workflow Name *</label>
+                  <input
+                    type="text"
+                    value={workflowForm.name}
+                    onChange={(e) => setWorkflowForm({ ...workflowForm, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                    placeholder="Enter workflow name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea
+                    value={workflowForm.description}
+                    onChange={(e) => setWorkflowForm({ ...workflowForm, description: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none resize-none"
+                    rows={3}
+                    placeholder="Describe your workflow"
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-4">
+                  <Button type="button" variant="outline" onClick={() => setShowModal(null)} className="bg-transparent">
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting} className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
+                    {isSubmitting ? "Creating..." : "Create Workflow"}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
