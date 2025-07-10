@@ -4,17 +4,18 @@ import { verifyToken } from "@/lib/jwt"
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authorization token required" }, { status: 401 })
     }
 
-    const payload = verifyToken(token)
-    if (!payload) {
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
+    const body = await request.json()
     const {
       includeLevels,
       includeJobFunctions,
@@ -41,117 +42,47 @@ export async function POST(request: NextRequest) {
       totalLimit,
       limitPerCompany,
       minFollowerCount,
-    } = await request.json()
+    } = body
 
-    // Validate input - at least one search criteria is required
-    if (
-      !includeLevels?.length &&
-      !includeJobFunctions?.length &&
-      !includeJobTitles?.length &&
-      !includeCountries?.length
-    ) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "At least one search criteria is required",
-          errors: [{ field: "general", message: "Please provide at least one search criteria" }],
-        },
-        { status: 400 },
-      )
-    }
+    // Simulate API processing delay
+    await new Promise((resolve) => setTimeout(resolve, 2500))
 
-    if (!totalLimit || totalLimit < 1 || totalLimit > 1000) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Total limit must be between 1 and 1000",
-          errors: [{ field: "totalLimit", message: "Total limit must be between 1 and 1000" }],
-        },
-        { status: 400 },
-      )
-    }
+    // Generate mock people data based on search criteria
+    const jobTitles = includeJobTitles?.length > 0 ? includeJobTitles : ["CEO", "VP Sales", "Manager", "Founder"]
+    const companies = ["TechCorp", "DataSoft", "SalesForce Inc", "GrowthCo", "InnovateLab"]
+    const locations = includeCities?.length > 0 ? includeCities : ["San Francisco", "New York", "London"]
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    const mockPeople = Array.from({ length: Math.min(totalLimit || 10, 25) }, (_, index) => ({
+      id: `person_${Math.random().toString(36).substring(2, 15)}`,
+      name: `${["John", "Jane", "Michael", "Sarah", "David", "Emily"][index % 6]} ${["Smith", "Johnson", "Williams", "Brown", "Jones"][index % 5]}`,
+      jobTitle: jobTitles[index % jobTitles.length],
+      company: companies[index % companies.length],
+      location: `${locations[index % locations.length]}, ${includeCountries?.[0] || "United States"}`,
+      email: `person${index + 1}@${companies[index % companies.length].toLowerCase().replace(/\s+/g, "")}.com`,
+      linkedin: `https://linkedin.com/in/person${index + 1}`,
+      phone: `+1 (555) ${String(Math.floor(Math.random() * 900) + 100)}-${String(Math.floor(Math.random() * 9000) + 1000)}`,
+      experience: `${Math.floor(Math.random() * 10) + 3} years`,
+      industry: includeIndustries?.[0] || "Software Development",
+      selected: false,
+    }))
 
-    // Mock people data with comprehensive filtering
-    const people = Array.from({ length: Math.min(totalLimit, 30) }, (_, i) => {
-      const jobTitles =
-        includeJobTitles.length > 0
-          ? includeJobTitles
-          : ["Software Engineer", "Marketing Manager", "Sales Director", "Product Manager", "Designer", "Analyst"]
-      const companies = [
-        "Tech Corp",
-        "Innovation Inc",
-        "Digital Solutions",
-        "Future Systems",
-        "Smart Tech",
-        "Global Dynamics",
-      ]
-      const locations =
-        includeCountries.length > 0
-          ? includeCountries.map(
-              (country) => `${includeCities.length > 0 ? includeCities[i % includeCities.length] : "City"}, ${country}`,
-            )
-          : ["New York, NY", "San Francisco, CA", "Austin, TX", "Seattle, WA", "Boston, MA", "Chicago, IL"]
-
-      return {
-        id: `person_${i + 1}`,
-        name: `${["John", "Jane", "Mike", "Sarah", "David", "Lisa", "Alex", "Emma", "Chris", "Taylor"][i % 10]} ${["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"][i % 10]}`,
-        jobTitle: jobTitles[i % jobTitles.length],
-        company: companies[i % companies.length],
-        location: locations[i % locations.length],
-        email: `person${i + 1}@example.com`,
-        linkedin: `https://linkedin.com/in/person${i + 1}`,
-        phone: `+1-555-${String(i + 1).padStart(3, "0")}-${String(Math.floor(Math.random() * 10000)).padStart(4, "0")}`,
-        experience: `${Math.floor(Math.random() * 15) + 1} years`,
-        industry: includeIndustries.length > 0 ? includeIndustries[i % includeIndustries.length] : "Technology",
-        monthsInRole: Math.floor(Math.random() * (maxMonthsInRole - minMonthsInRole + 1)) + minMonthsInRole,
-        totalExperiences: Math.floor(Math.random() * (maxExperiences - minExperiences + 1)) + minExperiences,
-        followerCount: minFollowerCount
-          ? Number.parseInt(minFollowerCount) + Math.floor(Math.random() * 1000)
-          : Math.floor(Math.random() * 5000),
-        selected: false,
-      }
+    console.log("People search:", {
+      userId: decoded.userId,
+      searchParams: body,
+      resultCount: mockPeople.length,
     })
 
     return NextResponse.json({
       success: true,
-      message: `Found ${people.length} people matching your criteria`,
+      message: `Found ${mockPeople.length} people matching your criteria`,
       data: {
-        people,
-        searchParams: {
-          includeLevels,
-          includeJobFunctions,
-          includeJobTitles,
-          excludeJobTitles,
-          exactKeywordMatch,
-          companySizes,
-          includeIndustries,
-          excludeIndustries,
-          includeDescriptionKeywords,
-          excludeDescriptionKeywords,
-          includeCountries,
-          excludeCountries,
-          includeRegions,
-          excludeRegions,
-          includeCities,
-          excludeCities,
-          includeStates,
-          minMonthsInRole,
-          maxMonthsInRole,
-          minExperiences,
-          maxExperiences,
-          experienceKeywords,
-          totalLimit,
-          limitPerCompany,
-          minFollowerCount,
-        },
-        totalFound: people.length,
+        people: mockPeople,
+        searchParams: body,
+        totalResults: mockPeople.length,
       },
     })
   } catch (error) {
     console.error("People search error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Search failed. Please try again." }, { status: 500 })
   }
 }

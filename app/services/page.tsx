@@ -2,11 +2,66 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react"
+import { Star, ChevronLeft, ChevronRight, Quote, Search, Users, Building, BarChart3, Zap, Shield } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+
+const services = [
+  {
+    icon: Search,
+    title: "Google Business Search",
+    description: "Find and extract detailed information from Google Business listings with advanced filtering options.",
+    features: [
+      "Location-based filtering",
+      "Industry-specific searches",
+      "Contact information extraction",
+      "Review and rating data",
+    ],
+  },
+  {
+    icon: Users,
+    title: "People Search",
+    description:
+      "Discover professionals and decision-makers with comprehensive filtering by role, company, and location.",
+    features: [
+      "Job title and role filtering",
+      "Company size targeting",
+      "Geographic filtering",
+      "Experience-based search",
+    ],
+  },
+  {
+    icon: Building,
+    title: "Company Intelligence",
+    description: "Get detailed insights about companies including size, industry, and key personnel information.",
+    features: ["Company size and type", "Industry classification", "Employee count data", "Technology stack insights"],
+  },
+  {
+    icon: BarChart3,
+    title: "Data Analytics",
+    description: "Analyze your search results with built-in analytics tools and export capabilities.",
+    features: [
+      "Real-time data visualization",
+      "Custom report generation",
+      "CSV and JSON exports",
+      "Performance metrics tracking",
+    ],
+  },
+  {
+    icon: Zap,
+    title: "Workflow Automation",
+    description: "Create automated workflows to streamline your lead generation and data collection processes.",
+    features: ["Scheduled searches", "Automated data updates", "Custom triggers", "Integration capabilities"],
+  },
+  {
+    icon: Shield,
+    title: "Data Security",
+    description: "Enterprise-grade security and compliance to protect your data and ensure privacy.",
+    features: ["End-to-end encryption", "GDPR compliance", "Secure data storage", "Access controls"],
+  },
+]
 
 export default function ServicesPage() {
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
@@ -63,6 +118,33 @@ export default function ServicesPage() {
       {/* Services Content */}
       <section className="py-12 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto space-y-16">
+          {/* Service Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {services.map((service, index) => (
+              <Card key={index} className="bg-white border border-gray-200 hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-[#3c3679] text-white p-3 rounded-lg mr-4">
+                      <service.icon className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
+                  </div>
+
+                  <p className="text-gray-600 mb-4">{service.description}</p>
+
+                  <ul className="space-y-2">
+                    {service.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center text-sm text-gray-600">
+                        <div className="w-1.5 h-1.5 bg-[#3c3679] rounded-full mr-2"></div>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
           {/* Service 1 - Lead Generation Automation */}
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="space-y-4">

@@ -1,51 +1,58 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken } from "@/lib/jwt"
 
-// Mock payment confirmation - replace with actual Stripe webhook in production
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authorization token required" }, { status: 401 })
     }
 
-    const payload = verifyToken(token)
-    if (!payload) {
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    const { paymentIntentId, paymentMethodId, billingDetails } = await request.json()
+    const body = await request.json()
+    const { paymentIntentId, credits } = body
 
-    if (!paymentIntentId || !paymentMethodId) {
-      return NextResponse.json({ success: false, message: "Missing payment details" }, { status: 400 })
+    // Validate required fields
+    if (!paymentIntentId || !credits) {
+      return NextResponse.json(
+        { success: false, message: "Payment intent ID and credits are required" },
+        { status: 400 },
+      )
     }
+
+    // In a real application, you would:
+    // 1. Verify the payment with Stripe
+    // 2. Update user's credit balance in database
+    // 3. Create transaction record
+    // 4. Send confirmation email
 
     // Mock payment confirmation
-    const confirmedPayment = {
-      id: paymentIntentId,
-      status: "succeeded",
-      amount: 2000, // $20.00 in cents
-      currency: "usd",
-      paymentMethod: paymentMethodId,
-      billingDetails,
-      userId: payload.userId,
-      confirmedAt: Date.now(),
-    }
+    console.log("Payment confirmed:", {
+      userId: decoded.userId,
+      paymentIntentId,
+      credits,
+    })
 
-    // In production, you would:
-    // 1. Confirm the payment with Stripe
-    // 2. Update user's credits/subscription in database
-    // 3. Send confirmation email
+    // Simulate processing delay
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     return NextResponse.json({
       success: true,
-      message: "Payment confirmed successfully",
-      data: confirmedPayment,
+      message: `Successfully added ${credits} credits to your account`,
+      data: {
+        transactionId: `txn_${Math.random().toString(36).substring(2, 15)}`,
+        credits,
+        newBalance: 1250 + credits, // Mock new balance
+      },
     })
   } catch (error) {
     console.error("Payment confirmation error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Failed to confirm payment" }, { status: 500 })
   }
 }

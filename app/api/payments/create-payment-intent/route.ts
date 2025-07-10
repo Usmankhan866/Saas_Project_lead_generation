@@ -1,45 +1,58 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken } from "@/lib/jwt"
 
-// Mock Stripe integration - replace with actual Stripe in production
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authorization token required" }, { status: 401 })
     }
 
-    const payload = verifyToken(token)
-    if (!payload) {
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    const { amount, currency = "usd", paymentType } = await request.json()
+    const body = await request.json()
+    const { amount, currency = "usd", credits } = body
 
-    if (!amount || amount <= 0) {
-      return NextResponse.json({ success: false, message: "Invalid amount" }, { status: 400 })
+    // Validate required fields
+    if (!amount || !credits) {
+      return NextResponse.json({ success: false, message: "Amount and credits are required" }, { status: 400 })
     }
+
+    // In a real application, you would:
+    // 1. Create a Stripe payment intent
+    // 2. Store the payment record in database
+    // 3. Return the client secret for frontend processing
 
     // Mock payment intent creation
     const paymentIntent = {
-      id: `pi_${Math.random().toString(36).substr(2, 9)}`,
-      client_secret: `pi_${Math.random().toString(36).substr(2, 9)}_secret_${Math.random().toString(36).substr(2, 9)}`,
-      amount,
+      id: `pi_${Math.random().toString(36).substring(2, 15)}`,
+      client_secret: `pi_${Math.random().toString(36).substring(2, 15)}_secret_${Math.random().toString(36).substring(2, 15)}`,
+      amount: amount * 100, // Convert to cents
       currency,
       status: "requires_payment_method",
-      paymentType,
-      userId: payload.userId,
-      created: Date.now(),
     }
+
+    console.log("Payment intent created:", {
+      userId: decoded.userId,
+      amount,
+      credits,
+      paymentIntentId: paymentIntent.id,
+    })
 
     return NextResponse.json({
       success: true,
-      data: paymentIntent,
+      data: {
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+      },
     })
   } catch (error) {
     console.error("Payment intent creation error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Failed to create payment intent" }, { status: 500 })
   }
 }

@@ -1,10 +1,7 @@
 "use client"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Menu, Instagram, Linkedin, Facebook, X, ChevronDown, ChevronUp } from "lucide-react"
-import Image from "next/image"
 import { useState } from "react"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export default function HelpPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -95,377 +92,52 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
+      <Header />
+
+      <main className="pt-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Help Center</h1>
+            <p className="text-xl text-gray-600">Find answers to common questions and get support</p>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a
-              href="/services"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Service
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a href="#" className="text-[#3c3679] underline font-medium transition-all duration-200">
-              Help
-            </a>
-            <a
-              href="/blog"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Blog
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Blog
-            </a>
-          </nav>
+          <div className="space-y-8">
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
 
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              Sign Up
-            </Button>
-            <Button
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
-            >
-              Log In
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-            <nav className="flex flex-col space-y-4 pt-4">
-              <a
-                href="/"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Home
-              </a>
-              <a
-                href="/services"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Service
-              </a>
-              <a
-                href="/pricing"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Pricing
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                About
-              </a>
-              <a href="#" className="text-[#3c3679] underline font-medium transition-all duration-200">
-                Help
-              </a>
-              <a
-                href="/blog"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Blog
-              </a>
-              <a
-                href="/contact"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Contact
-              </a>
-              <a
-                href="#"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Blog
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
-
-      {/* Help Hero Section */}
-      <section className="bg-[#3c3679] text-white py-16 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold">Help Page</h1>
-          <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
-            Find answers to your questions and learn how to make the most of Growvy's powerful features
-          </p>
-        </div>
-      </section>
-
-      {/* Help Articles Section */}
-      <section className="py-16 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {helpArticles.map((article, index) => (
-              <Card
-                key={index}
-                className="bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-200"
-              >
-                <CardContent className="p-0">
-                  <div className="relative">
-                    <Image
-                      src={article.image || "/placeholder.svg"}
-                      alt={article.title}
-                      width={400}
-                      height={250}
-                      className="w-full h-48 object-cover rounded-t-lg"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-[#3c3679] text-white px-3 py-1 rounded-full text-xs font-medium">
-                        {article.category}
-                      </span>
-                    </div>
+              <div className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <div key={index}>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{faq.question}</h3>
+                    <p className="text-gray-600">{faq.answer}</p>
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">{article.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4">{article.description}</p>
-                    <Button
-                      variant="outline"
-                      className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white text-sm"
-                    >
-                      Read More
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-16 px-4 sm:px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-            <p className="text-gray-600">Find quick answers to common questions about Growvy</p>
-          </div>
-
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <Card key={index} className="bg-white">
-                <CardContent className="p-0">
-                  <button
-                    onClick={() => toggleFaq(index)}
-                    className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                  >
-                    <span className="font-medium text-gray-900 pr-4">{faq.question}</span>
-                    {expandedFaq === index ? (
-                      <ChevronUp className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                    )}
-                  </button>
-                  {expandedFaq === index && (
-                    <div className="px-6 pb-6">
-                      <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white px-8 py-3">Contact Now</Button>
-              <Button
-                variant="outline"
-                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white px-8 py-3"
-              >
-                Book a Demo Today
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Support Section */}
-      <section className="py-16 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Still Need Help?</h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            Can't find what you're looking for? Our support team is here to help you succeed with Growvy.
-          </p>
-          <div className="grid sm:grid-cols-3 gap-6">
-            <Card className="bg-[#d0efff] p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl mb-3">💬</div>
-                <h3 className="font-bold text-gray-900 mb-2">Live Chat</h3>
-                <p className="text-gray-600 text-sm mb-4">Get instant help from our support team</p>
-                <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white text-sm">Start Chat</Button>
-              </CardContent>
-            </Card>
-            <Card className="bg-[#d0efff] p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl mb-3">📧</div>
-                <h3 className="font-bold text-gray-900 mb-2">Email Support</h3>
-                <p className="text-gray-600 text-sm mb-4">Send us a detailed message</p>
-                <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white text-sm">Send Email</Button>
-              </CardContent>
-            </Card>
-            <Card className="bg-[#d0efff] p-6 text-center">
-              <CardContent className="p-0">
-                <div className="text-2xl mb-3">📞</div>
-                <h3 className="font-bold text-gray-900 mb-2">Phone Support</h3>
-                <p className="text-gray-600 text-sm mb-4">Speak directly with our experts</p>
-                <Button className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white text-sm">Call Now</Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-[#3c3679] text-white px-4 sm:px-6 py-8 sm:py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-2 mb-6">
-                <Image
-                  src="/images/growvy-logo.png"
-                  alt="Growvy Logo"
-                  width={120}
-                  height={40}
-                  className="h-6 sm:h-8 w-auto brightness-0 invert"
-                />
+                ))}
               </div>
             </div>
-            <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="/" className="hover:text-gray-300 transition-colors">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/services" className="hover:text-gray-300 transition-colors">
-                    Service
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="hover:text-gray-300 transition-colors">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="hover:text-gray-300 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="/help" className="hover:text-gray-300 transition-colors">
-                    Help
-                  </a>
-                </li>
-                <li>
-                  <a href="/blog" className="hover:text-gray-300 transition-colors">
-                    Blogs
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Contact Us</h4>
-              <ul className="space-y-2 text-sm">
-                <li>+1234567890</li>
-                <li>email@example.com</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Get in touch</h4>
-              <div className="flex space-x-3">
+
+            <div className="bg-[#3c3679] text-white rounded-lg p-6">
+              <h2 className="text-2xl font-bold mb-4">Need More Help?</h2>
+              <p className="mb-4">Can't find what you're looking for? Our support team is here to help.</p>
+              <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
+                  href="mailto:support@growvy.com"
+                  className="bg-white text-[#3c3679] px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors text-center"
                 >
-                  <Instagram className="w-4 h-4" />
+                  Email Support
                 </a>
                 <a
                   href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
+                  className="border border-white text-white px-6 py-2 rounded-lg font-medium hover:bg-white hover:text-[#3c3679] transition-colors text-center"
                 >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <X className="w-4 h-4" />
+                  Live Chat
                 </a>
               </div>
             </div>
           </div>
-          <div className="border-t border-white/20 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-sm">
-            <p>
-              All right reserved © 2025, Develop by{" "}
-              <a
-                href="https://uk-developer.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300 transition-colors underline"
-              >
-                UsmanKhan
-              </a>
-            </p>
-          </div>
         </div>
-      </footer>
+      </main>
+
+      <Footer />
     </div>
   )
 }

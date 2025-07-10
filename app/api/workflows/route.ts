@@ -2,33 +2,18 @@ import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken } from "@/lib/jwt"
 
 // Mock workflows database
-const workflows = [
+const workflows: any[] = [
   {
-    id: "1",
-    name: "Google Business Search",
-    description: "Search for local businesses on Google",
-    userId: "1",
+    id: "wf_1",
+    name: "Daily Restaurant Search",
+    description: "Automated search for new restaurants in target cities",
     status: "active",
-    createdAt: "2025-01-01T00:00:00Z",
-    updatedAt: "2025-01-01T00:00:00Z",
+    createdAt: "2024-01-15T10:00:00Z",
+    updatedAt: "2024-01-15T10:00:00Z",
     config: {
       keywords: "restaurants",
-      location: "New York",
+      location: "San Francisco",
       limit: 50,
-    },
-  },
-  {
-    id: "2",
-    name: "People Search",
-    description: "Find people profiles",
-    userId: "1",
-    status: "draft",
-    createdAt: "2025-01-02T00:00:00Z",
-    updatedAt: "2025-01-02T00:00:00Z",
-    config: {
-      name: "John Doe",
-      company: "Tech Corp",
-      location: "California",
     },
   },
 ]
@@ -36,62 +21,63 @@ const workflows = [
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authorization token required" }, { status: 401 })
     }
 
-    const payload = verifyToken(token)
-    if (!payload) {
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    // Filter workflows by user
-    const userWorkflows = workflows.filter((w) => w.userId === payload.userId)
-
     return NextResponse.json({
       success: true,
-      data: userWorkflows,
+      data: workflows,
     })
   } catch (error) {
-    console.error("Get workflows error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    console.error("Workflows fetch error:", error)
+    return NextResponse.json({ success: false, message: "Failed to fetch workflows" }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authorization token required" }, { status: 401 })
     }
 
-    const payload = verifyToken(token)
-    if (!payload) {
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    const { name, description, config } = await request.json()
+    const body = await request.json()
+    const { name, description, config } = body
 
-    if (!name || !config) {
-      return NextResponse.json({ success: false, message: "Name and config are required" }, { status: 400 })
+    // Validate required fields
+    if (!name) {
+      return NextResponse.json({ success: false, message: "Workflow name is required" }, { status: 400 })
     }
 
+    // Create new workflow
     const newWorkflow = {
-      id: (workflows.length + 1).toString(),
+      id: `wf_${Math.random().toString(36).substring(2, 15)}`,
       name,
       description: description || "",
-      userId: payload.userId,
-      status: "draft",
+      status: "active",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      config,
+      config: config || {},
     }
 
     workflows.push(newWorkflow)
+
+    console.log("Workflow created:", { userId: decoded.userId, workflow: newWorkflow })
 
     return NextResponse.json({
       success: true,
@@ -99,7 +85,7 @@ export async function POST(request: NextRequest) {
       data: newWorkflow,
     })
   } catch (error) {
-    console.error("Create workflow error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    console.error("Workflow creation error:", error)
+    return NextResponse.json({ success: false, message: "Failed to create workflow" }, { status: 500 })
   }
 }

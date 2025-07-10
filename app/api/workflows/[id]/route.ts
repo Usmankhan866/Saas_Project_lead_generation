@@ -1,91 +1,87 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken } from "@/lib/jwt"
 
-// Mock workflows database (same as above)
-const workflows = [
+// Mock workflows database (shared with parent route)
+const workflows: any[] = [
   {
-    id: "1",
-    name: "Google Business Search",
-    description: "Search for local businesses on Google",
-    userId: "1",
+    id: "wf_1",
+    name: "Daily Restaurant Search",
+    description: "Automated search for new restaurants in target cities",
     status: "active",
-    createdAt: "2025-01-01T00:00:00Z",
-    updatedAt: "2025-01-01T00:00:00Z",
+    createdAt: "2024-01-15T10:00:00Z",
+    updatedAt: "2024-01-15T10:00:00Z",
     config: {
       keywords: "restaurants",
-      location: "New York",
+      location: "San Francisco",
       limit: 50,
-    },
-  },
-  {
-    id: "2",
-    name: "People Search",
-    description: "Find people profiles",
-    userId: "1",
-    status: "draft",
-    createdAt: "2025-01-02T00:00:00Z",
-    updatedAt: "2025-01-02T00:00:00Z",
-    config: {
-      name: "John Doe",
-      company: "Tech Corp",
-      location: "California",
     },
   },
 ]
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authorization token required" }, { status: 401 })
     }
 
-    const payload = verifyToken(token)
-    if (!payload) {
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    const workflow = workflows.find((w) => w.id === params.id && w.userId === payload.userId)
+    const workflowId = params.id
 
-    if (!workflow) {
+    // Find workflow
+    const workflowIndex = workflows.findIndex((w) => w.id === workflowId)
+    if (workflowIndex === -1) {
       return NextResponse.json({ success: false, message: "Workflow not found" }, { status: 404 })
     }
 
+    // Remove workflow
+    const deletedWorkflow = workflows.splice(workflowIndex, 1)[0]
+
+    console.log("Workflow deleted:", { userId: decoded.userId, workflowId })
+
     return NextResponse.json({
       success: true,
-      data: workflow,
+      message: "Workflow deleted successfully",
+      data: deletedWorkflow,
     })
   } catch (error) {
-    console.error("Get workflow error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    console.error("Workflow deletion error:", error)
+    return NextResponse.json({ success: false, message: "Failed to delete workflow" }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authorization token required" }, { status: 401 })
     }
 
-    const payload = verifyToken(token)
-    if (!payload) {
+    const token = authHeader.substring(7)
+    const decoded = verifyToken(token)
+
+    if (!decoded) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    const { name, description, config, status } = await request.json()
+    const workflowId = params.id
+    const body = await request.json()
+    const { name, description, config, status } = body
 
-    const workflowIndex = workflows.findIndex((w) => w.id === params.id && w.userId === payload.userId)
-
+    // Find workflow
+    const workflowIndex = workflows.findIndex((w) => w.id === workflowId)
     if (workflowIndex === -1) {
       return NextResponse.json({ success: false, message: "Workflow not found" }, { status: 404 })
     }
 
-    workflows[workflowIndex] = {
+    // Update workflow
+    const updatedWorkflow = {
       ...workflows[workflowIndex],
       name: name || workflows[workflowIndex].name,
       description: description !== undefined ? description : workflows[workflowIndex].description,
@@ -94,45 +90,17 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       updatedAt: new Date().toISOString(),
     }
 
+    workflows[workflowIndex] = updatedWorkflow
+
+    console.log("Workflow updated:", { userId: decoded.userId, workflowId, updates: body })
+
     return NextResponse.json({
       success: true,
       message: "Workflow updated successfully",
-      data: workflows[workflowIndex],
+      data: updatedWorkflow,
     })
   } catch (error) {
-    console.error("Update workflow error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
-  }
-}
-
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  try {
-    const authHeader = request.headers.get("authorization")
-    const token = authHeader?.replace("Bearer ", "")
-
-    if (!token) {
-      return NextResponse.json({ success: false, message: "No token provided" }, { status: 401 })
-    }
-
-    const payload = verifyToken(token)
-    if (!payload) {
-      return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
-    }
-
-    const workflowIndex = workflows.findIndex((w) => w.id === params.id && w.userId === payload.userId)
-
-    if (workflowIndex === -1) {
-      return NextResponse.json({ success: false, message: "Workflow not found" }, { status: 404 })
-    }
-
-    workflows.splice(workflowIndex, 1)
-
-    return NextResponse.json({
-      success: true,
-      message: "Workflow deleted successfully",
-    })
-  } catch (error) {
-    console.error("Delete workflow error:", error)
-    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
+    console.error("Workflow update error:", error)
+    return NextResponse.json({ success: false, message: "Failed to update workflow" }, { status: 500 })
   }
 }

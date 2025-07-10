@@ -1,14 +1,63 @@
-"use client"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { notFound } from "next/navigation"
+;("use client")
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Menu, Instagram, Linkedin, Facebook, X, Calendar, Clock } from "lucide-react"
-import Image from "next/image"
-import { useState } from "react"
-import { useParams } from "next/navigation"
-
-// Comprehensive blog data for all posts
 const blogPosts = {
+  "lead-generation-strategies-2024": {
+    title: "10 Lead Generation Strategies That Actually Work",
+    content: `
+      <p>Lead generation is the lifeblood of any successful business. In 2024, the landscape has evolved significantly, and traditional methods may no longer be as effective. Here are 10 proven strategies that are delivering results for businesses today.</p>
+      
+      <h2>1. Content Marketing</h2>
+      <p>Creating valuable, relevant content that addresses your audience's pain points is still one of the most effective ways to generate leads. Focus on solving problems rather than selling products.</p>
+      
+      <h2>2. Social Media Engagement</h2>
+      <p>Active engagement on social media platforms where your target audience spends time can generate high-quality leads. Focus on building relationships, not just broadcasting messages.</p>
+      
+      <h2>3. Email Marketing Automation</h2>
+      <p>Automated email sequences that nurture leads through the sales funnel can significantly improve conversion rates. Personalization is key to success.</p>
+      
+      <p>These strategies, when implemented correctly, can transform your lead generation efforts and drive sustainable business growth.</p>
+    `,
+    date: "March 15, 2024",
+    author: "Sarah Johnson",
+  },
+  "data-analytics-business-decisions": {
+    title: "How to Use Data Analytics for Better Business Decisions",
+    content: `
+      <p>In today's data-driven world, businesses that leverage analytics effectively have a significant competitive advantage. Here's how to harness the power of data for better decision-making.</p>
+      
+      <h2>Understanding Your Data</h2>
+      <p>The first step is understanding what data you have available and how it relates to your business objectives. Not all data is created equal, and focusing on the right metrics is crucial.</p>
+      
+      <h2>Tools and Technologies</h2>
+      <p>Modern analytics tools make it easier than ever to extract insights from your data. From Google Analytics to advanced business intelligence platforms, choose tools that match your needs and budget.</p>
+      
+      <p>Remember, data without action is just information. The key is to translate insights into concrete business strategies.</p>
+    `,
+    date: "March 10, 2024",
+    author: "Mike Chen",
+  },
+  "future-b2b-sales-trends": {
+    title: "The Future of B2B Sales: Trends to Watch",
+    content: `
+      <p>The B2B sales landscape is evolving rapidly, driven by technological advances and changing buyer behaviors. Here are the key trends shaping the future of B2B sales.</p>
+      
+      <h2>Digital-First Approach</h2>
+      <p>Buyers increasingly prefer digital interactions throughout the sales process. Companies must adapt their sales strategies to meet customers where they are.</p>
+      
+      <h2>AI and Automation</h2>
+      <p>Artificial intelligence is revolutionizing sales processes, from lead scoring to personalized outreach. Automation helps sales teams focus on high-value activities.</p>
+      
+      <h2>Value-Based Selling</h2>
+      <p>Modern buyers are more informed and expect sales interactions to provide genuine value. The focus has shifted from product features to business outcomes.</p>
+      
+      <p>Staying ahead of these trends will be crucial for sales success in the coming years.</p>
+    `,
+    date: "March 5, 2024",
+    author: "Emily Rodriguez",
+  },
   "mastering-chatgpt-blog-creation": {
     title: "Mastering ChatGPT Blog Creation: Dos and Don'ts for SaaS Marketing Managers",
     category: "Artificial Intelligence",
@@ -424,460 +473,33 @@ The continuous learning capability of NLP systems means that customer service qu
   },
 }
 
-export default function BlogPostPage() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const params = useParams()
-  const slug = params.slug as string
+export default function BlogPost({ params }: { params: { slug: string } }) {
+  const post = blogPosts[params.slug as keyof typeof blogPosts]
 
-  // Get the blog post data
-  const post = blogPosts[slug as keyof typeof blogPosts]
-
-  // If post doesn't exist, show 404
   if (!post) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">404 - Post Not Found</h1>
-          <p className="text-gray-600 mb-8">The blog post you're looking for doesn't exist.</p>
-          <Button asChild className="bg-[#3c3679] hover:bg-[#2d2a5f] text-white">
-            <a href="/blog">Back to Blog</a>
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
-  const relatedPosts = [
-    {
-      title: "Advanced AI Techniques for Content Personalization",
-      image:
-        "https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
-      category: "Artificial Intelligence",
-      date: "Oct 20",
-      readTime: "8 min read",
-      slug: "ai-content-personalization",
-    },
-    {
-      title: "Machine Learning Models for Customer Behavior Prediction",
-      image:
-        "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
-      category: "Machine Learning",
-      date: "Oct 17",
-      readTime: "12 min read",
-      slug: "ml-customer-behavior",
-    },
-    {
-      title: "Implementing Ethical AI in Business Operations",
-      image:
-        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=250&q=80",
-      category: "AI Ethics",
-      date: "Oct 14",
-      readTime: "10 min read",
-      slug: "ethical-ai-business",
-    },
-  ]
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
+    notFound()
   }
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
-          </div>
+      <Header />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a
-              href="/services"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Service
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-            <a href="/blog" className="text-[#3c3679] underline font-medium transition-all duration-200">
-              Blog
-            </a>
-          </nav>
-
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              Sign Up
-            </Button>
-            <Button
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
-            >
-              Log In
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-            <nav className="flex flex-col space-y-4 pt-4">
-              <a
-                href="/"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Home
-              </a>
-              <a
-                href="/services"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Service
-              </a>
-              <a
-                href="/pricing"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Pricing
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                About
-              </a>
-              <a
-                href="/help"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Help
-              </a>
-              <a
-                href="/contact"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Contact
-              </a>
-              <a href="/blog" className="text-[#3c3679] underline font-medium transition-all duration-200">
-                Blog
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
-
-      {/* Blog Post Hero */}
-      <section className="py-8 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative mb-8">
-            <Image
-              src={post.heroImage || "/placeholder.svg"}
-              alt={post.title}
-              width={800}
-              height={400}
-              className="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg"
-            />
-            <div className="absolute top-4 left-4">
-              <span className="bg-[#3c3679] text-white px-3 py-1 rounded-full text-xs font-medium">
-                {post.category}
-              </span>
-            </div>
-          </div>
-
+      <main className="pt-20">
+        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-              {post.title}
-            </h1>
-
-            <div className="flex items-center space-x-4 text-sm text-gray-500 mb-6">
-              <div className="flex items-center space-x-1">
-                <Calendar className="w-4 h-4" />
-                <span>{post.date}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Clock className="w-4 h-4" />
-                <span>{post.readTime}</span>
-              </div>
+            <div className="flex items-center text-sm text-gray-500 mb-4">
+              <span>{post.date}</span>
+              <span className="mx-2">•</span>
+              <span>{post.author}</span>
             </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-6">{post.title}</h1>
           </div>
-        </div>
-      </section>
 
-      {/* Main Content */}
-      <section className="py-8 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-4 gap-8">
-            {/* Main Article Content */}
-            <div className="lg:col-span-3">
-              <article className="prose prose-lg max-w-none">
-                {post.content.sections.map((section, index) => (
-                  <div key={index} id={section.id} className="mb-8">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">{section.title}</h2>
-                    <div className="text-gray-600 leading-relaxed whitespace-pre-line">{section.content}</div>
-                  </div>
-                ))}
-              </article>
+          <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />
+        </article>
+      </main>
 
-              {/* Social Sharing */}
-              <div className="mt-12 p-6 bg-[#3c3679] rounded-lg text-white text-center">
-                <h3 className="text-lg font-bold mb-4">Like what you see? Share with a friend.</h3>
-                <div className="flex justify-center space-x-4">
-                  <button className="w-10 h-10 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <Facebook className="w-5 h-5" />
-                  </button>
-                  <button className="w-10 h-10 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <Linkedin className="w-5 h-5" />
-                  </button>
-                  <button className="w-10 h-10 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-8 space-y-6">
-                {/* Author Info */}
-                <Card className="bg-[#3c3679] text-white p-6">
-                  <CardContent className="p-0">
-                    <div className="flex items-start space-x-3 mb-4">
-                      <Image
-                        src={post.authorImage || "/placeholder.svg"}
-                        alt={post.author}
-                        width={60}
-                        height={60}
-                        className="w-15 h-15 rounded-lg object-cover"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-bold text-sm">{post.author}</h3>
-                        <p className="text-white/80 text-xs leading-tight">{post.authorTitle}</p>
-                      </div>
-                    </div>
-                    <div className="text-xs text-white/60 mb-4">Share with your community:</div>
-                    <div className="flex space-x-2">
-                      <button className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                        <Facebook className="w-4 h-4" />
-                      </button>
-                      <button className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors">
-                        <Linkedin className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Table of Contents */}
-                <Card className="p-6">
-                  <CardContent className="p-0">
-                    <h3 className="font-bold text-gray-900 mb-4">In this article</h3>
-                    <nav className="space-y-2">
-                      {post.tableOfContents.map((item, index) => (
-                        <button
-                          key={index}
-                          onClick={() => scrollToSection(item.id)}
-                          className="block w-full text-left text-sm text-gray-600 hover:text-[#3c3679] transition-colors py-1"
-                        >
-                          {item.title}
-                        </button>
-                      ))}
-                    </nav>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Related Articles */}
-      <section className="py-16 px-4 sm:px-6 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12">Related Articles</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {relatedPosts.map((relatedPost, index) => (
-              <Card key={index} className="bg-white hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-                <div className="relative">
-                  <Image
-                    src={relatedPost.image || "/placeholder.svg"}
-                    alt={relatedPost.title}
-                    width={400}
-                    height={250}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-[#3c3679] text-white px-2 py-1 rounded-full text-xs font-medium">
-                      {relatedPost.category}
-                    </span>
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-bold text-gray-900 leading-tight hover:text-[#3c3679] transition-colors cursor-pointer">
-                      <a href={`/blog/${relatedPost.slug}`}>{relatedPost.title}</a>
-                    </h3>
-                    <div className="flex items-center justify-between text-sm text-gray-500">
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>{relatedPost.date}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-4 h-4" />
-                        <span>{relatedPost.readTime}</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-[#3c3679] text-white px-4 sm:px-6 py-8 sm:py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-2 mb-6">
-                <Image
-                  src="/images/growvy-logo.png"
-                  alt="Growvy Logo"
-                  width={120}
-                  height={40}
-                  className="h-6 sm:h-8 w-auto brightness-0 invert"
-                />
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="/" className="hover:text-gray-300 transition-colors">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/services" className="hover:text-gray-300 transition-colors">
-                    Service
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="hover:text-gray-300 transition-colors">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="hover:text-gray-300 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="/help" className="hover:text-gray-300 transition-colors">
-                    Help
-                  </a>
-                </li>
-                <li>
-                  <a href="/blog" className="hover:text-gray-300 transition-colors">
-                    Blogs
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Contact Us</h4>
-              <ul className="space-y-2 text-sm">
-                <li>+1234567890</li>
-                <li>email@example.com</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Get in touch</h4>
-              <div className="flex space-x-3">
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-white/20 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-sm">
-            <p>
-              All right reserved © 2025, Develop by{" "}
-              <a
-                href="https://uk-developer.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300 transition-colors underline"
-              >
-                UsmanKhan
-              </a>
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

@@ -1,44 +1,37 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { validateEmail, validateRequired } from "@/lib/validation"
 
 export async function POST(request: NextRequest) {
   try {
-    const { fullName, email, subject, message } = await request.json()
+    const body = await request.json()
+    const { name, email, company, message } = body
 
-    // Validate input
-    const nameError = validateRequired(fullName, "Full name")
-    const emailError = validateEmail(email)
-    const subjectError = validateRequired(subject, "Subject")
-    const messageError = validateRequired(message, "Message")
-
-    if (nameError || emailError || subjectError || messageError) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Validation failed",
-          errors: [
-            ...(nameError ? [{ field: "fullName", message: nameError }] : []),
-            ...(emailError ? [{ field: "email", message: emailError }] : []),
-            ...(subjectError ? [{ field: "subject", message: subjectError }] : []),
-            ...(messageError ? [{ field: "message", message: messageError }] : []),
-          ],
-        },
-        { status: 400 },
-      )
+    // Validate required fields
+    if (!name || !email || !message) {
+      return NextResponse.json({ success: false, message: "Name, email, and message are required" }, { status: 400 })
     }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ success: false, message: "Please provide a valid email address" }, { status: 400 })
+    }
+
+    // In a real application, you would:
+    // 1. Save to database
+    // 2. Send email notification
+    // 3. Add to CRM system
+
+    console.log("Contact form submission:", { name, email, company, message })
 
     // Simulate processing delay
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // In a real application, you would save this to a database or send an email
-    console.log("Contact form submission:", { fullName, email, subject, message })
-
     return NextResponse.json({
       success: true,
-      message: "Thank you for your message! We will get back to you soon.",
+      message: "Thank you for your message! We'll get back to you soon.",
     })
   } catch (error) {
     console.error("Contact form error:", error)
-    return NextResponse.json({ success: false, message: "Failed to send message. Please try again." }, { status: 500 })
+    return NextResponse.json({ success: false, message: "Something went wrong. Please try again." }, { status: 500 })
   }
 }

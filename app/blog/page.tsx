@@ -2,9 +2,11 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Menu, Instagram, Linkedin, Facebook, X, Clock, Calendar } from "lucide-react"
+import { Clock, Calendar } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export default function BlogPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -23,6 +25,30 @@ export default function BlogPage() {
   }
 
   const blogPosts = [
+    {
+      id: 1,
+      title: "10 Lead Generation Strategies That Actually Work",
+      excerpt: "Discover proven methods to generate high-quality leads for your business in 2024.",
+      date: "March 15, 2024",
+      author: "Sarah Johnson",
+      slug: "lead-generation-strategies-2024",
+    },
+    {
+      id: 2,
+      title: "How to Use Data Analytics for Better Business Decisions",
+      excerpt: "Learn how to leverage data analytics to make informed decisions and drive growth.",
+      date: "March 10, 2024",
+      author: "Mike Chen",
+      slug: "data-analytics-business-decisions",
+    },
+    {
+      id: 3,
+      title: "The Future of B2B Sales: Trends to Watch",
+      excerpt: "Explore the latest trends shaping the future of B2B sales and how to adapt.",
+      date: "March 5, 2024",
+      author: "Emily Rodriguez",
+      slug: "future-b2b-sales-trends",
+    },
     {
       title: "Mastering ChatGPT Blog Creation: Dos and Don'ts for SaaS Marketing Managers",
       image:
@@ -175,128 +201,7 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-100 px-4 sm:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Image
-              src="/images/growvy-logo.png"
-              alt="Growvy Logo"
-              width={120}
-              height={40}
-              className="h-8 sm:h-10 w-auto"
-            />
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <a
-              href="/"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Home
-            </a>
-            <a
-              href="/services"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Service
-            </a>
-            <a
-              href="/pricing"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Pricing
-            </a>
-            <a
-              href="/about"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              About
-            </a>
-            <a
-              href="/help"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Help
-            </a>
-            <a
-              href="/contact"
-              className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-            >
-              Contact
-            </a>
-            <a href="#" className="text-[#3c3679] underline font-medium transition-all duration-200">
-              Blog
-            </a>
-          </nav>
-
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-3">
-            <Button className="bg-[#d0efff] text-[#3c3679] hover:bg-[#b8e6ff] px-4 lg:px-6 py-2 text-sm">
-              Sign Up
-            </Button>
-            <Button
-              variant="outline"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 lg:px-6 py-2 text-sm"
-            >
-              Log In
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            <Menu className="w-6 h-6 text-gray-700" />
-          </button>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100">
-            <nav className="flex flex-col space-y-4 pt-4">
-              <a
-                href="/"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Home
-              </a>
-              <a
-                href="/services"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Service
-              </a>
-              <a
-                href="/pricing"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Pricing
-              </a>
-              <a
-                href="/about"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                About
-              </a>
-              <a
-                href="/help"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Help
-              </a>
-              <a
-                href="/contact"
-                className="text-gray-700 hover:text-[#3c3679] hover:underline font-medium transition-all duration-200"
-              >
-                Contact
-              </a>
-              <a href="#" className="text-[#3c3679] underline font-medium transition-all duration-200">
-                Blog
-              </a>
-            </nav>
-          </div>
-        )}
-      </header>
+      <Header />
 
       {/* Blog Hero Section */}
       <section className="bg-[#3c3679] text-white py-16 px-4 sm:px-6">
@@ -404,7 +309,7 @@ export default function BlogPage() {
               <Button
                 onClick={loadMorePosts}
                 variant="outline"
-                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white px-8 py-3"
+                className="border-[#3c3679] text-[#3c3679] hover:bg-[#3c3679] hover:text-white px-8 py-3 bg-transparent"
               >
                 Load More
               </Button>
@@ -432,108 +337,7 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#3c3679] text-white px-4 sm:px-6 py-8 sm:py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center space-x-2 mb-6">
-                <Image
-                  src="/images/growvy-logo.png"
-                  alt="Growvy Logo"
-                  width={120}
-                  height={40}
-                  className="h-6 sm:h-8 w-auto brightness-0 invert"
-                />
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="/" className="hover:text-gray-300 transition-colors">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/services" className="hover:text-gray-300 transition-colors">
-                    Service
-                  </a>
-                </li>
-                <li>
-                  <a href="/pricing" className="hover:text-gray-300 transition-colors">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="hover:text-gray-300 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="/help" className="hover:text-gray-300 transition-colors">
-                    Help
-                  </a>
-                </li>
-                <li>
-                  <a href="/blog" className="hover:text-gray-300 transition-colors">
-                    Blogs
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Contact Us</h4>
-              <ul className="space-y-2 text-sm">
-                <li>+1234567890</li>
-                <li>email@example.com</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Get in touch</h4>
-              <div className="flex space-x-3">
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  href="#"
-                  className="w-8 h-8 bg-white/20 rounded flex items-center justify-center hover:bg-white/30 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-white/20 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-sm">
-            <p>
-              All right reserved © 2025, Develop by{" "}
-              <a
-                href="https://uk-developer.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-gray-300 transition-colors underline"
-              >
-                UsmanKhan
-              </a>
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
