@@ -1,7 +1,8 @@
+"use client"
+
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { notFound } from "next/navigation"
-;("use client")
 
 const blogPosts = {
   "lead-generation-strategies-2024": {
