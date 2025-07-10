@@ -5,7 +5,7 @@ import type React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ToastContainer, useToast } from "@/components/toast"
-import { Search, Users, Star, HelpCircle, CreditCard, Edit, Trash2, Download, Plus } from "lucide-react"
+import { Search, Users, Star, HelpCircle, CreditCard, Edit, Trash2, Download, Plus, ChevronDown } from "lucide-react"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -62,19 +62,58 @@ export default function DashboardPage() {
   const { toasts, addToast, removeToast } = useToast()
   const router = useRouter()
 
+  // Enhanced Google Business Form
   const [googleBusinessForm, setGoogleBusinessForm] = useState({
     keywords: "",
-    country: "",
-    region: "",
-    quantity: 10,
+    countries: [] as string[],
+    includeCities: [] as string[],
+    excludeCities: [] as string[],
+    industries: [] as string[],
+    excludeIndustries: [] as string[],
+    companySizes: [] as string[],
+    companyTypes: [] as string[],
+    includeDescriptionKeywords: "",
+    excludeDescriptionKeywords: "",
+    minFollowerCount: "",
+    limit: 50,
   })
 
+  // Enhanced People Search Form
   const [peopleSearchForm, setPeopleSearchForm] = useState({
-    name: "",
-    company: "",
-    location: "",
-    jobTitle: "",
-    quantity: 10,
+    // Job Title & Role
+    includeLevels: [] as string[],
+    includeJobFunctions: [] as string[],
+    includeJobTitles: [] as string[],
+    excludeJobTitles: [] as string[],
+    exactKeywordMatch: true,
+
+    // Company Attributes
+    companySizes: [] as string[],
+    includeIndustries: [] as string[],
+    excludeIndustries: [] as string[],
+    includeDescriptionKeywords: "",
+    excludeDescriptionKeywords: "",
+
+    // Location Filters
+    includeCountries: [] as string[],
+    excludeCountries: [] as string[],
+    includeRegions: [] as string[],
+    excludeRegions: [] as string[],
+    includeCities: [] as string[],
+    excludeCities: [] as string[],
+    includeStates: [] as string[],
+
+    // Experience
+    minMonthsInRole: 5,
+    maxMonthsInRole: 24,
+    minExperiences: 3,
+    maxExperiences: 5,
+    experienceKeywords: "",
+
+    // Limits
+    totalLimit: 50,
+    limitPerCompany: 10,
+    minFollowerCount: "",
   })
 
   const [workflowForm, setWorkflowForm] = useState({
@@ -361,6 +400,63 @@ export default function DashboardPage() {
       title: "Export Completed",
       message: `${selectedData.length} items exported successfully`,
     })
+  }
+
+  // Helper function for multi-select dropdowns
+  const MultiSelectDropdown = ({
+    label,
+    options,
+    selected,
+    onChange,
+    placeholder,
+  }: {
+    label: string
+    options: string[]
+    selected: string[]
+    onChange: (values: string[]) => void
+    placeholder: string
+  }) => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    const toggleOption = (option: string) => {
+      if (selected.includes(option)) {
+        onChange(selected.filter((item) => item !== option))
+      } else {
+        onChange([...selected, option])
+      }
+    }
+
+    return (
+      <div className="relative">
+        <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+        <div
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none cursor-pointer bg-white flex items-center justify-between"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span className="text-gray-700">{selected.length > 0 ? `${selected.length} selected` : placeholder}</span>
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        </div>
+        {isOpen && (
+          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            {options.map((option) => (
+              <div
+                key={option}
+                className="px-3 py-2 hover:bg-gray-50 cursor-pointer flex items-center"
+                onClick={() => toggleOption(option)}
+              >
+                <input
+                  type="checkbox"
+                  checked={selected.includes(option)}
+                  onChange={() => {}}
+                  className="mr-2 rounded border-gray-300"
+                />
+                <span className="text-sm text-gray-700">{option}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )
   }
 
   if (isLoading) {
@@ -840,10 +936,10 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      {/* Google Business Search Modal */}
+      {/* Enhanced Google Business Search Modal */}
       {showModal === "google-business" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <Card className="bg-white max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-2">
@@ -859,61 +955,157 @@ export default function DashboardPage() {
                 </Button>
               </div>
 
-              <form onSubmit={handleGoogleBusinessSearch} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Keywords *</label>
-                  <input
-                    type="text"
-                    value={googleBusinessForm.keywords}
-                    onChange={(e) => setGoogleBusinessForm({ ...googleBusinessForm, keywords: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    placeholder="e.g., restaurants, dentists, plumbers"
-                    required
-                  />
+              <form onSubmit={handleGoogleBusinessSearch} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Basic Search */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-900">Basic Search</h4>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Keywords *</label>
+                      <input
+                        type="text"
+                        value={googleBusinessForm.keywords}
+                        onChange={(e) => setGoogleBusinessForm({ ...googleBusinessForm, keywords: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., restaurants, dentists, plumbers"
+                        required
+                      />
+                    </div>
+
+                    <MultiSelectDropdown
+                      label="Countries"
+                      options={["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"]}
+                      selected={googleBusinessForm.countries}
+                      onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, countries: values })}
+                      placeholder="Select countries"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Cities"
+                      options={["New York", "San Francisco", "London", "Toronto", "Sydney", "Berlin"]}
+                      selected={googleBusinessForm.includeCities}
+                      onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, includeCities: values })}
+                      placeholder="Select cities to include"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Cities"
+                      options={["Paris", "Madrid", "Rome", "Amsterdam", "Brussels", "Vienna"]}
+                      selected={googleBusinessForm.excludeCities}
+                      onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, excludeCities: values })}
+                      placeholder="Select cities to exclude"
+                    />
+                  </div>
+
+                  {/* Company Filters */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-900">Company Filters</h4>
+
+                    <MultiSelectDropdown
+                      label="Industries"
+                      options={[
+                        "Software Development",
+                        "Healthcare",
+                        "Finance",
+                        "Retail",
+                        "Manufacturing",
+                        "Education",
+                      ]}
+                      selected={googleBusinessForm.industries}
+                      onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, industries: values })}
+                      placeholder="Select industries"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Industries"
+                      options={["Advertising Services", "Marketing", "Consulting", "Real Estate", "Insurance"]}
+                      selected={googleBusinessForm.excludeIndustries}
+                      onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, excludeIndustries: values })}
+                      placeholder="Select industries to exclude"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Company Sizes"
+                      options={[
+                        "1-10 employees",
+                        "11-50 employees",
+                        "51-200 employees",
+                        "201-500 employees",
+                        "500+ employees",
+                      ]}
+                      selected={googleBusinessForm.companySizes}
+                      onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, companySizes: values })}
+                      placeholder="Select company sizes"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Company Types"
+                      options={["Privately Held", "Public Company", "Partnership", "Non-profit", "Government Agency"]}
+                      selected={googleBusinessForm.companyTypes}
+                      onChange={(values) => setGoogleBusinessForm({ ...googleBusinessForm, companyTypes: values })}
+                      placeholder="Select company types"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Country *</label>
-                  <select
-                    value={googleBusinessForm.country}
-                    onChange={(e) => setGoogleBusinessForm({ ...googleBusinessForm, country: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    required
-                  >
-                    <option value="">Select Country</option>
-                    <option value="United States">United States</option>
-                    <option value="Canada">Canada</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Germany">Germany</option>
-                    <option value="France">France</option>
-                  </select>
+                {/* Description Keywords */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Include Description Keywords</label>
+                    <input
+                      type="text"
+                      value={googleBusinessForm.includeDescriptionKeywords}
+                      onChange={(e) =>
+                        setGoogleBusinessForm({ ...googleBusinessForm, includeDescriptionKeywords: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      placeholder="e.g., sales, data, outbound"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Exclude Description Keywords</label>
+                    <input
+                      type="text"
+                      value={googleBusinessForm.excludeDescriptionKeywords}
+                      onChange={(e) =>
+                        setGoogleBusinessForm({ ...googleBusinessForm, excludeDescriptionKeywords: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      placeholder="e.g., agency, marketing"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Region *</label>
-                  <input
-                    type="text"
-                    value={googleBusinessForm.region}
-                    onChange={(e) => setGoogleBusinessForm({ ...googleBusinessForm, region: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    placeholder="e.g., New York, California, London"
-                    required
-                  />
-                </div>
+                {/* Additional Filters */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Follower Count</label>
+                    <input
+                      type="number"
+                      value={googleBusinessForm.minFollowerCount}
+                      onChange={(e) =>
+                        setGoogleBusinessForm({ ...googleBusinessForm, minFollowerCount: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      placeholder="e.g., 10"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="1000"
-                    value={googleBusinessForm.quantity}
-                    onChange={(e) =>
-                      setGoogleBusinessForm({ ...googleBusinessForm, quantity: Number.parseInt(e.target.value) || 10 })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Limit Results</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="1000"
+                      value={googleBusinessForm.limit}
+                      onChange={(e) =>
+                        setGoogleBusinessForm({ ...googleBusinessForm, limit: Number.parseInt(e.target.value) || 50 })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex space-x-3 pt-4">
@@ -939,10 +1131,10 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* People Search Modal */}
+      {/* Enhanced People Search Modal */}
       {showModal === "people-search" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <Card className="bg-white max-w-6xl w-full max-h-[90vh] overflow-y-auto">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-2">
@@ -958,63 +1150,317 @@ export default function DashboardPage() {
                 </Button>
               </div>
 
-              <form onSubmit={handlePeopleSearch} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
-                  <input
-                    type="text"
-                    value={peopleSearchForm.name}
-                    onChange={(e) => setPeopleSearchForm({ ...peopleSearchForm, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    placeholder="e.g., John Smith"
-                  />
+              <form onSubmit={handlePeopleSearch} className="space-y-6">
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* Job Title & Role */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-900 flex items-center">🎯 Job Title & Role</h4>
+
+                    <MultiSelectDropdown
+                      label="Include Levels"
+                      options={["C-suite", "Manager", "Director", "VP", "Senior", "Lead"]}
+                      selected={peopleSearchForm.includeLevels}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeLevels: values })}
+                      placeholder="e.g., C-suite, Manager"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Job Functions"
+                      options={["Sales", "Engineering", "Marketing", "Operations", "Finance", "HR"]}
+                      selected={peopleSearchForm.includeJobFunctions}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeJobFunctions: values })}
+                      placeholder="e.g., Sales, Engineering"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Job Titles"
+                      options={["Founder", "Vice President", "CEO", "CTO", "Sales Manager", "Product Manager"]}
+                      selected={peopleSearchForm.includeJobTitles}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeJobTitles: values })}
+                      placeholder="e.g., Founder, Vice President, CEO"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Job Titles"
+                      options={["Vice", "Junior", "Intern", "Assistant", "Coordinator", "Trainee"]}
+                      selected={peopleSearchForm.excludeJobTitles}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeJobTitles: values })}
+                      placeholder="e.g., Vice, Junior, Intern"
+                    />
+
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="exactMatch"
+                        checked={peopleSearchForm.exactKeywordMatch}
+                        onChange={(e) =>
+                          setPeopleSearchForm({ ...peopleSearchForm, exactKeywordMatch: e.target.checked })
+                        }
+                        className="rounded border-gray-300"
+                      />
+                      <label htmlFor="exactMatch" className="text-sm text-gray-700">
+                        Use Exact Keyword Match
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Company Attributes */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-900 flex items-center">🏢 Company Attributes</h4>
+
+                    <MultiSelectDropdown
+                      label="Company Sizes"
+                      options={["11–50", "51–200", "201–500", "501–1000", "1000+"]}
+                      selected={peopleSearchForm.companySizes}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, companySizes: values })}
+                      placeholder="e.g., 11–50, 51–200"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Industries"
+                      options={["Software Development", "Technology", "Healthcare", "Finance", "E-commerce", "SaaS"]}
+                      selected={peopleSearchForm.includeIndustries}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeIndustries: values })}
+                      placeholder="e.g., Software Development"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Industries"
+                      options={["Advertising", "Marketing Agency", "Consulting", "Real Estate", "Insurance"]}
+                      selected={peopleSearchForm.excludeIndustries}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeIndustries: values })}
+                      placeholder="Industries to exclude"
+                    />
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Include Description Keywords
+                      </label>
+                      <input
+                        type="text"
+                        value={peopleSearchForm.includeDescriptionKeywords}
+                        onChange={(e) =>
+                          setPeopleSearchForm({ ...peopleSearchForm, includeDescriptionKeywords: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., sales, data, outbound"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Exclude Description Keywords
+                      </label>
+                      <input
+                        type="text"
+                        value={peopleSearchForm.excludeDescriptionKeywords}
+                        onChange={(e) =>
+                          setPeopleSearchForm({ ...peopleSearchForm, excludeDescriptionKeywords: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., marketing, agency"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location Filters */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-900 flex items-center">🌍 Location Filters</h4>
+
+                    <MultiSelectDropdown
+                      label="Include Countries"
+                      options={["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"]}
+                      selected={peopleSearchForm.includeCountries}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeCountries: values })}
+                      placeholder="e.g., United States, Canada"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Countries"
+                      options={["France", "Spain", "Italy", "Netherlands", "Belgium", "Switzerland"]}
+                      selected={peopleSearchForm.excludeCountries}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeCountries: values })}
+                      placeholder="e.g., France, Spain"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Regions"
+                      options={["NAM", "LATAM", "EMEA", "APAC", "Europe", "Asia"]}
+                      selected={peopleSearchForm.includeRegions}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeRegions: values })}
+                      placeholder="e.g., NAM, LATAM"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Regions"
+                      options={["APAC", "EMEA", "Africa", "Middle East", "Eastern Europe"]}
+                      selected={peopleSearchForm.excludeRegions}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeRegions: values })}
+                      placeholder="e.g., APAC, EMEA"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include Cities"
+                      options={["San Francisco", "London", "New York", "Toronto", "Sydney", "Berlin"]}
+                      selected={peopleSearchForm.includeCities}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeCities: values })}
+                      placeholder="e.g., San Francisco, London"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Exclude Cities"
+                      options={["New York", "Paris", "Madrid", "Rome", "Amsterdam", "Brussels"]}
+                      selected={peopleSearchForm.excludeCities}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, excludeCities: values })}
+                      placeholder="e.g., New York, Paris"
+                    />
+
+                    <MultiSelectDropdown
+                      label="Include States/Provinces"
+                      options={["California", "Ontario", "Texas", "British Columbia", "New York", "Quebec"]}
+                      selected={peopleSearchForm.includeStates}
+                      onChange={(values) => setPeopleSearchForm({ ...peopleSearchForm, includeStates: values })}
+                      placeholder="e.g., California, Ontario"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                  <input
-                    type="text"
-                    value={peopleSearchForm.company}
-                    onChange={(e) => setPeopleSearchForm({ ...peopleSearchForm, company: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    placeholder="e.g., Google, Microsoft"
-                  />
-                </div>
+                {/* Experience & Limits */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-900 flex items-center">🧠 Experience</h4>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                  <input
-                    type="text"
-                    value={peopleSearchForm.location}
-                    onChange={(e) => setPeopleSearchForm({ ...peopleSearchForm, location: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    placeholder="e.g., San Francisco, New York"
-                  />
-                </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Min Months in Role</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={peopleSearchForm.minMonthsInRole}
+                          onChange={(e) =>
+                            setPeopleSearchForm({
+                              ...peopleSearchForm,
+                              minMonthsInRole: Number.parseInt(e.target.value) || 5,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Max Months in Role</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={peopleSearchForm.maxMonthsInRole}
+                          onChange={(e) =>
+                            setPeopleSearchForm({
+                              ...peopleSearchForm,
+                              maxMonthsInRole: Number.parseInt(e.target.value) || 24,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        />
+                      </div>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
-                  <input
-                    type="text"
-                    value={peopleSearchForm.jobTitle}
-                    onChange={(e) => setPeopleSearchForm({ ...peopleSearchForm, jobTitle: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                    placeholder="e.g., Software Engineer, Marketing Manager"
-                  />
-                </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Min Experiences</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={peopleSearchForm.minExperiences}
+                          onChange={(e) =>
+                            setPeopleSearchForm({
+                              ...peopleSearchForm,
+                              minExperiences: Number.parseInt(e.target.value) || 3,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Max Experiences</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={peopleSearchForm.maxExperiences}
+                          onChange={(e) =>
+                            setPeopleSearchForm({
+                              ...peopleSearchForm,
+                              maxExperiences: Number.parseInt(e.target.value) || 5,
+                            })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        />
+                      </div>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="500"
-                    value={peopleSearchForm.quantity}
-                    onChange={(e) =>
-                      setPeopleSearchForm({ ...peopleSearchForm, quantity: Number.parseInt(e.target.value) || 10 })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
-                  />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Experience Keywords</label>
+                      <input
+                        type="text"
+                        value={peopleSearchForm.experienceKeywords}
+                        onChange={(e) =>
+                          setPeopleSearchForm({ ...peopleSearchForm, experienceKeywords: e.target.value })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., Product roadmap, manager, growth"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-900 flex items-center">📉 Limit Results</h4>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Total Limit</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="1000"
+                        value={peopleSearchForm.totalLimit}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            totalLimit: Number.parseInt(e.target.value) || 50,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Maximum 50 records</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Limit Per Company</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={peopleSearchForm.limitPerCompany}
+                        onChange={(e) =>
+                          setPeopleSearchForm({
+                            ...peopleSearchForm,
+                            limitPerCompany: Number.parseInt(e.target.value) || 10,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Maximum 10 people per company</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Follower Count</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={peopleSearchForm.minFollowerCount}
+                        onChange={(e) => setPeopleSearchForm({ ...peopleSearchForm, minFollowerCount: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3679] focus:border-transparent outline-none"
+                        placeholder="e.g., 10"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex space-x-3 pt-4">

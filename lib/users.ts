@@ -1,28 +1,26 @@
-// Simple in-memory user storage for demo purposes
-// In production, use a real database
-interface User {
+export interface User {
   id: string
+  name: string
   email: string
   password: string
-  name: string
-  createdAt: Date
+  createdAt: string
 }
 
-// Mock users database
+// In-memory user storage (in production, use a real database)
 const users: User[] = [
   {
     id: "1",
+    name: "Demo User",
     email: "demo@example.com",
     password: "password123",
-    name: "Demo User",
-    createdAt: new Date(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: "2",
+    name: "Alexa Rawles",
     email: "alexarawles@gmail.com",
     password: "password123",
-    name: "Alexa Rawles",
-    createdAt: new Date(),
+    createdAt: new Date().toISOString(),
   },
 ]
 
@@ -30,33 +28,16 @@ export function findUserByEmail(email: string): User | null {
   return users.find((user) => user.email.toLowerCase() === email.toLowerCase()) || null
 }
 
-export function findUserById(id: string): User | null {
-  return users.find((user) => user.id === id) || null
-}
-
 export function createUser(userData: Omit<User, "id" | "createdAt">): User {
   const newUser: User = {
-    ...userData,
     id: Date.now().toString(),
-    createdAt: new Date(),
+    ...userData,
+    createdAt: new Date().toISOString(),
   }
   users.push(newUser)
   return newUser
 }
 
-export function updateUser(id: string, updates: Partial<Omit<User, "id" | "createdAt">>): User | null {
-  const userIndex = users.findIndex((user) => user.id === id)
-  if (userIndex === -1) return null
-
-  users[userIndex] = { ...users[userIndex], ...updates }
-  return users[userIndex]
-}
-
-export function getAllUsers(): User[] {
-  return users
-}
-
-// Helper function to check if email already exists
-export function emailExists(email: string): boolean {
+export function userExists(email: string): boolean {
   return users.some((user) => user.email.toLowerCase() === email.toLowerCase())
 }

@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { verifyToken } from "@/lib/jwt"
-import { validateRequired } from "@/lib/validation"
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,34 +15,39 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    const { keywords, country, region, quantity } = await request.json()
+    const {
+      keywords,
+      countries,
+      includeCities,
+      excludeCities,
+      industries,
+      excludeIndustries,
+      companySizes,
+      companyTypes,
+      includeDescriptionKeywords,
+      excludeDescriptionKeywords,
+      minFollowerCount,
+      limit,
+    } = await request.json()
 
-    // Validate input
-    const keywordsError = validateRequired(keywords, "Keywords")
-    const countryError = validateRequired(country, "Country")
-    const regionError = validateRequired(region, "Region")
-
-    if (keywordsError || countryError || regionError) {
+    // Validate required fields
+    if (!keywords) {
       return NextResponse.json(
         {
           success: false,
-          message: "Validation failed",
-          errors: [
-            ...(keywordsError ? [{ field: "keywords", message: keywordsError }] : []),
-            ...(countryError ? [{ field: "country", message: countryError }] : []),
-            ...(regionError ? [{ field: "region", message: regionError }] : []),
-          ],
+          message: "Keywords are required",
+          errors: [{ field: "keywords", message: "Please provide search keywords" }],
         },
         { status: 400 },
       )
     }
 
-    if (!quantity || quantity < 1 || quantity > 1000) {
+    if (!limit || limit < 1 || limit > 1000) {
       return NextResponse.json(
         {
           success: false,
-          message: "Quantity must be between 1 and 1000",
-          errors: [{ field: "quantity", message: "Quantity must be between 1 and 1000" }],
+          message: "Limit must be between 1 and 1000",
+          errors: [{ field: "limit", message: "Limit must be between 1 and 1000" }],
         },
         { status: 400 },
       )
@@ -52,32 +56,45 @@ export async function POST(request: NextRequest) {
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // Mock Google business data
-    const businesses = Array.from({ length: Math.min(quantity, 50) }, (_, i) => ({
+    // Mock business data with enhanced filtering
+    const businesses = Array.from({ length: Math.min(limit, 25) }, (_, i) => ({
       id: `business_${i + 1}`,
       name: `${keywords} Business ${i + 1}`,
-      address: `${i + 1} Main St, ${region}, ${country}`,
+      address: `${includeCities.length > 0 ? includeCities[i % includeCities.length] : "New York"}, ${countries.length > 0 ? countries[0] : "United States"}`,
       phone: `+1-555-${String(i + 1).padStart(3, "0")}-${String(Math.floor(Math.random() * 10000)).padStart(4, "0")}`,
       website: `https://business${i + 1}.com`,
-      rating: (Math.random() * 2 + 3).toFixed(1),
+      rating: (4.0 + Math.random() * 1.0).toFixed(1),
       reviews: Math.floor(Math.random() * 500) + 10,
-      category: keywords,
+      category: industries.length > 0 ? industries[i % industries.length] : "Business Services",
       hours: "9:00 AM - 6:00 PM",
-      description: `A great ${keywords} business in ${region}`,
+      description: `Professional ${keywords} services. ${includeDescriptionKeywords}`,
       selected: false,
     }))
 
     return NextResponse.json({
       success: true,
-      message: `Found ${businesses.length} businesses`,
+      message: `Found ${businesses.length} businesses matching your criteria`,
       data: {
         businesses,
-        searchParams: { keywords, country, region, quantity },
+        searchParams: {
+          keywords,
+          countries,
+          includeCities,
+          excludeCities,
+          industries,
+          excludeIndustries,
+          companySizes,
+          companyTypes,
+          includeDescriptionKeywords,
+          excludeDescriptionKeywords,
+          minFollowerCount,
+          limit,
+        },
         totalFound: businesses.length,
       },
     })
   } catch (error) {
-    console.error("Google business search error:", error)
+    console.error("Business search error:", error)
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
   }
 }

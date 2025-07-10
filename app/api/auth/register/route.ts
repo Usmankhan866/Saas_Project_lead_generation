@@ -1,14 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createUser, emailExists } from "@/lib/users"
+import { createUser, userExists } from "@/lib/users"
 import { signToken } from "@/lib/jwt"
 import { validateEmail, validatePassword, validateName } from "@/lib/validation"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { name, email, password } = body
-
-    console.log("Registration attempt for:", email)
+    const { name, email, password } = await request.json()
 
     // Validate input
     const nameError = validateName(name)
@@ -20,43 +17,33 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           message: "Validation failed",
-          errors: [
-            ...(nameError ? [{ field: "name", message: nameError }] : []),
-            ...(emailError ? [{ field: "email", message: emailError }] : []),
-            ...(passwordError ? [{ field: "password", message: passwordError }] : []),
-          ],
+          errors: [nameError, emailError, passwordError].filter(Boolean),
         },
         { status: 400 },
       )
     }
 
     // Check if user already exists
-    if (emailExists(email)) {
+    if (userExists(email)) {
       return NextResponse.json(
         {
           success: false,
           message: "User with this email already exists",
-          errors: [{ field: "email", message: "Email already registered" }],
+          errors: [{ field: "email", message: "Email is already registered" }],
         },
         { status: 409 },
       )
     }
 
-    // Create new user (in production, hash the password)
-    const newUser = createUser({
-      name: name.trim(),
-      email: email.toLowerCase().trim(),
-      password, // In production, hash this password
-    })
+    // Create user (in production, hash the password)
+    const user = createUser({ name, email, password })
 
     // Generate JWT token
     const token = signToken({
-      userId: newUser.id,
-      email: newUser.email,
-      name: newUser.name,
+      userId: user.id,
+      email: user.email,
+      name: user.name,
     })
-
-    console.log("Registration successful for:", email)
 
     return NextResponse.json({
       success: true,
@@ -64,20 +51,14 @@ export async function POST(request: NextRequest) {
       data: {
         token,
         user: {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email,
+          id: user.id,
+          name: user.name,
+          email: user.email,
         },
       },
     })
   } catch (error) {
     console.error("Registration error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Internal server error",
-      },
-      { status: 500 },
-    )
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
   }
 }

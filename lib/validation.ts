@@ -1,56 +1,42 @@
-export function validateEmail(email: string): string | null {
-  if (!email) {
-    return "Email is required"
-  }
+export interface ValidationError {
+  field: string
+  message: string
+}
 
+export function validateEmail(email: string): ValidationError | null {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!email) {
+    return { field: "email", message: "Email is required" }
+  }
   if (!emailRegex.test(email)) {
-    return "Please enter a valid email address"
+    return { field: "email", message: "Please enter a valid email address" }
   }
-
   return null
 }
 
-export function validatePassword(password: string): string | null {
+export function validatePassword(password: string): ValidationError | null {
   if (!password) {
-    return "Password is required"
+    return { field: "password", message: "Password is required" }
   }
-
   if (password.length < 6) {
-    return "Password must be at least 6 characters long"
+    return { field: "password", message: "Password must be at least 6 characters long" }
   }
-
   return null
 }
 
-export function validateRequired(value: string, fieldName: string): string | null {
+export function validateName(name: string): ValidationError | null {
+  if (!name) {
+    return { field: "name", message: "Name is required" }
+  }
+  if (name.length < 2) {
+    return { field: "name", message: "Name must be at least 2 characters long" }
+  }
+  return null
+}
+
+export function validateRequired(value: string, fieldName: string): ValidationError | null {
   if (!value || value.trim() === "") {
-    return `${fieldName} is required`
+    return { field: fieldName, message: `${fieldName} is required` }
   }
-  return null
-}
-
-export function validateName(name: string): string | null {
-  if (!name || name.trim() === "") {
-    return "Name is required"
-  }
-
-  if (name.trim().length < 2) {
-    return "Name must be at least 2 characters long"
-  }
-
-  return null
-}
-
-export function validatePhone(phone: string): string | null {
-  if (!phone) {
-    return "Phone number is required"
-  }
-
-  const phoneRegex = /^[+]?[1-9][\d]{0,15}$/
-  if (!phoneRegex.test(phone.replace(/[\s\-$$$$]/g, ""))) {
-    return "Please enter a valid phone number"
-  }
-
   return null
 }

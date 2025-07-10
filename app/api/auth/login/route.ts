@@ -1,28 +1,22 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { findUserByEmail } from "@/lib/users"
 import { signToken } from "@/lib/jwt"
-import { validateEmail, validateRequired } from "@/lib/validation"
+import { validateEmail, validatePassword } from "@/lib/validation"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { email, password } = body
-
-    console.log("Login attempt for:", email)
+    const { email, password } = await request.json()
 
     // Validate input
     const emailError = validateEmail(email)
-    const passwordError = validateRequired(password, "Password")
+    const passwordError = validatePassword(password)
 
     if (emailError || passwordError) {
       return NextResponse.json(
         {
           success: false,
           message: "Validation failed",
-          errors: [
-            ...(emailError ? [{ field: "email", message: emailError }] : []),
-            ...(passwordError ? [{ field: "password", message: passwordError }] : []),
-          ],
+          errors: [emailError, passwordError].filter(Boolean),
         },
         { status: 400 },
       )
@@ -31,7 +25,6 @@ export async function POST(request: NextRequest) {
     // Find user
     const user = findUserByEmail(email)
     if (!user) {
-      console.log("User not found:", email)
       return NextResponse.json(
         {
           success: false,
@@ -41,9 +34,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check password (in production, use bcrypt to compare hashed passwords)
+    // Check password (in production, use bcrypt)
     if (user.password !== password) {
-      console.log("Password mismatch for user:", email)
       return NextResponse.json(
         {
           success: false,
@@ -60,8 +52,6 @@ export async function POST(request: NextRequest) {
       name: user.name,
     })
 
-    console.log("Login successful for:", email)
-
     return NextResponse.json({
       success: true,
       message: "Login successful",
@@ -76,12 +66,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Login error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Internal server error",
-      },
-      { status: 500 },
-    )
+    return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 })
   }
 }

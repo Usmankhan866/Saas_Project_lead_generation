@@ -15,63 +15,138 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 })
     }
 
-    const { name, company, location, jobTitle, quantity } = await request.json()
+    const {
+      includeLevels,
+      includeJobFunctions,
+      includeJobTitles,
+      excludeJobTitles,
+      exactKeywordMatch,
+      companySizes,
+      includeIndustries,
+      excludeIndustries,
+      includeDescriptionKeywords,
+      excludeDescriptionKeywords,
+      includeCountries,
+      excludeCountries,
+      includeRegions,
+      excludeRegions,
+      includeCities,
+      excludeCities,
+      includeStates,
+      minMonthsInRole,
+      maxMonthsInRole,
+      minExperiences,
+      maxExperiences,
+      experienceKeywords,
+      totalLimit,
+      limitPerCompany,
+      minFollowerCount,
+    } = await request.json()
 
-    // Validate input - at least one field is required
-    if (!name && !company && !location && !jobTitle) {
+    // Validate input - at least one search criteria is required
+    if (
+      !includeLevels?.length &&
+      !includeJobFunctions?.length &&
+      !includeJobTitles?.length &&
+      !includeCountries?.length
+    ) {
       return NextResponse.json(
         {
           success: false,
-          message: "At least one search field is required",
+          message: "At least one search criteria is required",
           errors: [{ field: "general", message: "Please provide at least one search criteria" }],
         },
         { status: 400 },
       )
     }
 
-    if (!quantity || quantity < 1 || quantity > 500) {
+    if (!totalLimit || totalLimit < 1 || totalLimit > 1000) {
       return NextResponse.json(
         {
           success: false,
-          message: "Quantity must be between 1 and 500",
-          errors: [{ field: "quantity", message: "Quantity must be between 1 and 500" }],
+          message: "Total limit must be between 1 and 1000",
+          errors: [{ field: "totalLimit", message: "Total limit must be between 1 and 1000" }],
         },
         { status: 400 },
       )
     }
 
     // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // Mock people data
-    const people = Array.from({ length: Math.min(quantity, 30) }, (_, i) => ({
-      id: `person_${i + 1}`,
-      name:
-        name ||
-        `${["John", "Jane", "Mike", "Sarah", "David", "Lisa"][i % 6]} ${["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia"][i % 6]}`,
-      jobTitle:
-        jobTitle ||
-        ["Software Engineer", "Marketing Manager", "Sales Director", "Product Manager", "Designer", "Analyst"][i % 6],
-      company:
-        company ||
-        ["Tech Corp", "Innovation Inc", "Digital Solutions", "Future Systems", "Smart Tech", "Global Dynamics"][i % 6],
-      location:
-        location ||
-        ["New York, NY", "San Francisco, CA", "Austin, TX", "Seattle, WA", "Boston, MA", "Chicago, IL"][i % 6],
-      email: `person${i + 1}@example.com`,
-      linkedin: `https://linkedin.com/in/person${i + 1}`,
-      phone: `+1-555-${String(i + 1).padStart(3, "0")}-${String(Math.floor(Math.random() * 10000)).padStart(4, "0")}`,
-      experience: `${Math.floor(Math.random() * 15) + 1} years`,
-      industry: ["Technology", "Marketing", "Sales", "Finance", "Healthcare", "Education"][i % 6],
-      selected: false,
-    }))
+    // Mock people data with comprehensive filtering
+    const people = Array.from({ length: Math.min(totalLimit, 30) }, (_, i) => {
+      const jobTitles =
+        includeJobTitles.length > 0
+          ? includeJobTitles
+          : ["Software Engineer", "Marketing Manager", "Sales Director", "Product Manager", "Designer", "Analyst"]
+      const companies = [
+        "Tech Corp",
+        "Innovation Inc",
+        "Digital Solutions",
+        "Future Systems",
+        "Smart Tech",
+        "Global Dynamics",
+      ]
+      const locations =
+        includeCountries.length > 0
+          ? includeCountries.map(
+              (country) => `${includeCities.length > 0 ? includeCities[i % includeCities.length] : "City"}, ${country}`,
+            )
+          : ["New York, NY", "San Francisco, CA", "Austin, TX", "Seattle, WA", "Boston, MA", "Chicago, IL"]
+
+      return {
+        id: `person_${i + 1}`,
+        name: `${["John", "Jane", "Mike", "Sarah", "David", "Lisa", "Alex", "Emma", "Chris", "Taylor"][i % 10]} ${["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"][i % 10]}`,
+        jobTitle: jobTitles[i % jobTitles.length],
+        company: companies[i % companies.length],
+        location: locations[i % locations.length],
+        email: `person${i + 1}@example.com`,
+        linkedin: `https://linkedin.com/in/person${i + 1}`,
+        phone: `+1-555-${String(i + 1).padStart(3, "0")}-${String(Math.floor(Math.random() * 10000)).padStart(4, "0")}`,
+        experience: `${Math.floor(Math.random() * 15) + 1} years`,
+        industry: includeIndustries.length > 0 ? includeIndustries[i % includeIndustries.length] : "Technology",
+        monthsInRole: Math.floor(Math.random() * (maxMonthsInRole - minMonthsInRole + 1)) + minMonthsInRole,
+        totalExperiences: Math.floor(Math.random() * (maxExperiences - minExperiences + 1)) + minExperiences,
+        followerCount: minFollowerCount
+          ? Number.parseInt(minFollowerCount) + Math.floor(Math.random() * 1000)
+          : Math.floor(Math.random() * 5000),
+        selected: false,
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      message: `Found ${people.length} people`,
+      message: `Found ${people.length} people matching your criteria`,
       data: {
         people,
-        searchParams: { name, company, location, jobTitle, quantity },
+        searchParams: {
+          includeLevels,
+          includeJobFunctions,
+          includeJobTitles,
+          excludeJobTitles,
+          exactKeywordMatch,
+          companySizes,
+          includeIndustries,
+          excludeIndustries,
+          includeDescriptionKeywords,
+          excludeDescriptionKeywords,
+          includeCountries,
+          excludeCountries,
+          includeRegions,
+          excludeRegions,
+          includeCities,
+          excludeCities,
+          includeStates,
+          minMonthsInRole,
+          maxMonthsInRole,
+          minExperiences,
+          maxExperiences,
+          experienceKeywords,
+          totalLimit,
+          limitPerCompany,
+          minFollowerCount,
+        },
         totalFound: people.length,
       },
     })
